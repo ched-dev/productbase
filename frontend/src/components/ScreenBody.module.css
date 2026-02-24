@@ -1,0 +1,16 @@
+.screenBody {
+  height: calc(100vh - 3.4rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  align-items: stretch;
+}
+
+.contentBody {
+  height: calc(100vh - 3.4rem - 4rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  align-items: stretch;
+  overflow: scroll;
+}

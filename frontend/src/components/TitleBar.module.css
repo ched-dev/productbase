@@ -1,0 +1,21 @@
+.titleBar {
+  background-color: var(--mantine-color-brand-filled);
+  padding: rem(4) var(--mantine-spacing-xs);
+  align-items: center;
+  height: 3.4rem;
+}
+.titleBar * {
+  color: var(--mantine-color-white);
+}
+.titleLink {
+  font-size: rem(28);
+  font-weight: bold;
+  text-decoration: none;
+  display: flex;
+  align-items: start;
+  margin-right: auto;
+}
+.version {
+  font-size: var(--mantine-font-size-xs);
+  text-indent: rem(1);
+}

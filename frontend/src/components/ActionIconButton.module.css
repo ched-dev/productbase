@@ -1,0 +1,17 @@
+.button {
+  /* display: inline-block;
+  padding: var(--mantine-spacing-xxs) var(--mantine-spacing-xs);
+  margin: 0 var(--mantine-spacing-xs) var(--mantine-spacing-xs) 0;
+  text-decoration: none;
+  border: solid 1px transparent;
+  background-color: grey;
+  border-radius: var(--mantine-radius-xs);
+  color: white;
+  line-height: 1.3rem;
+
+  &[data-parsed="true"] {
+    border-color: black;
+    background-color: white;
+    color: black;
+  } */
+}

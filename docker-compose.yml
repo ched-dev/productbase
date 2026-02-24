@@ -1,0 +1,22 @@
+services:
+  pocketbase:
+    build:
+      context: ./pocketbase
+      dockerfile: Dockerfile
+    ports:
+      - "8100:8100"
+    volumes:
+      - ./pocketbase/pb_data:/pb/pb_data
+      - ./pocketbase/pb_hooks:/pb/pb_hooks
+      - ./pocketbase/pb_migrations:/pb/pb_migrations
+    env_file:
+      - ./pocketbase/.env
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules # Prevent overwriting node_modules
+    ports:
+      - "8800:8800"

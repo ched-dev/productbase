@@ -1,0 +1,29 @@
+.navbar {
+  border-top: solid 1px var(--mantine-color-default-border);
+  height: 4rem;
+  /* background: var(--mantine-color-gray-1); */
+  justify-content: center;
+}
+
+.iconNotification {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+/* active item marker - bar */
+[data-active='true']::after {
+  --bar-height: rem(3);
+  --bar-width: 90%;
+
+  position: absolute;
+  bottom: 0;
+  left: calc((100% - var(--bar-width)) / 2);
+  content: '';
+  display: inline-flex;
+  width: var(--bar-width);
+  height: var(--bar-height);
+  background-color: var(--mantine-color-error);
+  border-radius: var(--mantine-radius-xs);
+  pointer-events: none;
+}

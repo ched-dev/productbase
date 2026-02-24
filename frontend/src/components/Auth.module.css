@@ -1,0 +1,36 @@
+.authScreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  background-color: var(--mantine-color-brand-0);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.title {
+  font-size: rem(28);
+  font-weight: bold;
+}
+
+.errorMessage {
+  text-transform: uppercase;
+  gap: var(--mantine-spacing-sm);
+  margin-bottom: var(--mantine-spacing-sm);
+}
+
+.fieldset {
+  background: none;
+  padding: var(--mantine-spacing-md);
+  padding-top: 0;
+}
+
+.loginButton {
+  margin: var(--mantine-spacing-lg);
+  justify-content: center;
+}
