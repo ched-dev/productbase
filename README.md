@@ -7,6 +7,7 @@ Spin up a new Pocketbase project with the base configuration for a product.
 User signup flow
 - [ ] Signup, Forgot / Password Reset
 - [ ] Email Verification
+- [ ] Max failed login attempts
 - [ ] Open / Close Registrations
 - [ ] Join a Waitlist
 

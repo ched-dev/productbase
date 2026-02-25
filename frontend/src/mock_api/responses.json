@@ -1,0 +1,72 @@
+{
+  "login": {
+    "invalid_user_user_password_or_email": {
+      "data": {},
+      "message": "Failed to authenticate.",
+      "status": 400
+    }
+  },
+  "signup": {
+    "invalid_email": {
+      "data": {
+        "email": {
+          "code": "validation_is_email",
+          "message": "Must be a valid email address."
+        }
+      },
+      "message": "Failed to create record.",
+      "status": 400
+    },
+    "invalid_password": {
+      "data": {
+        "password": {
+          "code": "validation_min_text_constraint",
+          "message": "Must be at least 8 character(s)."
+        }
+      },
+      "message": "Failed to create record.",
+      "status": 400
+    },
+    "registrations_disabled": {
+      "data": {
+        "auth": {
+          "code": "auth/user_registration_disabled",
+          "message": "User registrations are currently disabled."
+        }
+      },
+      "message": "User registrations are currently disabled.",
+      "status": 403
+    },
+    "email_already_taken_modified": {
+      "data": {
+        "email": {
+          "code": "validation_not_unique",
+          "message": "Email already in use."
+        }
+      },
+      "message": "Account already exists.",
+      "status": 400
+    },
+    "email_already_taken": {
+      "data": {
+        "email": {
+          "code": "validation_not_unique",
+          "message": "Value must be unique."
+        }
+      },
+      "message": "Failed to create record.",
+      "status": 400
+    },
+    "successful_signup": {
+      "avatar": "",
+      "collectionId": "_pb_users_auth_",
+      "collectionName": "users",
+      "created": "2026-02-25 01:12:18.812Z",
+      "emailVisibility": false,
+      "id": "4t2ndxzae6w8j99",
+      "name": "",
+      "updated": "2026-02-25 01:12:18.812Z",
+      "verified": false
+    }
+  }
+}

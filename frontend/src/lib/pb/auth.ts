@@ -4,35 +4,28 @@ import {
   AUTH_COOKIE_KEY,
   IS_DEV,
 } from "@/config";
-import { getApiError } from "@/lib/pb/errors";
 import { cacheUser, clearCachedUser, getCachedUser } from "./user";
 import { usePbClient } from "./client";
 import type { SerializeOptions } from "pocketbase";
+import type { SignInInfo, SignUpInfo } from "@/types/Auth";
 
 const pb = usePbClient();
 
-export async function userLogin(email: string, password: string) {
-  // login user
-  try {
-    const authData = await pb.collection("users").authWithPassword(
-      email,
-      password,
-    );
-    if (IS_DEV) {
-      console.log({ authData });
-    }
-    cacheAuth();
-  } catch (apiError: any) {
-    throw apiError;
+export async function userLogin(account: SignInInfo) {
+  const authData = await pb.collection("users").authWithPassword(
+    account.email,
+    account.password,
+  );
+
+  if (IS_DEV) {
+    console.log({ authData });
   }
 
-  // cache for later
-  try {
-    const user = await cacheUser();
-    return { user };
-  } catch (apiError) {
-    return getApiError(apiError);
-  }
+  cacheAuth();
+
+  // cache user data used in UI
+  const user = await cacheUser();
+  return { user };
 }
 export async function userLogout() {
   clearCachedAuth();
@@ -41,49 +34,38 @@ export async function userLogout() {
 }
 
 export async function sendForgotPasswordEmail(email: string) {
-  try {
-    const result = await pb.collection("users").requestPasswordReset(email);
-    return { success: result };
-  } catch (apiError) {
-    return getApiError(apiError);
-  }
+  const result = await pb.collection("users").requestPasswordReset(email);
+  return { success: result };
 }
+
 export async function resetPassword(token: string, password: string) {
-  try {
-    const result = await pb.collection("users").confirmPasswordReset(
-      token,
-      password,
-      password,
-    );
-    return { success: result };
-  } catch (apiError) {
-    const result = getApiError(apiError);
-
-    // swap error message
-    // if (result.error.extensions?.code === 'FORBIDDEN') {
-    //   result.error.message = 'Token is invalid.'
-    // }
-
-    return getApiError(apiError);
-  }
+  const result = await pb.collection("users").confirmPasswordReset(
+    token,
+    password,
+    password,
+  );
+  return { success: result };
 }
-export async function userSignUp(email: string, password: string) {
-  try {
-    await pb.collection("users").create({
-      email,
-      password,
-      passwordConfirm: password,
-    });
-    // immediately send verification email
-    await pb.collection("users").requestVerification(email);
 
-    // log them in immediately
-    // await userLogin(email, password)
+export async function userSignUp(account: SignUpInfo) {
+  const createdUser = await pb.collection('users').create({
+    name: account.name,
+    email: account.email,
+    password: account.password,
+    passwordConfirm: account.password,
+  });
+  
+  console.log('Created user', createdUser)
+  
+  // immediately send verification email
+  const sent = await pb.collection('users').requestVerification(account.email);
 
-    return { success: true };
-  } catch (error: any) {
-    return getApiError(error);
-  }
+  console.log('Sent user verifiation email', sent)
+
+  // log them in immediately
+  // await userLogin(email, password)
+
+  return { success: true };
 }
 
 /**

@@ -21,17 +21,14 @@ migrate((app) => {
       {
         name: 'allow_admin_panel_updates',
         type: 'bool',
-        default: false
       },
       {
         name: 'allow_user_registrations',
         type: 'bool',
-        default: false
       },
       {
         name: 'enable_waitlist',
         type: 'bool',
-        default: false
       },
       
     ],
@@ -45,8 +42,8 @@ migrate((app) => {
   const record = new Record(collection)
 
   record.set('_schema_version', SCHEMA_VERSION)
-  record.set('allow_admin_panel_updates', false)
-  record.set('allow_user_registrations', false)
+  record.set('allow_admin_panel_updates', true) // required true to create collections
+  record.set('allow_user_registrations', true) // required true to create users
   record.set('enable_waitlist', false)
 
   app.save(record)

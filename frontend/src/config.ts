@@ -1,4 +1,5 @@
 import type { CachedUser } from "./types";
+import { SignUpInfo } from "./types/Auth";
 
 /**
  * App Config and Debugging Settings
@@ -36,10 +37,11 @@ export const PUBLIC_URL = import.meta.env.VITE_FRONTEND_URL || FALLBACK_PUBLIC_F
 /**
  * Default account info used to login locally
  */
-export const MOCK_ACCOUNT = IS_DEV ? {
+export const MOCK_ACCOUNT: SignUpInfo = IS_DEV ? {
+  name: 'dev user',
   email: 'fake@gmail.com',
   password: 'password',
-} : { email: '', password: '' }
+} : { name: '', email: '', password: '' }
 
 /**
  * URL of reset password page

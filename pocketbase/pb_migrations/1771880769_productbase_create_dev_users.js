@@ -2,9 +2,11 @@
 migrate((app) => {
   const SU_EMAIL = process.env.DEV_SUPERUSER_EMAIL
   const SU_PASSWORD = process.env.DEV_SUPERUSER_PASSWORD
+  const DU_NAME = process.env.DEV_MOCK_USER_NAME || 'dev user'
   const DU_EMAIL = process.env.DEV_MOCK_USER_EMAIL
   const DU_PASSWORD = process.env.DEV_MOCK_USER_PASSWORD
 
+  // skip user creation in non-dev environments
   if (!app.isDev) {
     return
   }
@@ -29,9 +31,9 @@ migrate((app) => {
       console.log('ProductBase: Creating Dev User |', DU_EMAIL)
       const collection = app.findCollectionByNameOrId('users')
       const record = new Record(collection)
+      record.set('name', DU_NAME)
       record.set('email', DU_EMAIL)
       record.set('password', DU_PASSWORD)
-      record.set('name', 'dev user')
       record.set('verified', true)
       app.save(record)
     }
