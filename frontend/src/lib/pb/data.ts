@@ -6,16 +6,52 @@
  * Usage:
  *   // List response - use PBDataList
  *   const list = new PBDataList(listResult)
- *   list.items.first()
+ *   list.items.first
  *
  *   // Single record - use PBData
  *   const record = new PBData(record)
  *   record.id
- *   record.user_feedback
+ *   record.user_feedback // relationship property is array
+ *
+ * Sorting arrays:
+ *   // Sort list using PocketBase sort syntax
+ *   userList.sort('-created,id')
+ *
+ *   // Sort array property on a record
+ *   const record = new PBData(someRecord)
+ *   record.sortProperty('feedback_actions', '-created')
  */
+
+import orderBy from 'lodash/orderBy';
 
 interface PBExpand {
   [key: string]: unknown;
+}
+
+/**
+ * Parse PocketBase sort string into lodash orderBy format
+ * @param sort - Sort string like "-created,id" (DESC by created, ASC by id)
+ * @returns Object with iteratees and orders arrays
+ */
+function parseSortString(sort: string): { iteratees: string[], orders: ('asc' | 'desc')[] } {
+  const fields = sort.split(',').map(f => f.trim());
+  const iteratees: string[] = [];
+  const orders: ('asc' | 'desc')[] = [];
+
+  for (const field of fields) {
+    if (field.startsWith('-')) {
+      iteratees.push(field.slice(1));
+      orders.push('desc');
+    } else if (field.startsWith('+')) {
+      iteratees.push(field.slice(1));
+      orders.push('asc');
+    } else {
+      iteratees.push(field);
+      orders.push('asc');
+    }
+  }
+
+  return { iteratees, orders };
 }
 
 /**
@@ -25,8 +61,8 @@ interface PBRecordBase {
   id: string;
   collectionId: string;
   collectionName: string;
-  created: string;
-  updated: string;
+  created?: string;
+  updated?: string;
   expand?: PBExpand;
 }
 
@@ -136,78 +172,53 @@ export class PBData {
   }
 
   /**
-   * Get the processed record as a plain object
+   * Sort an array property in place using PocketBase sort syntax
+   * @param key - The property name that contains the array to sort
+   * @param sort - Sort string like "-created,id" (DESC by created, ASC by id)
+   * @returns this for chaining
    */
-  getRecord(): PBRecord {
-    const { id, collectionId, collectionName, created, updated, ...rest } = this;
-    return { id, collectionId, collectionName, created, updated, ...rest } as PBRecord;
+  sortProperty(key: string, sort: string): PBData {
+    const array = this[key];
+    if (Array.isArray(array)) {
+      const { iteratees, orders } = parseSortString(sort);
+      const sorted = orderBy(array, iteratees, orders);
+      this[key] = sorted;
+    } else {
+      console.warn('Cannot sort property', key)
+    }
+    return this;
   }
 }
 
 /**
- * Collection of processed PBRecord items with helper methods
+ * Collection of processed PBRecord items
  */
 class PBItemCollection {
-  private items: PBRecord[];
+  private _items: PBRecord[];
 
   constructor(data: PBRecord[]) {
-    this.items = data.map((d) => processRecord(d));
+    this._items = data.map((d) => processRecord(d));
   }
 
   /**
    * Get all items as processed records
    */
-  get all(): PBRecord[] {
-    return this.items;
+  get items(): PBRecord[] {
+    return this._items;
   }
 
   /**
-   * Get the first item as a processed record
+   * Get the first item
    */
   get first(): PBRecord | undefined {
-    return this.items[0];
+    return this._items[0];
   }
 
   /**
-   * Get the last item as a processed record
+   * Get the last item
    */
   get last(): PBRecord | undefined {
-    return this.items[this.items.length - 1];
-  }
-
-  /**
-   * Get the total count
-   */
-  get length(): number {
-    return this.items.length;
-  }
-
-  /**
-   * Convert to array (for iteration)
-   */
-  toArray(): PBRecord[] {
-    return this.all;
-  }
-
-  /**
-   * Map over items
-   */
-  map<T>(callback: (item: PBRecord) => T): T[] {
-    return this.all.map(callback);
-  }
-
-  /**
-   * Filter items
-   */
-  filter(callback: (item: PBRecord) => boolean): PBRecord[] {
-    return this.all.filter(callback);
-  }
-
-  /**
-   * Find an item
-   */
-  find(callback: (item: PBRecord) => boolean): PBRecord | undefined {
-    return this.all.find(callback);
+    return this._items[this._items.length - 1];
   }
 }
 
@@ -260,7 +271,7 @@ export class PBDataList {
   }
 
   /**
-   * Access items collection with helper methods
+   * Access items collection
    */
   get items(): PBItemCollection {
     return this.itemCollection;
@@ -320,5 +331,17 @@ export class PBDataList {
    */
   get hasPrevPage(): boolean {
     return this.page > 1;
+  }
+
+  /**
+   * Sort items in place using PocketBase sort syntax
+   * @param sort - Sort string like "-created,id" (DESC by created, ASC by id)
+   * @returns this for chaining
+   */
+  sort(sort: string): PBDataList {
+    const { iteratees, orders } = parseSortString(sort);
+    const sorted = orderBy(this.itemCollection.items, iteratees, orders);
+    this.itemCollection = new PBItemCollection(sorted);
+    return this;
   }
 }
