@@ -175,7 +175,7 @@ The project extends Pocketbase with both GO and JavaScript. The JavaScript exten
 More info: https://pocketbase.io/docs/api-rules-and-filters/
 ```javascript
 // Access only items you own
-user_id = @request.auth.id
+user.id = @request.auth.id
 
 // Allow only registered users
 @request.auth.id != ""
@@ -283,3 +283,9 @@ Check Pocketbase admin UI > Settings > Mail SMTP for email log/debugging (if con
   - Name functions which handle state changes as `handle*`, E.g. `handleSignIn(), handleSignUp()`
   - Name functions for events such as click, form submit, change, as `on*`, E.g. `onClick(), onSubmit(), onKeyPress()`
   - Name functions for rendering elements as `render*`, E.g. `renderForm(), renderStats()`
+
+## Pocketbase SDK Tips
+
+- Helpful information about [working with Relations in Pocketbase SDKs](https://pocketbase.io/docs/working-with-relations/)
+- `expand` is used to expand relational fields and supports sub-relations too
+- Back-relations allow you to query on models without the relational field, e.g. `user_feedback_via_user` will get `user_feedback` records using the `user` relation.

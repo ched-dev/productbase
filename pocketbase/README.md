@@ -26,7 +26,7 @@ Name the collection with all lowercase letters and underscores, and keep it plur
 
 Use the `type: Base` collection for any new standard data. Use a `type: View` for making a virtual table that is read-only and based on a query. You probably don't need to create an additional `type: Auth` collection.
 
-Keep the `id, created, updated` fields and add your own.
+Keep the `id, created, updated` fields and add your own. Added fields should follow the snake case format, e.g. `alert_method_preferred`.
 
 To keep data integrity, make sure to set the validation options (min/max length, validation pattern, nonempty) as strict as possible. Errors when updating here will be auto-generated and returned from the API. This layer is our server-side field validation.
 
@@ -54,7 +54,7 @@ Sample permission rules:
 <field_name> = <expression>
 
 // access only items you own
-user_id = @request.auth.id
+user.id = @request.auth.id
 
 // allow only registered users
 @request.auth.id != ""
@@ -157,3 +157,27 @@ This can also be done [through SDK code](https://pocketbase.io/docs/authenticati
 Change to the **Options** tab, then scroll down to **Other** section and expand **Tokens Options**.
 
 Under each of the Token duration fields is a link to invalidate all tokens for that specific feature (auth duration, email verification, password reset, email change duration, protected file access).
+
+
+# SDK Tips
+
+## Expand Relations
+
+[Working with Relations in Pocketbase SDKs](https://pocketbase.io/docs/working-with-relations/)
+
+```ts
+// has a `user` relation
+const resultList = await pb.collection('user_feedback').getList(1, 50, {
+  expand: 'user', // must be the relation field
+  expand: 'user.user_preference', // sub-relations supported too
+  expand: 'user.name,user.avatar', // won't work on non-relational fields
+})
+```
+
+Back-relations querying for models which don't have the original relation
+```ts
+const resultList = await pb.collection('users').getList(1, 50, {
+  // get user_feedback values via user relation match
+  expand: 'user_feedback_via_user,user_feedback_via_user.feedback_actions',
+})
+```

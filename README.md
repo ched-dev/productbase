@@ -5,19 +5,26 @@ Spin up a new Pocketbase project with the base configuration for a product.
 ## Features
 
 User signup flow
-- [ ] Signup, Forgot / Password Reset
+- [x] Open / Close Registrations
+- [ ] Join a Waitlist
+- [ ] Signup
+  - [x] Requires unique email
+  - [ ] Requires agreeing to Terms & Privacy
+- [ ] Forgot Password Reset
 - [ ] Email Verification
 - [ ] Max failed login attempts
-- [ ] Open / Close Registrations
-- [ ] Join a Waitlist
 
 Frontend
-- [ ] React + Mantine UI compiled to static site
+- [x] React + Mantine UI compiled to static site
+- [ ] Mobile first app
 - [ ] User Settings page
+- [x] PBDataList and PBData classes to help with relational data
 
 Email Integration
 - [ ] SMTP connection via Pocketbase
 - [ ] Code-based email templating
+- [ ] Emails can be emulated in dev mode
+- [ ] Emails can be displayed in browser
 
 Payments Integration
 - [ ] Stripe single item checkout
@@ -44,11 +51,6 @@ Unsupported features with replacements needed:
 - Typescript types for Pocketbase data
 - Role-based access permissions
 
-## Tasks
+## Copyright
 
-Mailer hook for devs
-- If dev mode, emulate emails
-- Click to show email in browser
-
-Pocketbase Code Prompt:
-My app is setup to use Pocketbase and I am extending it via their [event hooks](https://pocketbase.io/docs/js-event-hooks/) and using a custom collection name `_productbase_settings` which acts as a singleton.
+This template is copyright until a v1.0 release

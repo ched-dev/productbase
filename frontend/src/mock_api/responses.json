@@ -1,4 +1,11 @@
 {
+  "auth": {
+    "superusers_only": {
+      "data": {},
+      "message": "Only superusers can perform this action.",
+      "status": 403
+    }
+  },
   "login": {
     "invalid_user_user_password_or_email": {
       "data": {},
@@ -67,6 +74,134 @@
       "name": "",
       "updated": "2026-02-25 01:12:18.812Z",
       "verified": false
+    }
+  },
+  "feedback": {
+    "list": {
+      "items": [
+        {
+          "collectionId": "pbc_3683687721",
+          "collectionName": "user_feedback",
+          "created": "2026-02-25 19:01:27.941Z",
+          "feedback_type": "suggestion",
+          "id": "7emrk2yvlj3aa26",
+          "message": "this is a great tool. i wish it had more things in it. lorem ipsum. this is a great tool. i wish it had more things in it. lorem ipsum. this is a great tool.\r\n\r\ni wish it had more things in it. lorem ipsum. this is a great tool. i wish it had more things in it. lorem ipsum. this is a great tool. i wish it had more things in it. lorem ipsum",
+          "metadata": "",
+          "reply_desired": false,
+          "updated": "2026-02-25 19:01:27.941Z",
+          "user": "4cpe0o3ri3s8te5"
+        },
+        {
+          "collectionId": "pbc_3683687721",
+          "collectionName": "user_feedback",
+          "created": "2026-02-25 19:02:01.254Z",
+          "feedback_type": "tip",
+          "id": "hpskz004k3kaotx",
+          "message": "your site needs a mobile format",
+          "metadata": "",
+          "reply_desired": false,
+          "updated": "2026-02-25 19:02:01.254Z",
+          "user": "4cpe0o3ri3s8te5"
+        },
+        {
+          "collectionId": "pbc_3683687721",
+          "collectionName": "user_feedback",
+          "created": "2026-02-25 19:02:27.081Z",
+          "feedback_type": "suggestion",
+          "id": "7z013ws4h3ci3pv",
+          "message": "can we please close out our SEV 2's here",
+          "metadata": "",
+          "reply_desired": true,
+          "updated": "2026-02-25 19:02:27.081Z",
+          "user": "4cpe0o3ri3s8te5"
+        }
+      ],
+      "page": 1,
+      "perPage": 50,
+      "totalItems": 3,
+      "totalPages": 1
+    },
+    "list_expand_users": {
+      "items": [
+        {
+          "collectionId": "pbc_3683687721",
+          "collectionName": "user_feedback",
+          "created": "2026-02-25 19:01:27.941Z",
+          "expand": {
+            "user": {
+              "avatar": "",
+              "collectionId": "_pb_users_auth_",
+              "collectionName": "users",
+              "created": "2026-02-25 05:23:21.376Z",
+              "email": "fake@gmail.com",
+              "emailVisibility": false,
+              "id": "4cpe0o3ri3s8te5",
+              "name": "dev account",
+              "updated": "2026-02-25 05:23:21.376Z",
+              "verified": true
+            }
+          },
+          "feedback_type": "suggestion",
+          "id": "7emrk2yvlj3aa26",
+          "message": "this is a great tool. i wish it had more things in it. lorem ipsum. this is a great tool. i wish it had more things in it. lorem ipsum. this is a great tool.\r\n\r\ni wish it had more things in it. lorem ipsum. this is a great tool. i wish it had more things in it. lorem ipsum. this is a great tool. i wish it had more things in it. lorem ipsum",
+          "metadata": "",
+          "reply_desired": false,
+          "updated": "2026-02-25 19:01:27.941Z",
+          "user": "4cpe0o3ri3s8te5"
+        }
+      ],
+      "page": 1,
+      "perPage": 50,
+      "totalItems": 3,
+      "totalPages": 1
+    },
+    "get_one_expanded": {
+      "collectionId": "pbc_3683687721",
+      "collectionName": "user_feedback",
+      "created": "2026-02-25 19:02:27.081Z",
+      "expand": {
+        "feedback_actions": [
+          {
+            "action": "resolved",
+            "collectionId": "pbc_2323541961",
+            "collectionName": "feedback_actions",
+            "created": "2026-02-25 19:43:46.550Z",
+            "id": "dskqwjp55q9hdvh",
+            "updated": "2026-02-25 19:43:46.550Z",
+            "user_feedback": "7z013ws4h3ci3pv"
+          },
+          {
+            "action": "in_progress",
+            "collectionId": "pbc_2323541961",
+            "collectionName": "feedback_actions",
+            "created": "2026-02-25 19:44:06.521Z",
+            "id": "seq8hbzdpfrcgu5",
+            "updated": "2026-02-25 19:44:06.521Z",
+            "user_feedback": "7z013ws4h3ci3pv"
+          },
+          {
+            "action": "done",
+            "collectionId": "pbc_2323541961",
+            "collectionName": "feedback_actions",
+            "created": "2026-02-25 19:44:17.602Z",
+            "id": "pkujsk06bei41oh",
+            "updated": "2026-02-25 19:44:17.602Z",
+            "user_feedback": "7z013ws4h3ci3pv"
+          }
+        ]
+      },
+      "feedback_actions": [
+        "dskqwjp55q9hdvh",
+        "seq8hbzdpfrcgu5",
+        "pkujsk06bei41oh"
+      ],
+      "feedback_type": "suggestion",
+      "id": "7z013ws4h3ci3pv",
+      "message": "can we please close out our SEV 2's here",
+      "metadata": "",
+      "reply_desired": true,
+      "updated": "2026-02-25 19:46:37.952Z",
+      "user": "4cpe0o3ri3s8te5"
     }
   }
 }
