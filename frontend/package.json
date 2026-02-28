@@ -2,7 +2,7 @@
   "name": "productbase-frontend",
   "private": true,
   "type": "module",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "scripts": {
     "dev": "vite --host --port 8800",
     "build": "tsc && vite build",

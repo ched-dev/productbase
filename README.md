@@ -31,7 +31,7 @@ Payments Integration
 - [ ] Stripe subscription model
 
 Analytics Integration
-- [ ] Umami?
+- [ ] Umami Integration
 - [ ] Sentry Integration
 
 Hosting
@@ -43,12 +43,12 @@ Backups
 - [ ] DB restore from Pocketbase admin
 
 Dev Tools
-- [ ] Local scripts to seed or copy db from prod
+- [ ] Local scripts (seed or copy db from prod, remove db, migrations sync)
 
 ## Limitations
 
 Unsupported features with replacements needed:
-- Typescript types for Pocketbase data
+- Typescript types for Pocketbase data (could have AI write script to parse migrations for latest schema)
 - Role-based access permissions
 
 ## Copyright

@@ -7,7 +7,7 @@ import {
   Menu,
   MenuProps,
 } from '@mantine/core'
-import Inbox from '@/data/models/Inbox'
+// import Inbox from '@/data/models/Inbox'
 import { useNavHelpers } from '@/hooks/useNavHelpers'
 import Icon, { IconProps } from './Icon'
 import classes from './NavBar.module.css'
@@ -16,7 +16,8 @@ interface NavBarProps {}
 
 const NavBar: React.FC<NavBarProps> = () => {
   const { routeMatches, navigateTo } = useNavHelpers()
-  const inboxCount = Inbox.getAll().length
+  // const inboxCount = Inbox.getAll().length
+  const inboxCount = 0
 
   const actionIconProps: ActionIconProps = {
     display: 'flex',

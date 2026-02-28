@@ -1,3 +1,4 @@
+import ScreenBody from "@/components/ScreenBody"
 import { getUsersFeedback } from "@/lib/query/feedback"
 import { useEffect } from "react"
 
@@ -8,17 +9,15 @@ interface Props {
 export default function Home({ }: Props) {
   useEffect(() => {
     getUsersFeedback()
-      .then(x => {
-
-      })
+      .then(x => {})
       .catch(err => {
         console.error(err)
       })
   })
   
   return (
-    <section>
+    <ScreenBody>
       <h1>Home</h1>
-    </section>
+    </ScreenBody>
   )
 }
