@@ -1,7 +1,7 @@
 import { Loader, LoaderProps } from '@mantine/core'
 
 interface Props extends LoaderProps {
-  ariaLabel: string
+  ariaLabel?: string
 }
 
 export default function LoadingIcon({

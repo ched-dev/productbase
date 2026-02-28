@@ -29,3 +29,5 @@ pocketbase/pb_data
 # frontend
 frontend/.svelte-kit
 frontend/build
+
+.buildstory/
