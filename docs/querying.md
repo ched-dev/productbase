@@ -95,6 +95,10 @@ connection.unmarshalJSONField('details', youtubeAuth)
 
 ## Querying from the frontend
 
+Use the file `./frontend/src/lib/query/feedback.js` as an example for creating new query files.
+
+Use TanStack query in the components to enhance querying with states, caching, and invalidating.
+
 ## Expand Relations
 
 [Working with Relations in Pocketbase SDKs](https://pocketbase.io/docs/working-with-relations/)

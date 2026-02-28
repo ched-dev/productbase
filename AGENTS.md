@@ -27,6 +27,7 @@ The latest development setup information resides in the `./README_dev.md` file.
 |-----------|------------|
 | Frontend | React 19, Mantine UI 7, TypeScript |
 | Global State Management | Zustand |
+| Query Management | TanStack Query |
 | Backend | Pocketbase (Go/JS) |
 | Database | SQLite (via Pocketbase) |
 | Storage | Local or S3-compatible |
