@@ -48,11 +48,11 @@ Frontend
   - [x] Generated TypeScript files for Pocketbase Collections `npm run generate-pb-types`
   - [x] `queryHooks` to easily access PB collection data with TypeScript support
   - [x] PBDataList and PBData classes to help with squashing expanded relational data
+- [ ] Premade UI elements
   - [ ] Modal component
   - [ ] Toast notification system
   - [ ] Alert system
-  - [ ] Remapping of error messages to your own strings
-  - [ ] Protected Routes with fallback URLs and redirects after login
+  - [ ] Empty states
 
 Hosting
 - [ ] Hosted on Railway (pocketbase w/ volume mount, backup bucket, file bucket)
