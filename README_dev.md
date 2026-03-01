@@ -55,8 +55,19 @@ A `Makefile` at the project root provides helpful commands for local development
 make help                # List all available commands
 make db-reset            # Tear down stack and delete local pb_data (irreversible)
 make migrations-sync     # Sync migration history after deleting migration files
+make seed-collection     # Seed a PocketBase collection with fake data
 ```
 
 **`make db-reset`** is useful when you want a completely fresh database. It will prompt for confirmation before proceeding.
 
 **`make migrations-sync`** re-syncs PocketBase's migration history table when migration files have been manually deleted and the database is out of sync.
+
+**`make seed-collection COLLECTION=<name>`** seeds a PocketBase collection with fake data. Useful for testing UI and pagination. Pass `COUNT=N` to create N records (default: 1).
+
+Example:
+```sh
+make seed-collection COLLECTION=user_feedback        # Creates 1 user_feedback record
+make seed-collection COLLECTION=user_feedback COUNT=5  # Creates 5 user_feedback records
+```
+
+Available collections: `user_feedback`, `feedback_actions`, `user_preferences`

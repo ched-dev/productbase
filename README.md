@@ -1,4 +1,6 @@
-# Productbase: A Product Starter Template for Pocketbase
+# ProductBase
+
+> A Product Starter Template for Pocketbase
 
 Spin up a new Pocketbase project with the base configuration for a product.
 
@@ -29,8 +31,8 @@ Organizations (Workspaces, Teams)
 - [ ] Naming is customizable
 
 User Feedback Widget
-- [ ] Prebuilt User Feedback Widget triggered via button
-- [ ] Collects feedback type, message, and if a reply is desired
+- [x] Prebuilt User Feedback Widget triggered via button
+- [x] Collects feedback type, message, and if a reply is desired
 - [ ] Add a hook to forward feedback elsewhere (Slack, Linear, etc.)
 
 Email Integration
@@ -61,7 +63,13 @@ Backups
 - [ ] DB restore from Pocketbase admin
 
 Dev Tools
-- [ ] Local scripts (seed or copy db from prod, remove db, migrations sync)
+- [x] Local scripts to help development (`make help`)
+  - [ ] Create a Collection based on a sample JSON
+  - [x] Seed DB Collection (`make seed-collection COLLECTION=user_feedback COUNT=3`)
+  - [x] Reset DB (`make db-reset`)
+  - [x] Migrations Sync (`make migrations-sync`)
+  - [ ] Scaffold a new Collection
+  - [ ] Scaffold CRUD components for Collection
 
 Payments Integration
 - [ ] Stripe single item checkout

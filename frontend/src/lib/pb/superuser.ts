@@ -68,7 +68,8 @@ export function cacheAuth() {
     cookieOptions as SerializeOptions,
   );
   cookie.set(AUTH_SUPERUSER_COOKIE_KEY, cookieValue, cookieOptions);
-  superuserStore.set(pb.authStore.record as unknown as Superuser);
+  // TODO: fix
+  // superuserStore.set(pb.authStore.record as unknown as Superuser);
 }
 
 /**

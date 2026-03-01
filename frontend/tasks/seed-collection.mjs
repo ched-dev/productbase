@@ -1,0 +1,162 @@
+#!/usr/bin/env node
+
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import PocketBase from 'pocketbase';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const repoRoot = path.join(__dirname, '../..');
+const envPath = path.join(repoRoot, 'pocketbase', '.env');
+
+// Parse environment file
+function loadEnv(filePath) {
+  if (!fs.existsSync(filePath)) {
+    throw new Error(`Missing ${filePath}. Did you run cp ./pocketbase/.env.example ./pocketbase/.env?`);
+  }
+
+  const content = fs.readFileSync(filePath, 'utf8');
+  const env = {};
+  content.split('\n').forEach(line => {
+    const trimmed = line.trim();
+    if (trimmed && !trimmed.startsWith('#')) {
+      const [key, ...valueParts] = trimmed.split('=');
+      const value = valueParts.join('=').trim();
+      if (key) {
+        env[key] = value;
+      }
+    }
+  });
+  return env;
+}
+
+// Fake data generators
+const fakeDataGenerators = {
+  user_feedback: (pb) => {
+    const feedbackTypes = ['bug', 'feature', 'question', 'general', 'other'];
+    const messages = [
+      'The login form is confusing',
+      'Would love to see a dark mode',
+      'How do I export my data?',
+      'Great product!',
+      'The search feature is slow',
+      'Can we add keyboard shortcuts?',
+      'Found a typo in the documentation',
+      'The mobile experience needs work',
+      'Love the new dashboard layout',
+      'Request: bulk actions support'
+    ];
+
+    return {
+      feedback_type: feedbackTypes[Math.floor(Math.random() * feedbackTypes.length)],
+      message: messages[Math.floor(Math.random() * messages.length)],
+      reply_desired: Math.random() > 0.5,
+      metadata: JSON.stringify({
+        browser: 'Chrome',
+        os: 'macOS',
+        version: '1.0.0'
+      })
+    };
+  },
+
+  feedback_actions: async (pb) => {
+    const actions = ['reviewed', 'responded', 'closed', 'escalated', 'archived'];
+
+    // Get an existing user_feedback record
+    const feedbackRecords = await pb.collection('user_feedback').getList(1, 1);
+    if (feedbackRecords.items.length === 0) {
+      throw new Error('No user_feedback records found. Please seed user_feedback first.');
+    }
+
+    return {
+      user_feedback: feedbackRecords.items[0].id,
+      action: actions[Math.floor(Math.random() * actions.length)]
+    };
+  },
+
+  user_preferences: async (pb) => {
+    const methods = ['email', 'sms', 'push', 'none'];
+
+    // Get an existing user record
+    const users = await pb.collection('users').getList(1, 1);
+    if (users.items.length === 0) {
+      throw new Error('No users found. Please ensure dev users are created via migrations.');
+    }
+
+    return {
+      user: users.items[0].id,
+      alert_preferred_method: methods[Math.floor(Math.random() * methods.length)],
+      alert_phone_number: Math.random() > 0.5 ? `+1555${Math.floor(Math.random() * 9000000).toString().padStart(7, '0')}` : undefined,
+      alert_phone_number_subscribed: Math.random() > 0.5
+    };
+  }
+};
+
+// Main
+async function main() {
+  const collection = process.env.COLLECTION;
+  const count = parseInt(process.env.COUNT || '1', 10);
+
+  if (!collection) {
+    console.error('Error: COLLECTION environment variable is required');
+    console.error('Usage: COLLECTION=<name> [COUNT=1] node tasks/seed-collection.mjs');
+    console.error('Available collections: user_feedback, feedback_actions, user_preferences');
+    process.exit(1);
+  }
+
+  if (!fakeDataGenerators[collection]) {
+    console.error(`Error: Unknown collection "${collection}"`);
+    console.error('Available collections:', Object.keys(fakeDataGenerators).join(', '));
+    process.exit(1);
+  }
+
+  if (count < 1) {
+    console.error('Error: COUNT must be at least 1');
+    process.exit(1);
+  }
+
+  try {
+    // Load env
+    const pbEnv = loadEnv(envPath);
+    const pbUrl = process.env.PB_API_URL || 'http://localhost:8100';
+    const superuserEmail = pbEnv.DEV_SUPERUSER_EMAIL;
+    const superuserPassword = pbEnv.DEV_SUPERUSER_PASSWORD;
+
+    if (!superuserEmail || !superuserPassword) {
+      throw new Error('DEV_SUPERUSER_EMAIL or DEV_SUPERUSER_PASSWORD missing in pocketbase/.env');
+    }
+
+    // Initialize PocketBase
+    const pb = new PocketBase(pbUrl);
+    await pb.collection('_superusers').authWithPassword(superuserEmail, superuserPassword);
+
+    // Seed records
+    console.log(`\nSeeding ${count} record(s) into "${collection}"...`);
+    const generator = fakeDataGenerators[collection];
+    let created = 0;
+    let errors = 0;
+
+    for (let i = 0; i < count; i++) {
+      try {
+        const data = await generator(pb);
+        const record = await pb.collection(collection).create(data);
+        console.log(`✓ Created record: ${record.id}`);
+        created++;
+      } catch (e) {
+        console.error(`✗ Failed to create record ${i + 1}: ${e.message}`);
+        errors++;
+      }
+    }
+
+    console.log(`\nDone! Created ${created}/${count} records.`);
+    if (errors > 0) {
+      console.warn(`⚠ ${errors} record(s) failed.`);
+      process.exit(1);
+    }
+  } catch (error) {
+    console.error('Error:', error.message);
+    process.exit(1);
+  }
+}
+
+main();
