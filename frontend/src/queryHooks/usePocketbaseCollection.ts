@@ -21,12 +21,14 @@ export interface CollectionDefaults {
 
 type LastActiveOp = 'list' | 'all' | 'getOne' | 'create' | 'update' | 'delete' | null
 
-export interface UsePocketbaseCollectionReturn {
+type PBSystemFields = 'id' | 'collectionId' | 'collectionName' | 'created' | 'updated'
+
+export interface UsePocketbaseCollectionReturn<T = Record<string, unknown>> {
   list:     (opts?: RecordListOptions) => void
   all:      (opts?: RecordFullListOptions) => void
   getOne:   (id: string, opts?: RecordOptions) => void
-  create:   (data: Record<string, unknown> | FormData, opts?: RecordOptions) => Promise<PBData>
-  update:   (id: string, data: Record<string, unknown> | FormData, opts?: RecordOptions) => Promise<PBData>
+  create:   (data: Omit<T, PBSystemFields> | FormData, opts?: RecordOptions) => Promise<PBData>
+  update:   (id: string, data: Partial<Omit<T, PBSystemFields>> | FormData, opts?: RecordOptions) => Promise<PBData>
   delete:   (id: string, opts?: CommonOptions) => Promise<void>
   fetching: boolean
   loading:  boolean
@@ -49,10 +51,10 @@ const collectionKeys = {
 
 // ---- Hook ----
 
-export function usePocketbaseCollection(
+export function usePocketbaseCollection<T = Record<string, unknown>>(
   collectionName: string,
   defaults?: CollectionDefaults,
-): UsePocketbaseCollectionReturn {
+): UsePocketbaseCollectionReturn<T> {
   const pb = usePbClient()
   const queryClient = useQueryClient()
 

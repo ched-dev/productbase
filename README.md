@@ -4,6 +4,13 @@ Spin up a new Pocketbase project with the base configuration for a product.
 
 ## Features
 
+AI Agent Friendly
+- [x] Documented standards for AI Agents to use when adding new features in codebase
+
+Feature Flagging
+- [ ] Environment variable driven feature enablement
+- [ ] CLI tools to generate larger features
+
 User signup flow
 - [x] Open / Close Registrations
 - [ ] Join a Waitlist
@@ -13,26 +20,32 @@ User signup flow
 - [ ] Forgot Password Reset
 - [ ] Email Verification
 - [ ] Max failed login attempts
-
-Frontend
-- [x] React + Mantine UI compiled to static site
-- [ ] Mobile first app
 - [ ] User Settings page
-- [x] PBDataList and PBData classes to help with relational data
+
+Organizations (Workspaces, Teams)
+- [ ] Higher level grouping of users
+- [ ] Users can have Memberships to many Organizations
+- [ ] Users have a role within the Organization (owner, admin, etc.)
+- [ ] Naming is customizable
+
+User Feedback Widget
+- [ ] Prebuilt User Feedback Widget triggered via button
+- [ ] Collects feedback type, message, and if a reply is desired
+- [ ] Add a hook to forward feedback elsewhere (Slack, Linear, etc.)
 
 Email Integration
 - [ ] SMTP connection via Pocketbase
 - [ ] Code-based email templating
 - [ ] Emails can be emulated in dev mode
-- [ ] Emails can be displayed in browser
 
-Payments Integration
-- [ ] Stripe single item checkout
-- [ ] Stripe subscription model
-
-Analytics Integration
-- [ ] Umami Integration
-- [ ] Sentry Integration
+Frontend
+- [x] React + [Mantine UI](https://ui.mantine.dev/) compiled to static site served via PocketBase
+- [ ] Landing page design template
+- [ ] Mobile first design template
+- [x] Reusable coding standards to easily build out new features
+  - [x] Generated TypeScript files for Pocketbase Colletions `npm run generate-pb-types`
+  - [x] `queryHooks` to easily access PB collection data with TypeScript support
+  - [x] PBDataList and PBData classes to help with squashing expanded relational data
 
 Hosting
 - [ ] Hosted on Railway (pocketbase w/ volume mount, backup bucket, file bucket)
@@ -45,11 +58,13 @@ Backups
 Dev Tools
 - [ ] Local scripts (seed or copy db from prod, remove db, migrations sync)
 
-## Limitations
+Payments Integration
+- [ ] Stripe single item checkout
+- [ ] Stripe subscription model
 
-Unsupported features with replacements needed:
-- Typescript types for Pocketbase data (could have AI write script to parse migrations for latest schema)
-- Role-based access permissions
+Analytics Integration
+- [ ] Umami Integration
+- [ ] Sentry Integration
 
 ## Copyright
 

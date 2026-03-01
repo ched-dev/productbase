@@ -1,12 +1,13 @@
 import { useCallback } from 'react'
+import type { UserFeedbackRecord } from '@/types'
 import { usePocketbaseCollection, UsePocketbaseCollectionReturn } from './usePocketbaseCollection'
 
-export interface UseUserFeedbackCollectionReturn extends UsePocketbaseCollectionReturn {
+export interface UseUserFeedbackCollectionReturn extends UsePocketbaseCollectionReturn<UserFeedbackRecord> {
   uploadAttachment: (id: string, file: File) => Promise<void>
 }
 
 export function useUserFeedbackCollection(): UseUserFeedbackCollectionReturn {
-  const base = usePocketbaseCollection('user_feedback', {
+  const base = usePocketbaseCollection<UserFeedbackRecord>('user_feedback', {
     sort: '-created',
     attachUserOnCreate: true,
   })

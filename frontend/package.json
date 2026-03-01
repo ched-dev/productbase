@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite --host --port 8800",
     "build": "tsc && vite build",
+    "generate-pb-types": "node tasks/generate-pb-types.mjs",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "lint": "yarn eslint && yarn stylelint",
