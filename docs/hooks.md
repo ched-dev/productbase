@@ -1,6 +1,6 @@
 # Hooks
 
-This file is intended to help AI Coding Agents know important information about writing hooks in Pocketbase.
+This file is intended to help AI Coding Agents know important information about writing hooks in Pocketbase backend. None of this is about React hooks.
 
 ## Important Tips
 

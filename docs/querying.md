@@ -95,9 +95,33 @@ connection.unmarshalJSONField('details', youtubeAuth)
 
 ## Querying from the frontend
 
-Use the file `./frontend/src/lib/query/feedback.js` as an example for creating new query files.
+Queries in the components should use a custom React hook for each feature, such as `useOrganizations()` or `useUserFeedback()`. I will call these query hooks will have all the methods needed to interact with the feature and uses tanstack query under the hood. It will hide the need for creating and managing query keys. For example:
+```js
+const userFeedback = useUserFeedbackCollection()
+userFeedback.create(data, RecordOptions) // calls createUserFeedback() query
+userFeedback.list(RecordListOptions) // query for all user_feedback in pocketbase
+userFeedback.all(RecordListOptions) // query for all pages of user_feedback in pocketbase
+userFeedback.getOne(id, RecordOptions) // query for a single item
+userFeedback.update(id, data, RecordOptions) // query to update single item
+userFeedback.delete(id, CommonOptions) // query to delete 
+userFeedback.fetching // maps to tanstack query isFetching
+userFeedback.loading // maps to tanstack query isPending
+userFeedback.success // maps to tanstack query isSuccess
+userFeedback.error // ApiError when failed, null otherwise (truthy check = isError)
+userFeedback.data // maps to tanstack query data
+```
 
-Use TanStack query in the components to enhance querying with states, caching, and invalidating.
+**File location:** `frontend/src/queryHooks/use<Feature>Collection.ts`
+
+**Separation of concerns:** The hook uses the base `usePocketbaseCollection()` hook to make common PocketBase calls, and uses TanStack Query to handle request state — hooks and components must not make direct PocketBase calls.
+
+**Return types:**
+- `list()` and `all()` return `PBDataList` — use `.items`, `.totalItems`, `.page`, etc.
+- `getOne()` returns `PBData` — access fields directly as properties
+
+**State scope:** The status properties (`data`, `loading`, `fetching`, `success`, `error`) reflect the state of the last triggered operation. `list`, `all`, and `getOne` are TanStack queries; `create`, `update`, and `delete` are TanStack mutations — their states are tracked separately.
+
+**Auto-invalidation:** On a successful mutation (`create`, `update`, `delete`), the hook automatically invalidates related `list`/`all` queries so components stay in sync without manual cache management.
 
 ## Expand Relations
 

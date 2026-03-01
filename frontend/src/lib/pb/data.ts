@@ -271,10 +271,10 @@ export class PBDataList {
   }
 
   /**
-   * Access items collection
+   * Access items as a plain array
    */
-  get items(): PBItemCollection {
-    return this.itemCollection;
+  get items(): PBRecord[] {
+    return this.itemCollection.items;
   }
 
   /**
