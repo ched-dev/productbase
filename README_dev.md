@@ -46,3 +46,17 @@ The backend is available at:
 REST API:  http://0.0.0.0:8100/api/
 Dashboard: http://0.0.0.0:8100/_/
 ```
+
+## Dev Tools
+
+A `Makefile` at the project root provides helpful commands for local development:
+
+```sh
+make help                # List all available commands
+make db-reset            # Tear down stack and delete local pb_data (irreversible)
+make migrations-sync     # Sync migration history after deleting migration files
+```
+
+**`make db-reset`** is useful when you want a completely fresh database. It will prompt for confirmation before proceeding.
+
+**`make migrations-sync`** re-syncs PocketBase's migration history table when migration files have been manually deleted and the database is out of sync.

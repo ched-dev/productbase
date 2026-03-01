@@ -44,10 +44,13 @@ productbase/
 │   ├── src/
 │   │   ├── components/      # Reusable React components
 │   │   ├── hooks/           # Custom React hooks
-│   │   ├── lib/pb/          # Pocketbase client library
-│   │   ├── lib/query/       # Query methods using pocketbase client
+│   │   ├── lib/             # Shared libraries and utilities
+│   │   │   └── pb/          # Pocketbase client library
+│   │   ├── mock_api/        # Mock API responses for testing
 │   │   ├── pages/           # Page components
+│   │   ├── queryHooks/      # TanStack Query hooks for pocketbase collections
 │   │   ├── stores/          # Zustand stores
+│   │   ├── tasks/           # Build/codegen scripts (e.g. generate-pb-types)
 │   │   ├── types/           # TypeScript type definitions
 │   │   └── utils/           # Utility functions
 │   └── package.json
@@ -60,6 +63,8 @@ productbase/
 │   └── main.go              # Custom Go code (if needed)
 ├── docs/                    # Specific Documentation for AI Agents
 ├── docker-compose.yml       # Docker composition
+├── Dockerfile               # Root-level Docker build
+├── Makefile                 # Project task runner
 ├── README_dev.md            # Readme file for development environment setup
 ├── README.md                # Readme file for description of this project
 └── AGENTS.md                # This file
@@ -96,12 +101,12 @@ If you are asked to do a task, confirm documentation is up-to-date with actual i
 ### Database Issues
 If migrations are out of sync:
 ```bash
-docker ps  # Find container ID
-docker exec -it <CONTAINER_ID> /pb/pocketbase migrate history-sync
+make migrations-sync
 ```
 
 ### Clear Local Database
 ```bash
-rm -rf pocketbase/pb_data
-docker compose up
+make db-reset
 ```
+
+For details on available dev commands, see the [Dev Tools](./README_dev.md#dev-tools) section in `README_dev.md` or run `make help`.

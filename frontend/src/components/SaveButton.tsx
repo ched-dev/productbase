@@ -4,15 +4,19 @@ interface Props {
   submit?: boolean
   onClick?: React.MouseEventHandler<HTMLButtonElement>
   label?: string
+  loading?: boolean
+  disabled?: boolean
 }
 
-export default function SaveButton({ submit, onClick, label = 'SAVE' }: Props) {
+export default function SaveButton({ submit, onClick, label = 'SAVE', loading, disabled }: Props) {
   return (
     <Button
       type={submit ? 'submit' : undefined}
       variant="filled"
       color="teal"
       onClick={onClick}
+      loading={loading}
+      disabled={disabled}
     >
       {label}
     </Button>

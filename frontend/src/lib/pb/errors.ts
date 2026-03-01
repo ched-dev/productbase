@@ -28,26 +28,32 @@ export class ApiError {
   validationData: Record<string, ValidationErrorData>;
 
   constructor(error: unknown, remapErrors: ErrorRemap = {}) {
-    // Try to extract data from ClientResponseError first
-    const clientError = isObject(error) && error instanceof ClientResponseError
-      ? error as ClientResponseError
-      : undefined;
-
-    if (clientError) {
-      this.message = clientError.message;
-      this.status = clientError.status;
-      this.validationData = this._parseValidationErrors(clientError.response?.data);
-    } else if (isObject(error) && error !== null) {
-      // Handle plain error objects (e.g., from fetch responses)
-      const err = error as Record<string, unknown>;
-      this.message = typeof err.message === 'string' ? err.message : UNKNOWN_ERROR_MESSAGE;
-      this.status = typeof err.status === 'number' ? err.status : 500;
-      this.validationData = this._parseValidationErrors(err.data as Record<string, unknown> | undefined);
+    if (error instanceof ApiError) {
+      this.message = error.message;
+      this.status = error.status;
+      this.validationData = { ...error.validationData };
     } else {
-      // Can't parse the error
-      this.message = UNKNOWN_ERROR_MESSAGE;
-      this.status = 500;
-      this.validationData = {};
+      // Try to extract data from ClientResponseError first
+      const clientError = isObject(error) && error instanceof ClientResponseError
+        ? error as ClientResponseError
+        : undefined;
+
+      if (clientError) {
+        this.message = clientError.message;
+        this.status = clientError.status;
+        this.validationData = this._parseValidationErrors(clientError.response?.data);
+      } else if (isObject(error) && error !== null) {
+        // Handle plain error objects (e.g., from fetch responses)
+        const err = error as Record<string, unknown>;
+        this.message = typeof err.message === 'string' ? err.message : UNKNOWN_ERROR_MESSAGE;
+        this.status = typeof err.status === 'number' ? err.status : 500;
+        this.validationData = this._parseValidationErrors(err.data as Record<string, unknown> | undefined);
+      } else {
+        // Can't parse the error
+        this.message = UNKNOWN_ERROR_MESSAGE;
+        this.status = 500;
+        this.validationData = {};
+      }
     }
 
     // re-map error messages
@@ -58,7 +64,7 @@ export class ApiError {
     if (this.message in remappedErrors) {
       this.message = remappedErrors[this.message]
     }
-    
+
     return this
   }
 

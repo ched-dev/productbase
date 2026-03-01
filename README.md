@@ -43,9 +43,14 @@ Frontend
 - [ ] Landing page design template
 - [ ] Mobile first design template
 - [x] Reusable coding standards to easily build out new features
-  - [x] Generated TypeScript files for Pocketbase Colletions `npm run generate-pb-types`
+  - [x] Generated TypeScript files for Pocketbase Collections `npm run generate-pb-types`
   - [x] `queryHooks` to easily access PB collection data with TypeScript support
   - [x] PBDataList and PBData classes to help with squashing expanded relational data
+  - [ ] Modal component
+  - [ ] Toast notification system
+  - [ ] Alert system
+  - [ ] Remapping of error messages to your own strings
+  - [ ] Protected Routes with fallback URLs and redirects after login
 
 Hosting
 - [ ] Hosted on Railway (pocketbase w/ volume mount, backup bucket, file bucket)
