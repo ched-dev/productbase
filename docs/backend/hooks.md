@@ -55,7 +55,7 @@ This also includes an example for skipping if the user is superuser, though that
 
 Prefer to destructure `app` from the event (e.g. `const { app } = e`) to access the PocketBase application instance. Additional globals are available:
 - `__hooks` - The absolute path to the app pb_hooks directory.
-- `$app` - The current running PocketBase application instance.
+- `$app` - The current running PocketBase application instance available globally. Not bound to the request. Use for background tasks or cron jobs.
 - `$http.send` - Making HTTP calls synchronously (required in hooks context)
 - `$apis.*` - API routing helpers and middlewares.
 - `$os.*` - OS level primitives (accessing environment variables, executing shell commands, etc.).
