@@ -80,7 +80,7 @@ import { usePocketbaseCollection } from './usePocketbaseCollection'
 export function useUserFeedbackCollection() {
   return usePocketbaseCollection<UserFeedbackRecord>('user_feedback', {
     sort: '-created',
-    attachUserOnCreate: true,
+    attachUserOnCreate: 'user',
   })
 }
 ```

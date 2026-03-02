@@ -27,7 +27,7 @@ export function useUserFeedbackCollection() {
     'user_feedback',
     {
       sort: '-created',
-      attachUserOnCreate: true,
+      attachUserOnCreate: 'user',
     }
   )
 
@@ -103,27 +103,27 @@ export function FeedbackList() {
 
 There's a few ways to manage state. Here's some links to more information about them.
 
-[TanStack Query for Server State](./query-hooks.md)
+[Query Hooks for Pocketbase Data](./query-hooks.md)
 **When to Use:**
 - Data fetched from PocketBase
 - Lists, single records, computed values
 - Data that needs caching and synchronization
 
-[React State for Local UI](./state-management.md)
+[React State for Local UI](./state-management.md#react-state--local-state)
 **When to Use:**
 - Form field state
 - Modal/popover state
 - UI toggles and animations
 - Temporary state that doesn't persist
 
-[Zustand for Global State](./state-management.md)
+[Zustand for Global State](./state-management.md#zustand-stores--global-state)
 **When to Use:**
 - App loading state
 - Theme preferences
 - Feature flags
 - Complex state that multiple components need
 
-[URL State for Shareable State](./state-management.md)
+[URL State for Shareable State](./state-management.md#url-state--persistent-shareable-state)
 **When to Use:**
 - Filter parameters
 - Pagination state
@@ -133,13 +133,7 @@ There's a few ways to manage state. Here's some links to more information about 
 
 ## Form Patterns
 
-**Form Patterns:**
-- Use `useFormState` for form lifecycle management
-- Use `FieldError` for per-field validation display
-- Use `FormData` for form values
-- Handle both create and edit in same component when possible
-
-More information about implementing forms can be found in [Components](./components.md).
+ProductBase includes a helpful set of standards for creating forms. For detailed form component documentation and patterns, see [Forms](./forms.md).
 
 ## Error Handling Patterns
 

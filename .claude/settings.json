@@ -6,7 +6,9 @@
       "Bash(node tasks/generate-pb-types.mjs)",
       "Bash(npm run typecheck)",
       "Bash(npm run generate-pb-types)",
-      "Bash(npx tsc *)"
+      "Bash(npx tsc *)",
+      "Bash(npm test)",
+      "WebFetch(domain:pocketbase.io)"
     ]
   }
 }

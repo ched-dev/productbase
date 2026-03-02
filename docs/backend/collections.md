@@ -24,12 +24,15 @@ Relational fields should use singular or plural of the related collection, based
 |user|users|
 |feedback|feedback|
 |owner|owners|
+|membership|memberships|
 
 ### Field Naming
+
 - Use lowercase with underscores
 - Keep pluralized (e.g., `blog_posts`, not `blog_post`)
 - Date fields should start with `date_*`
 - Don't use `*_id` field names, use the relation name instead
+- Relation fields to the user should be named 'user', 'owner', or 'membership' for one-to-one relation - or plural versions for one-to-many
 
 ### Field Types
 

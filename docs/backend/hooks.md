@@ -27,31 +27,33 @@ if (e.auth?.isSuperuser()) {
 }
 ```
 
-Where you call `e.next()` may be relevant. For example, in `onRecordCreateExecute` hooks it will trigger validation.
+**IMPORTANT: `*Request` vs model-level hooks:** Only `*Request` hooks (e.g. `onRecordCreateRequest`) use `RecordRequestEvent` which includes `auth` (the authenticated user) on the event object. All other hooks — `*Execute`, `onRecordAfterCreateSuccess`, `onRecordAfterCreateError`, `onRecordCreate`, `onRecordValidate`, etc. — use `RecordEvent` which is a model-level event and does **not** include `auth`. Always use `*Request` hooks when you need access to the authenticated user. Only use model-level hooks for pure data operations that don't need auth context.
+
+Where you call `e.next()` may be relevant. For example, in `onRecordCreateRequest` hooks it will create the record. In general, the `e.next()` will commit the intent of the hook and you can use code before or after it.
 
 Prefer to target the hooks to specific collections. For example:
 ```js
-onRecordCreateExecute((e) => {
+onRecordCreateRequest((e) => {
   // ...
 }, 'users') // only for users records
 ```
 
 Hooks should always destructure the values they need from the event. For Example:
 ```js
-onRecordCreateExecute((e) => {
+onRecordCreateRequest((e) => {
   const { auth, record } = e
 
   if (auth?.isSuperuser()) {
     e.next()
     return
   }
-  
+
   // ...
 })
 ```
 This also includes an example for skipping if the user is superuser, though that may not always be required.
 
-Prefer to use the global `$app` (instead of `e.app`) which is available in the hooks context. Additional globals are available:
+Prefer to destructure `app` from the event (e.g. `const { app } = e`) to access the PocketBase application instance. Additional globals are available:
 - `__hooks` - The absolute path to the app pb_hooks directory.
 - `$app` - The current running PocketBase application instance.
 - `$http.send` - Making HTTP calls synchronously (required in hooks context)
@@ -89,12 +91,12 @@ onRecordCreateExecute((e) => {
 
 ### Business Logic Hooks
 
-Use `onRecordAfterCreateSuccess` and `onRecordAfterUpdateSuccess` for side effects:
+Use `onRecordAfterCreateSuccess` and `onRecordAfterUpdateSuccess` for side effects (note: these are model-level hooks and do **not** have `auth`):
 
 ```js
 onRecordAfterCreateSuccess((e) => {
-  const { record, auth } = e
-  
+  const { app, record } = e
+
   // Send notification email
   $http.send({
     method: 'POST',
@@ -103,12 +105,11 @@ onRecordAfterCreateSuccess((e) => {
       action: 'create',
       collection: record.collectionName,
       recordId: record.id,
-      createdBy: auth?.id
     })
   })
-  
+
   // Update related records
-  const relatedRecords = $app.findRecordsByFilter(
+  const relatedRecords = app.findRecordsByFilter(
     'related_collection',
     'parent_id = {:id}',
     '-created',
@@ -116,10 +117,10 @@ onRecordAfterCreateSuccess((e) => {
     0,
     { id: record.id }
   )
-  
+
   relatedRecords.forEach(record => {
     record.set('status', 'updated')
-    $app.save(record)
+    app.save(record)
   })
 }, 'main_collection')
 ```
@@ -138,6 +139,7 @@ onRecordListRequest((e) => {
   
   if (!auth?.isSuperuser()) {
     // Filter to only show user's organization data
+    // TBD
   }
   
   e.next()
@@ -149,14 +151,14 @@ onRecordListRequest((e) => {
 Modify data before or after persistence:
 
 ```js
-onRecordBeforeCreate((e) => {
+onRecordCreateRequest((e) => {
   const { record, auth } = e
-  
-  // Set default values
+
+  // Set default values (auth is available on *Request hooks)
   record.set('created_by', auth?.id)
   record.set('status', 'pending')
   record.set('slug', generateSlug(record.get('title')))
-  
+
   e.next()
 }, 'posts')
 
@@ -211,14 +213,14 @@ function validateEmail(email) {
 }
 
 // In pb_hooks/main.pb.js
-onRecordBeforeCreate((e) => {
+onRecordCreateRequest((e) => {
   const { record } = e
-  
+
   const Validation = require(`${__hooks}/lib/validation.js`)
   if (!Validation.validateEmail(record.get('email'))) {
-    throw new BadRequest('Invalid email format')
+    throw new BadRequestError('Invalid email format')
   }
-  
+
   e.next()
 }, 'users')
 ```
@@ -229,10 +231,10 @@ When updating multiple records, ensure atomicity:
 
 ```js
 onRecordAfterCreateSuccess((e) => {
-  const { record } = e
-  
+  const { app, record } = e
+
   // Start transaction
-  $app.runInTransaction((txApp) => {
+  app.runInTransaction((txApp) => {
     // Update related records
     const related = txApp.findRecordsByFilter(
       'related_collection',
@@ -261,13 +263,13 @@ onRecordAfterCreateSuccess((e) => {
 Add logging to debug hook execution:
 
 ```js
-onRecordBeforeCreate((e) => {
-  const { app } = e
-  
-  app.logger().log('Hook executed for:', e.record.collectionName)
-  app.logger().debug('Auth:', e.auth)
-  app.logger().debug('Record data:', e.record)
-  
+onRecordCreateRequest((e) => {
+  const { app, auth, record } = e
+
+  app.logger().log('Hook executed for:', record.collectionName)
+  app.logger().debug('Auth:', auth)
+  app.logger().debug('Record data:', record)
+
   e.next()
 }, 'users')
 ```

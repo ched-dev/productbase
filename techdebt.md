@@ -2,6 +2,10 @@
 
 Tasks that need further planning or reimplementation.
 
+- [ ] Forms attach authed user at server side
+- [x] Are `e.app` and `$app` different permissions?
+- [ ] Create a form button group
+- [ ] Move CRUD URLs to live in query hook
 - [ ] Handle non-typed Pocketbase data: JSON fields, enums
 - [ ] Mantine error colors
 - [ ] Update `make seed-collection` to be more dynamic and support attaching user

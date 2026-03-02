@@ -20,6 +20,24 @@ export interface FeedbackActionsRecord extends PBBaseRecord {
   collectionName: 'feedback_actions';
 }
 
+export interface MembershipsRecord extends PBBaseRecord {
+  id: string;
+  user?: string;
+  organization: string;
+  role: string;
+  invited_by?: string;
+  invite_email?: string;
+  collectionName: 'memberships';
+}
+
+export interface OrganizationsRecord extends PBBaseRecord {
+  id: string;
+  name: string;
+  description?: string;
+  owner: string;
+  collectionName: 'organizations';
+}
+
 export interface UserFeedbackRecord extends PBBaseRecord {
   id: string;
   user?: string;
@@ -42,6 +60,8 @@ export interface UserPreferencesRecord extends PBBaseRecord {
 
 export type CollectionRecords = {
   feedback_actions: FeedbackActionsRecord;
+  memberships: MembershipsRecord;
+  organizations: OrganizationsRecord;
   user_feedback: UserFeedbackRecord;
   user_preferences: UserPreferencesRecord;
 };

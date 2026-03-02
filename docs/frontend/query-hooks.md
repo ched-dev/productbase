@@ -47,7 +47,7 @@ Inherits the PocketBase options, with additions for helpers.
 | `perPage` | `number` | Items per page for paginated `list()` (default: 30) |
 | `fields` | `string` | Comma-separated field selection (e.g., `'id,name,created'`) |
 | **added helpers below** | | |
-| `attachUserOnCreate` | `boolean` | Auto-append `user: authStore.record.id` to create payloads (default: false) |
+| `attachOnCreate` | `Record<string, string \| AUTH_USER>` | Key-value map of fields to auto-populate on create. Values are literal string IDs or the `AUTH_USER` sentinel (resolves to `authStore.record.id` at create time). See examples below. |
 
 #### Return value (`UsePocketbaseCollectionReturn<T>`)
 
@@ -109,7 +109,7 @@ export function FeedbackList() {
 - **Unified status**: The `fetching/loading/success/error/data` surface reflects the *most recent* operation (query or mutation). This avoids exposing multiple independent query states
 - **Cache invalidation**: Successful mutations (`create`, `update`, `delete`) automatically invalidate the collection's cache at the top level, refreshing all queries
 - **Cache GC**: 5-minute garbage collection time — unused queries are removed from the cache after 5 minutes of inactivity
-- **FormData support**: Both plain objects and `FormData` instances are accepted for mutations. `attachUserOnCreate` correctly handles both
+- **FormData support**: Both plain objects and `FormData` instances are accepted for mutations. `attachOnCreate` correctly handles both
 
 ### Query Key Factory
 
@@ -133,7 +133,7 @@ Create a typed wrapper for each collection to reduce boilerplate and add domain-
 ### Example: `useUserFeedbackCollection`
 
 ```tsx
-import { usePocketbaseCollection } from './usePocketbaseCollection'
+import { AUTH_USER, usePocketbaseCollection } from './usePocketbaseCollection'
 import type { UserFeedbackRecord } from '@/types'
 
 export function useUserFeedbackCollection() {
@@ -141,7 +141,7 @@ export function useUserFeedbackCollection() {
     'user_feedback',
     {
       sort: '-created',
-      attachUserOnCreate: true,
+      attachOnCreate: { user: AUTH_USER },
     }
   )
 
@@ -247,10 +247,12 @@ function CreateFeedbackForm() {
   const { formRef, handleSubmit } = useFormState({ onSuccess: reset })
   const feedback = useUserFeedbackCollection()
 
+  const onSubmit = async (data: FormData) => {
+    await feedback.create(data)
+  }
+
   return (
-    <form ref={formRef} onSubmit={handleSubmit(async (data) => {
-        await feedback.create(data)
-    })}>
+    <form ref={formRef} onSubmit={handleSubmit(onSubmit)}>
       <FormError apiError={apiError} />
       {/* form fields */}
       <SaveButton submit loading={feedback.loading} />
@@ -290,13 +292,31 @@ export function useUserFeedbackCollection() {
 const feedback = usePocketbaseCollection('user_feedback')  // No type safety
 ```
 
-### Use `attachUserOnCreate` for User-Scoped Data
+### Use `attachOnCreate` to Auto-Populate Fields
 
-Automatically includes the current user in creates; more reliable than manual assignment:
+Automatically includes values in create payloads; more reliable than manual assignment. Use the `AUTH_USER` sentinel to resolve to the logged-in user's ID at create time, or pass literal string IDs for other relations:
 
 ```tsx
+import { AUTH_USER } from '@/queryHooks'
+
+// User-scoped data — attach the logged-in user
 const feedback = usePocketbaseCollection('user_feedback', {
-  attachUserOnCreate: true  // Automatically adds user: authStore.record.id
+  attachOnCreate: { user: AUTH_USER },
+})
+
+// Owner-scoped data — attach the logged-in user as owner
+const orgs = usePocketbaseCollection('organizations', {
+  attachOnCreate: { owner: AUTH_USER },
+})
+
+// Organization-scoped data — attach a known org ID
+const projects = usePocketbaseCollection('projects', {
+  attachOnCreate: { organization: orgId },
+})
+
+// Multiple fields at once
+const tasks = usePocketbaseCollection('tasks', {
+  attachOnCreate: { organization: orgId, assigned_to: AUTH_USER },
 })
 ```
 

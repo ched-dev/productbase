@@ -106,10 +106,12 @@ function CreateUserForm() {
   })
   const users = useUserCollection()
 
+  const onSubmit = async (formData: FormData) => {
+    await users.create(formData)
+  }
+
   return (
-    <form ref={formRef} onSubmit={handleSubmit(async (formData) => {
-      await users.create(formData)
-    })}>
+    <form ref={formRef} onSubmit={handleSubmit(onSubmit)}>
       <TextInput type="email" name="email" required />
       <FieldError name="email" apiError={apiError} />
 
@@ -133,16 +135,20 @@ function CreateItemForm() {
   })
   const items = useItemCollection()
 
+  const onSubmit = async (formData: FormData) => {
+    await items.create(formData)
+  }
+
   return (
-    <form ref={formRef} onSubmit={handleSubmit(async (formData) => {
-      await items.create(formData)
-    })}>
+    <form ref={formRef} onSubmit={handleSubmit(onSubmit)}>
       <FormError apiError={apirError} />
       {/* form fields */}
     </form>
   )
 }
 ```
+
+For detailed form component documentation and patterns, see [Forms](./forms.md).
 
 ## Error Handling in Query Hooks
 
@@ -157,9 +163,11 @@ const { formRef, handleSubmit } = useFormState({
   },
 })
 
-<form ref={formRef} onSubmit={handleSubmit(async (formData) => {
+const onSubmit = async (formData: FormData) => {
   await collection.create(formData)
-})}>
+}
+
+<form ref={formRef} onSubmit={handleSubmit(onSubmit)}>
   {/* fields */}
 </form>
 ```

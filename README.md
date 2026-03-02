@@ -25,9 +25,9 @@ User signup flow
 - [ ] User Settings page
 
 Organizations (Workspaces, Teams)
-- [ ] Higher level grouping of users
-- [ ] Users can have Memberships to many Organizations
-- [ ] Users have a role within the Organization (owner, admin, etc.)
+- [x] Higher level grouping of users
+- [x] Users can have Memberships to many Organizations
+- [x] Users have a role within the Organization (owner, admin, member)
 - [ ] Naming is customizable
 
 User Feedback Widget
@@ -83,21 +83,7 @@ Analytics Integration
 
 ## Documentation
 
-- [Backend Development](./docs/backend/development.md) - Backend development patterns
-- [Frontend Development](./docs/frontend/development.md) - Frontend development patterns
-- [Access Permissions](./docs/backend/access-permissions.md) - Access permissions patterns
-- [Collections](./docs/backend/collections.md) - Collection management
-- [Migrations](./docs/backend/migrations.md) - Migration management
-- [Backend Hooks](./docs/backend/hooks.md) - Backend hook patterns
-- [Backend Querying](./docs/backend/querying.md) - Backend querying patterns
-- [PocketBase Admin Panel](./docs/frontend/pocketbase-admin-panel.md) - Admin panel usage
-- [State Management](./docs/frontend/state-management.md) - State management strategy
-- [Query Hooks](./docs/frontend/query-hooks.md) - Data fetching patterns
-- [Components](./docs/frontend/components.md) - Component patterns and best practices
-- [Error Handling](./docs/frontend/error-handling.md) - Error handling patterns
-- [Routing](./docs/frontend/routing.md) - Navigation and URL patterns
-- [Custom Hooks](./docs/frontend/custom-hooks.md) - URL state and other custom hooks
-- [Type Generation](./docs/frontend/type-generation.md) - Type generation patterns
+Start from the [docs/INDEX.md](./docs/INDEX.md).
 
 ## Copyright
 

@@ -25,7 +25,8 @@ Welcome to the ProductBase documentation index! This file serves as a comprehens
 - **[State Management](./frontend/state-management.md)** - State management strategy using TanStack Query, Zustand, React state, and URL state
   - **[Query Hooks](./frontend/query-hooks.md)** - Collection query hooks architecture and usage patterns
   - **[Custom Hooks](./frontend/custom-hooks.md)** - Custom React hooks for common UI patterns and state management
-- **[Components](./frontend/components.md)** - React component patterns, shared layout components, and form best practices
+- **[Components](./frontend/components.md)** - React component patterns, shared layout components, and best practices
+- **[Forms](./frontend/forms.md)** - Form components, patterns, and best practices
 - **[Routing](./frontend/routing.md)** - React Router v6 patterns, URL conventions, and navigation strategies
 - **[Error Handling](./frontend/error-handling.md)** - Error handling patterns, ApiError class, and validation error management
 - **[Type Generation](./frontend/type-generation.md)** - TypeScript type generation from Pocketbase schema and usage patterns

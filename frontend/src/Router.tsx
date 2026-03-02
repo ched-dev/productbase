@@ -6,6 +6,10 @@ import { setNavigate } from './lib/navigate'
 
 // Lazy load components for code splitting
 const Home = lazy(() => import('./pages/Home'))
+const OrganizationList = lazy(() => import('./pages/OrganizationList'))
+const OrganizationForm = lazy(() => import('./pages/OrganizationForm'))
+const OrganizationDetail = lazy(() => import('./pages/OrganizationDetail'))
+const OrganizationMembers = lazy(() => import('./pages/OrganizationMembers'))
 
 export function Router() {
   return (
@@ -15,6 +19,11 @@ export function Router() {
         <Routes>
           <Route Component={Layout}>
             <Route path="/" Component={() => <Home />} />
+            <Route path="/organizations" Component={() => <OrganizationList />} />
+            <Route path="/organizations/new" Component={() => <OrganizationForm />} />
+            <Route path="/organizations/:id" Component={() => <OrganizationDetail />} />
+            <Route path="/organizations/:id/edit" Component={() => <OrganizationForm />} />
+            <Route path="/organizations/:id/members" Component={() => <OrganizationMembers />} />
           </Route>
         </Routes>
       </Suspense>

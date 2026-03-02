@@ -7,6 +7,12 @@ import { ApiError, getApiError } from '@/lib/pb/errors'
 
 // ---- Types ----
 
+/**
+ * Sentinel value for `attachOnCreate`. Resolves to the logged-in user's ID
+ * (`authStore.record.id`) at create time.
+ */
+export const AUTH_USER = Symbol('AUTH_USER')
+
 export interface CollectionDefaults {
   expand?: string
   sort?: string
@@ -14,9 +20,14 @@ export interface CollectionDefaults {
   perPage?: number
   fields?: string
   /**
-   * Attach the logged in user to `user` when the create request is made
+   * Key-value map of fields to auto-populate when creating a record.
+   * Values are strings (literal IDs) or `AUTH_USER` (resolves to the
+   * logged-in user's ID at create time).
+   *
+   * @example
+   * { owner: AUTH_USER, organization: orgId }
    */
-  attachUserOnCreate?: boolean
+  attachOnCreate?: Record<string, string | typeof AUTH_USER>
 }
 
 type LastActiveOp = 'list' | 'all' | 'getOne' | 'create' | 'update' | 'delete' | null
@@ -62,7 +73,7 @@ export function usePocketbaseCollection<T = Record<string, unknown>>(
   const stableDefaults = useMemo<CollectionDefaults>(
     () => defaults ?? {},
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [defaults?.expand, defaults?.sort, defaults?.filter, defaults?.perPage, defaults?.fields],
+    [defaults?.expand, defaults?.sort, defaults?.filter, defaults?.perPage, defaults?.fields, defaults?.attachOnCreate],
   )
 
   // ---- State for active query parameters ----
@@ -122,17 +133,19 @@ export function usePocketbaseCollection<T = Record<string, unknown>>(
   const createMutation = useMutation({
     mutationFn: async ({ data, opts }: { data: Record<string, unknown> | FormData; opts?: RecordOptions }) => {
       let payload = data
-      if (stableDefaults.attachUserOnCreate && pb.authStore.record?.id) {
-        if (payload instanceof FormData) {
-          const fd = new FormData()
-          for (const [k, v] of (data as FormData).entries()) fd.append(k, v)
-          fd.append('user', pb.authStore.record.id)
-          payload = fd
-        } else {
-          payload = { user: pb.authStore.record.id, ...(data as Record<string, unknown>) }
+      const { attachOnCreate: attach, ...createDefaults } = stableDefaults
+      if (attach) {
+        for (const [field, value] of Object.entries(attach)) {
+          const resolved = value === AUTH_USER ? pb.authStore.record?.id : value
+          if (!resolved) continue
+          if (payload instanceof FormData) {
+            payload.append(field, resolved)
+          } else {
+            payload = { [field]: resolved, ...(payload as Record<string, unknown>) }
+          }
         }
       }
-      const result = await pb.collection(collectionName).create(payload, { ...stableDefaults, ...opts })
+      const result = await pb.collection(collectionName).create(payload, { ...createDefaults, ...opts })
       return new PBData(result)
     },
     onSuccess: () => {

@@ -31,7 +31,11 @@ const { formRef, submitted, success, apiError, handleSubmit, reset } = useFormSt
   onError: (err) => console.error(err),
 })
 
-<form ref={formRef} onSubmit={handleSubmit(async (formData) => { /* ... */ })}>
+const onSubmit = async (formData: FormData) => {
+  // Handle form submission
+}
+
+<form ref={formRef} onSubmit={handleSubmit(onSubmit)}>
   {/* form fields */}
 </form>
 ```
@@ -54,9 +58,11 @@ const { formRef, handleSubmit, apiError } = useFormState({
 
 const collection = useUserFeedbackCollection()
 
-<form ref={formRef} onSubmit={handleSubmit(async (data) => {
+const onSubmit = async (data: FormData) => {
   await collection.create(data)
-})}>
+}
+
+<form ref={formRef} onSubmit={handleSubmit(onSubmit)}>
   <Textarea name="message" required />
   <FieldError name="message" apiError={apiError} />
   <SaveButton submit loading={collection.loading} />

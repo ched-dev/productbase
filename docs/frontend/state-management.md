@@ -119,12 +119,16 @@ const { formRef, handleSubmit } = useFormState({
 })
 const collection = useUserFeedbackCollection()
 
-<form ref={formRef} onSubmit={handleSubmit(async (data) => {
+const onSubmit = async (data: FormData) => {
   await collection.create(data)  // TanStack Query mutation
-})}>
+}
+
+<form ref={formRef} onSubmit={handleSubmit(onSubmit)}>
   {/* fields */}
 </form>
 ```
+
+For detailed form component documentation and patterns, see [Forms](./forms.md).
 
 ### URL State — Persistent, Shareable State
 
@@ -287,4 +291,13 @@ const [currentPage, setCurrentPage] = useQueryParam('page', 1)
 
 // ❌ Bad: React state for navigation
 const [currentPage, setCurrentPage] = useState(1)
+```
+
+### Getting the current logged in user
+
+The current logged in user will always be available on the pocketbase client.
+
+```tsx
+const pb = usePbClient()
+const currentUserId = pb.authStore.record?.id
 ```

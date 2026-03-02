@@ -62,6 +62,8 @@ Components that provide common form inputs.
 
 **Location:** `src/components/forms/`
 
+For detailed form component documentation and patterns, see [Forms](./forms.md).
+
 **Examples:**
 - `CancelButton` - Cancel action in forms
 - `SaveButton` - Save and Submit action in forms
@@ -115,93 +117,6 @@ export function Card({ children, title }: { children: ReactNode; title?: string 
 class FeedbackCard extends BaseCard {
   // Harder to compose and test
 }
-```
-
-## Form Patterns
-
-### Form State Management
-
-Use the `useFormState` hook for form lifecycle management:
-
-```tsx
-export function FeedbackForm({ feedbackId }: Props) {
-  const { formRef, handleSubmit, apiError } = useFormState({
-    onSuccess: () => {
-      toast('Feedback saved!')
-      navigate('/feedback')
-    },
-    onError: (err) => {
-      toast.error(err.message)
-    }
-  })
-
-  const feedback = useUserFeedbackCollection()
-
-  const handleSubmit = async (formData: FormData) => {
-    if (feedbackId) {
-      await feedback.update(feedbackId, formData)
-    } else {
-      await feedback.create(formData)
-    }
-  }
-
-  return (
-    <form ref={formRef} onSubmit={handleSubmit}>
-      <Textarea name="message" required />
-      <FieldError name="message" apiError={apiError} />
-      <Select name="feedback_type" options={FEEDBACK_TYPES} required />
-      <FieldError name="feedback_type" apiError={apiError} />
-      <SaveButton submit loading={feedback.loading} />
-    </form>
-  )
-}
-```
-
-### Field level validation with FieldError
-
-Use `FieldError` component for per-field validation display:
-
-```tsx
-// Display field-specific errors
-<FieldError name="email" apiError={apiError} />
-```
-
-### Form level validation with FormError Component
-
-Use the `FormError` component for displaying high-level form errors:
-
-```tsx
-import FormError from '@/components/forms/FormError'
-
-// Display form-level errors only (excludes validation errors)
-<FormError apiError={apiError} />
-
-// Custom title
-<FormError apiError={apiError} title="Submission Error" />
-```
-
-**Props:**
-- `apiError: ApiError | null | undefined` - The error object from form submission
-- `title?: string` - Optional title, defaults to "Error"
-
-**Behavior:**
-- Only renders when `apiError` exists and has no validation errors
-- Always shows error icon using the existing Icon component
-- Displays the high-level error message
-- Uses consistent Mantine Alert styling with red color
-
-**Note:** FormError ignores field-level validation errors since those should be handled by FieldError components for individual fields.
-
-### Form Actions
-
-Use consistent form action components:
-
-```tsx
-// Save button with loading state
-<SaveButton submit loading={feedback.loading} />
-
-// Cancel button with navigation
-<CancelButton to="/feedback" />
 ```
 
 ## List Patterns
@@ -335,15 +250,6 @@ interface ButtonProps {
 
 TBD
 
-## See Also
-
-- [State Management](./state-management.md) - State management strategy and patterns
-- [Routing](./routing.md) - Navigation and URL patterns
-- [Error Handling](./error-handling.md) - Error handling patterns
-- [Query Hooks](./query-hooks.md) - Data fetching patterns
-- [Frontend Development](./frontend-development.md) - Frontend development patterns
-- [Custom Hooks](./custom-hooks.md) - URL state and other custom hooks
-
 ## Important Tips
 
 Any addition of queries to the pocketbase backend should follow the [querying](./querying.md) doc. Components should only be loading in the query hooks (`./frontend/src/queryHooks/*`) that will be used to make queries, not making queries directly from the component.
@@ -390,32 +296,4 @@ import ScreenBody from '@/components/ScreenBody'
 // ❌ Less preferred
 import { getApiError } from '../../../../lib/pb/errors'
 import ScreenBody from '../../components/ScreenBody'
-```
-
-## CRUD Forms
-
-Create and edit operations should use the same form component when possible. Plan to accept a `defaultValues` prop for edit mode:
-
-```tsx
-// pages/FeedbackForm.tsx
-export function FeedbackForm({ feedbackId }: Props) {
-  const feedback = useUserFeedbackCollection()
-  const [initialData, setInitialData] = useState(null)
-
-  useEffect(() => {
-    if (feedbackId) {
-      feedback.getOne(feedbackId)
-    }
-  }, [feedbackId])
-
-  const handleSubmit = async (formData: FormData) => {
-    if (feedbackId) {
-      await feedback.update(feedbackId, formData)
-    } else {
-      await feedback.create(formData)
-    }
-  }
-
-  return <FeedbackFormContent onSubmit={handleSubmit} initialData={initialData} />
-}
 ```
