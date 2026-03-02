@@ -2,6 +2,7 @@
 
 Tasks that need further planning or reimplementation.
 
+- [ ] Go through manual collection creation process
 - [ ] User can create multiple Organizations
 - [ ] User should be able to close Organization
 - [ ] Forms attach authed user at server side

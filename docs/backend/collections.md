@@ -40,3 +40,13 @@ TBD
 
 ## Collection API Rules (Access Permissions)
 Collections have API Rules to define access permissions which will be auto-verified at the API layer. More info is available in [access-permissions.md](./access-permissions.md).
+
+## Seed Data
+
+New collections should have a fake data generator added to `frontend/tasks/seed-collection.mjs` to support the `make seed-collection` command. Use AI to generate the seed data code by providing it with context about the collection type and the existing file.
+
+Before generating seed data, make sure the collection's TypeScript type has been generated first by running `npm run generate-pb-types` (from the `frontend/` directory) so that `frontend/src/types/PBCollections.d.ts` is up to date.
+
+Example prompt:
+
+> Add a new fake data generator for the `<collection_name>` collection to `frontend/tasks/seed-collection.mjs`. Match the existing pattern in the file. Refer to the collection's type definition in `frontend/src/types/PBCollections.d.ts` for field names and types. Generate realistic fake data with randomized values. If the collection has relation fields, fetch existing records from the related collection first (see `memberships` generator for an example).

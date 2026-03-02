@@ -12,7 +12,7 @@ const envPath = path.join(repoRoot, 'pocketbase', '.env');
 // Parse environment file
 function loadEnv(filePath) {
   if (!fs.existsSync(filePath)) {
-    throw new Error(`Missing ${filePath}. Did you run cp ./pocketbase/.env.example ./pocketbase/.env?`);
+    throw new Error(`Missing ${filePath}. Did you copy over env file examples?`);
   }
 
   const content = fs.readFileSync(filePath, 'utf8');
@@ -89,6 +89,59 @@ const fakeDataGenerators = {
       alert_phone_number: Math.random() > 0.5 ? `+1555${Math.floor(Math.random() * 9000000).toString().padStart(7, '0')}` : undefined,
       alert_phone_number_subscribed: Math.random() > 0.5
     };
+  },
+
+  organizations: async (pb) => {
+    const names = [
+      'Acme Corp', 'Globex Industries', 'Initech', 'Umbrella Co',
+      'Stark Industries', 'Wayne Enterprises', 'Cyberdyne Systems',
+      'Soylent Corp', 'Wonka Industries', 'Aperture Science'
+    ];
+    const descriptions = [
+      'A leading provider of innovative solutions',
+      'Building the future, one product at a time',
+      'Enterprise software for modern teams',
+      'Connecting people through technology',
+      undefined
+    ];
+
+    // Get an existing user to serve as owner
+    const users = await pb.collection('users').getList(1, 50);
+    if (users.items.length === 0) {
+      throw new Error('No users found. Please ensure dev users are created via migrations.');
+    }
+    const randomUser = users.items[Math.floor(Math.random() * users.items.length)];
+
+    return {
+      name: `${names[Math.floor(Math.random() * names.length)]} ${Date.now().toString(36)}`,
+      description: descriptions[Math.floor(Math.random() * descriptions.length)],
+      owner: randomUser.id
+    };
+  },
+
+  memberships: async (pb) => {
+    const roles = ['owner', 'admin', 'member', 'member', 'member'];
+
+    // Get an existing organization
+    const orgs = await pb.collection('organizations').getList(1, 50);
+    if (orgs.items.length === 0) {
+      throw new Error('No organizations found. Please seed organizations first.');
+    }
+    const randomOrg = orgs.items[Math.floor(Math.random() * orgs.items.length)];
+
+    // Get an existing user
+    const users = await pb.collection('users').getList(1, 50);
+    if (users.items.length === 0) {
+      throw new Error('No users found. Please ensure dev users are created via migrations.');
+    }
+    const randomUser = users.items[Math.floor(Math.random() * users.items.length)];
+
+    return {
+      user: randomUser.id,
+      organization: randomOrg.id,
+      role: roles[Math.floor(Math.random() * roles.length)],
+      invited_by: randomOrg.owner || randomUser.id
+    };
   }
 };
 
@@ -100,7 +153,7 @@ async function main() {
   if (!collection) {
     console.error('Error: COLLECTION environment variable is required');
     console.error('Usage: COLLECTION=<name> [COUNT=1] node tasks/seed-collection.mjs');
-    console.error('Available collections: user_feedback, feedback_actions, user_preferences');
+    console.error('Available collections:', Object.keys(fakeDataGenerators).join(', '));
     process.exit(1);
   }
 

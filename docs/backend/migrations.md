@@ -94,3 +94,10 @@ Pocketbase supports various field options that control validation, display, and 
   "type": "bool"
 }
 ```
+
+## ProductBase Settings Migrations
+
+If you ever make changes to the ProductBase settings schema stored in the `_productbase_settings` collection, you should name the migration with the next schema number. For example, if the latest migration was v23, the next should be:
+```
+{timestamp}_productbase_settings_v24_migration.js
+```
