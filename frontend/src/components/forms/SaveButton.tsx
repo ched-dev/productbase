@@ -8,7 +8,7 @@ interface Props {
   disabled?: boolean
 }
 
-export default function SaveButton({ submit, onClick, label = 'SAVE', loading, disabled }: Props) {
+export default function SaveButton({ submit, onClick, label = 'Save', loading, disabled }: Props) {
   return (
     <Button
       type={submit ? 'submit' : undefined}

@@ -58,6 +58,22 @@ A styled cancel button that provides consistent styling across forms.
 <CancelButton onClick={() => navigate('/dashboard')} />
 ```
 
+### FormActionsGroup
+
+A wrapper component for form action buttons (Cancel, Save) that provides consistent grouping using Mantine's `Group`.
+
+**Props:**
+- `children: React.ReactNode` - The action buttons to render
+- `justify?: string` - Flex justify-content value (default: 'flex-end')
+
+**Usage:**
+```tsx
+<FormActionsGroup>
+  <CancelButton onClick={() => navigate('/dashboard')} />
+  <SaveButton submit loading={isSubmitting} />
+</FormActionsGroup>
+```
+
 ### FieldError
 
 Displays field-specific validation errors from API responses.
@@ -180,12 +196,10 @@ import FormError from '@/components/forms/FormError'
 Use consistent form action components:
 
 ```tsx
-<ButtonGroup>
-  {/* Cancel button with navigation */}
-  <CancelButton to="/feedback" />
-  {/* Save button with loading state */}
+<FormActionsGroup>
+  <CancelButton onClick={() => navigate('/feedback')} />
   <SaveButton submit loading={feedback.loading} />
-</ButtonGroup>
+</FormActionsGroup>
 ```
 
 The Save/Submit button should be the last button. Put other actions before it.

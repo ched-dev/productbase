@@ -6,6 +6,7 @@ import CancelButton from './forms/CancelButton'
 import FieldError from './forms/FieldError'
 import FormError from './forms/FormError'
 import Icon from './Icon'
+import FormActionsGroup from './forms/FormActionsGroup'
 
 const FEEDBACK_TYPES = [
   { value: 'bug', label: 'Bug Report', description: 'Something isn\'t working as expected' },
@@ -26,6 +27,12 @@ export default function FeedbackWidget() {
 
   const onSubmit = form.handleSubmit(async (formData) => {
     if (!feedbackType) return false
+    const metadata = {
+      browserSize: [window.innerHeight, window.outerHeight],
+      userAgent: navigator.userAgent,
+      url: window.location.href,
+    }
+    formData.set('metadata', JSON.stringify(metadata))
     formData.set('feedback_type', feedbackType)
     formData.set('reply_desired', String(formData.has('reply_desired')))
     return await feedback.create(formData)
@@ -69,12 +76,12 @@ export default function FeedbackWidget() {
           label="I'd like a reply"
         />
         <FormError apiError={feedback.error} />
-        <Group justify="flex-end">
+        <FormActionsGroup>
           <CancelButton onClick={() => setOpened(false)} />
           <Button type="submit" color="teal" loading={feedback.loading}>
             Submit
           </Button>
-        </Group>
+        </FormActionsGroup>
       </Stack>
     </form>
   )

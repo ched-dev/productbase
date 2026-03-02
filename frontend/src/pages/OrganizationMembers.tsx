@@ -97,7 +97,7 @@ export default function OrganizationMembers() {
                 onChange={setInviteRole}
                 w={120}
               />
-              <SaveButton submit loading={members.loading} label="INVITE" />
+              <SaveButton submit loading={members.loading} label="Invite" />
             </Group>
           </form>
         </>

@@ -11,6 +11,7 @@ import { useFormState } from '@/hooks/useFormState'
 import { useOrganizationsCollection, useMembershipsCollection } from '@/queryHooks'
 import { navigate } from '@/lib/navigate'
 import type { PBData, PBDataList } from '@/lib/pb/data'
+import FormActionsGroup from '@/components/forms/FormActionsGroup'
 
 export default function OrganizationForm() {
   const { id } = useParams<{ id: string }>()
@@ -103,10 +104,10 @@ export default function OrganizationForm() {
             <FieldError name="description" apiError={apiError} />
           </Fieldset>
 
-          <Group>
+          <FormActionsGroup>
             <CancelButton onClick={() => navigate(isEdit ? `/organizations/${id}` : '/organizations')} />
-            <SaveButton submit loading={orgs.loading} label={isEdit ? 'SAVE' : 'CREATE'} />
-          </Group>
+            <SaveButton submit loading={orgs.loading} label={isEdit ? 'Save' : 'Create'} />
+          </FormActionsGroup>
         </Stack>
       </form>
 
@@ -138,7 +139,7 @@ export default function OrganizationForm() {
                   value={transferTarget}
                   onChange={setTransferTarget}
                 />
-                <SaveButton submit loading={orgs.loading} label="TRANSFER" disabled={!transferTarget} />
+                <SaveButton submit loading={orgs.loading} label="Transfer" disabled={!transferTarget} />
               </Group>
             </form>
           )}
