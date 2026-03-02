@@ -94,10 +94,3 @@ Pocketbase supports various field options that control validation, display, and 
   "type": "bool"
 }
 ```
-
-## See Also
-
-- [Backend Development](./development.md) - Backend development patterns
-- [Collections](./collections.md) - Collection management
-- [Access Permissions](./access-permissions.md) - API security
-- [Hooks](./hooks.md) - Hook development patterns

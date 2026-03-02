@@ -1,13 +1,15 @@
 # Pocketbase API Rules for Access Permissions
 
-This file is intended to help AI Coding Agents know important information about the API Rules and Filters feature in Pocketbase. It controls access permissions at the API layer. Additional permissions may be enforced at the **hooks** layer.
+This file is intended to help AI Coding Agents know important information about the API Rules and Filters feature in Pocketbase. It controls access permissions at the API layer. Additional permissions or validations may be enforced in the [Hooks](./hooks.md) layer.
 
 ## Official Documentation
+
 - [API Rules for collection access controls and data filters](https://pocketbase.io/docs/api-rules-and-filters/)
 - [Filters Syntax](https://pocketbase.io/docs/api-rules-and-filters/#filters-syntax)
 - Helpful [@macros](https://pocketbase.io/docs/api-rules-and-filters/#-macros) and [modifiers](https://pocketbase.io/docs/api-rules-and-filters/#isset-modifier) such as `:isset`, `:length`, `:lower`.
 
 ## API Rules Syntax Examples
+
 Sample permission rules:
 ```
 // general format - field_name must be on the model, can be a subproperty
@@ -41,9 +43,29 @@ someRelationField:length = 2
 @request.auth.id != "" && allowed_users.id ?= @request.auth.id
 ```
 
-## See Also
+## Error Handling
 
-- [Backend Development](./development.md) - Backend development patterns
-- [Collections](./collections.md) - Collection management
-- [Hooks](./hooks.md) - Hook development patterns
-- [Querying](./querying.md) - Data retrieval patterns
+If an API rule fails, there will be a generic error response similar to:
+
+```json
+{
+  "data": {},
+  "message": "Failed to create record.",
+  "status": 400
+}
+```
+
+## When to use API Rules vs Hooks for permissions and validation
+
+The API rules should ideally be denying users who don't have access. If you have additional checks in the API rule, you will receive a generic error response without much help as to why it failed.
+
+ProductBase will prefer to have more descriptive errors, which is why we handle additional validation in the [Hooks](./hooks.md) and return a specific error message instead:
+
+```js
+if (auth.get('verified') !== true) {
+  app.logger().debug('Unverified account', 'auth.id', auth.id)
+  throw new ForbiddenError('Account verification is required.', {
+    verified: new ValidationError('validation_not_verified', 'Account verification is required'),
+  })
+}
+```

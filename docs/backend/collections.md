@@ -40,11 +40,3 @@ TBD
 
 ## Collection API Rules (Access Permissions)
 Collections have API Rules to define access permissions which will be auto-verified at the API layer. More info is available in [access-permissions.md](./access-permissions.md).
-
-## See Also
-
-- [Backend Development](./development.md) - Backend development patterns
-- [Migrations](./migrations.md) - Migration management
-- [Access Permissions](./access-permissions.md) - API security
-- [Hooks](./hooks.md) - Hook development patterns
-- [Querying](./querying.md) - Data retrieval patterns

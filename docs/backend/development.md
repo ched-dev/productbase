@@ -246,11 +246,3 @@ TBD
 ## Security Best Practices
 
 TBD
-
-## See Also
-
-- [Collections](./collections.md) - Data modeling concepts
-- [Migrations](./migrations.md) - Database schema management
-- [Hooks](./hooks.md) - Hook development patterns
-- [Access Permissions](./access-permissions.md) - API security
-- [Querying](./querying.md) - Data retrieval patterns

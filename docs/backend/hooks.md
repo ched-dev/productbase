@@ -10,7 +10,11 @@ Backend hooks in PocketBase allow you to execute custom JavaScript code at speci
 
 Official event hooks documentation can be found at https://pocketbase.io/docs/js-event-hooks/ and should be looked at for details on a specific hook.
 
-Hooks live in the `./pocketbase/pb_hooks/main.pb.js` file. If additional helper functions are needed, they can be placed in `./pocketbase/pb_hooks/lib/*.js` files. The lib files cannot be imported at the top level in `main.pb.js`. They must be included within the hook. This rule does not apply to imports in the lib folder. This is a restriction of the GOJA runtime environment.
+Hook registrations live in `./pocketbase/pb_hooks/main.pb.js`. Hook handler functions are extracted to modules in `./pocketbase/pb_hooks/lib/hooks/*.js` — one file per collection domain (e.g. `users.js`, `organizations.js`, `memberships.js`). Each module exports named handler functions that receive the event object `e`.
+
+Additional helper functions can be placed in `./pocketbase/pb_hooks/lib/*.js` files.
+
+**IMPORTANT:** Lib files cannot be imported at the top level in `main.pb.js`. They must be `require()`'d inside the hook callback. This ensures each GOJA runtime goroutine gets a fresh module evaluation and avoids closure capture issues across the VM pool. This rule does not apply to imports between lib files.
 
 Available injected global values can be referenced from `./pocketbase/pb_data/types.d.ts` which is more accurate than any documentation elsewhere.
 
@@ -201,9 +205,39 @@ throw new InternalServerError(optMessage, optData)  // 500 ApiError
 
 ## Best Practices
 
+### Extract Hook Handlers to Modules
+
+Move handler logic out of `main.pb.js` into per-collection modules in `lib/hooks/`:
+
+```js
+// In pb_hooks/lib/hooks/users.js
+function handleRegistration(e) {
+  const { app, auth, record } = e
+
+  if (auth?.isSuperuser()) {
+    e.next()
+    return
+  }
+
+  // ... registration logic ...
+
+  e.next()
+}
+
+module.exports = { handleRegistration }
+```
+
+```js
+// In pb_hooks/main.pb.js — require inside the callback
+onRecordCreateRequest((e) => {
+  const Users = require(`${__hooks}/lib/hooks/users.js`)
+  Users.handleRegistration(e)
+}, 'users')
+```
+
 ### Use Helper Functions
 
-Extract complex logic into helper functions:
+Extract shared utilities into helper modules in `lib/`:
 
 ```js
 // In pb_hooks/lib/validation.js
@@ -212,17 +246,10 @@ function validateEmail(email) {
   return emailRegex.test(email)
 }
 
-// In pb_hooks/main.pb.js
-onRecordCreateRequest((e) => {
-  const { record } = e
+module.exports = { validateEmail }
 
-  const Validation = require(`${__hooks}/lib/validation.js`)
-  if (!Validation.validateEmail(record.get('email'))) {
-    throw new BadRequestError('Invalid email format')
-  }
-
-  e.next()
-}, 'users')
+// In pb_hooks/lib/hooks/users.js (lib-to-lib imports are fine at top level)
+const Validation = require(`${__hooks}/lib/validation.js`)
 ```
 
 ### Use Transactions for Multiple Operations
@@ -300,11 +327,3 @@ Check logs in Docker:
 ```bash
 docker logs productbase_pocketbase_1
 ```
-
-## See Also
-
-- [Collections](./collections.md) - Collection types and field options
-- [Migrations](./migrations.md) - Database schema management
-- [Access Permissions](./access-permissions.md) - API rules and filters
-- [Backend Development](./development.md) - Backend development patterns
-- [Querying](./querying.md) - Data retrieval patterns

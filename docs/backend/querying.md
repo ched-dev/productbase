@@ -268,11 +268,3 @@ const record = $app.findFirstRecordByFilter('users', 'email = {:email}', { email
 // For multiple records
 const records = $app.findRecordsByFilter('users', 'status = "active"', '-created', 100, 0)
 ```
-
-## See Also
-
-- [Collections](./collections.md) - Collection types and field options
-- [Migrations](./migrations.md) - Database schema management
-- [Hooks](./hooks.md) - Hook development patterns
-- [Backend Development](./development.md) - Backend development patterns
-- [Access Permissions](./access-permissions.md) - API rules and filters
