@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { ActionIcon, ActionIconProps } from '@mantine/core'
-import Icon, { IconName } from './Icon'
+import Icon, { IconName } from '../Icon'
 import classes from './ActionIconButton.module.css'
 
 export interface ActionIconButtonProps {

@@ -1,6 +1,10 @@
-# TanStack Query Hooks
+# Query Hooks
 
 This guide documents the collection query hooks in `frontend/src/queryHooks/` built on top of [@tanstack/react-query](https://tanstack.com/query).
+
+## Overview
+
+TanStack Query hooks provide a type-safe, caching layer for interacting with PocketBase collections. They follow a three-tier architecture that separates concerns and provides automatic cache management.
 
 ## Architecture Overview
 
@@ -11,18 +15,16 @@ React Component
     ↓ uses
 Collection-specific hook (useUserFeedbackCollection)
     ↓ wraps
-Base hook (usePocketbaseCollection)
+Base hook (usePocketbaseCollection, auto-generate pocketbase SDK calls)
     ↓ uses
-TanStack Query (useQuery, useMutation)
+TanStack Query (useQuery, useMutation, caching)
     ↓ calls
-lib/pb (auth, data, client)
-    ↓
 PocketBase API
 ```
 
 ## Base Hook: `usePocketbaseCollection`
 
-The generic, reusable hook for any PocketBase collection. All collection-specific hooks wrap this.
+The generic, reusable hook for any PocketBase collection. All collection-specific query hooks wrap this.
 
 ### API
 
@@ -35,6 +37,8 @@ usePocketbaseCollection<T>(
 
 #### `CollectionDefaults` options
 
+Inherits the PocketBase options, with additions for helpers.
+
 | Option | Type | Description |
 |--------|------|-------------|
 | `expand` | `string` | PocketBase relation expansion syntax (e.g., `'user,feedback_actions'`) |
@@ -42,6 +46,7 @@ usePocketbaseCollection<T>(
 | `filter` | `string` | Default PocketBase filter expression |
 | `perPage` | `number` | Items per page for paginated `list()` (default: 30) |
 | `fields` | `string` | Comma-separated field selection (e.g., `'id,name,created'`) |
+| **added helpers below** | | |
 | `attachUserOnCreate` | `boolean` | Auto-append `user: authStore.record.id` to create payloads (default: false) |
 
 #### Return value (`UsePocketbaseCollectionReturn<T>`)
@@ -84,9 +89,9 @@ export function FeedbackList() {
     feedback.all({ expand: 'user,feedback_actions' })
   }, [])
 
-  if (feedback.loading) return <LoadingIcon />
-  if (feedback.error) return <Alert color="red">{feedback.error.message}</Alert>
-  if (!feedback.data) return null
+  if (feedback.loading) return <LoadingState />
+  if (feedback.error) return <ErrorState apiError={apiError} />
+  if (!feedback.data) return <EmptyState />
 
   return (
     <div>
@@ -120,8 +125,6 @@ collectionKeys = {
 ```
 
 When a mutation succeeds, it invalidates at the collection level, which cascades to all sub-queries (list, all, record).
-
----
 
 ## Collection-Specific Hooks
 
@@ -187,8 +190,6 @@ export function useOrganizationCollection() {
 }
 ```
 
----
-
 ## Return Type Details
 
 ### `PBDataList<T>`
@@ -221,26 +222,7 @@ interface PBData<T> {
 }
 ```
 
-Both classes automatically flatten PocketBase's `expand` relations and alias back-relations (e.g., `user_feedback_via_user` → `user_feedback`).
-
-### Typing with `CollectionRecords`
-
-Use the `CollectionRecords` type union for type-safe collection operations:
-
-```tsx
-import type { CollectionRecords } from '@/types'
-
-// Generic collection handler that knows all collection types
-function saveRecord<K extends keyof CollectionRecords>(
-  name: K,
-  record: CollectionRecords[K]
-) {
-  // 'record' is typed as the correct interface
-  console.log(record.created)
-}
-```
-
----
+**Important:** Both classes automatically flatten PocketBase's `expand` relations and alias back-relations (e.g., `user_feedback_via_user` → `user_feedback`).
 
 ## Integration with Components
 
@@ -254,7 +236,7 @@ function FeedbackDetail({ feedbackId }: Props) {
     feedback.getOne(feedbackId, { expand: 'user,feedback_actions' })
   }, [feedbackId])
 
-  return feedback.loading ? <Spinner /> : <Pre>{JSON.stringify(feedback.data)}</Pre>
+  return feedback.loading ? <LoadingState /> : <Pre>{JSON.stringify(feedback.data)}</Pre>
 }
 ```
 
@@ -269,6 +251,7 @@ function CreateFeedbackForm() {
     <form ref={formRef} onSubmit={handleSubmit(async (data) => {
         await feedback.create(data)
     })}>
+      <FormError apiError={apiError} />
       {/* form fields */}
       <SaveButton submit loading={feedback.loading} />
     </form>
@@ -276,77 +259,104 @@ function CreateFeedbackForm() {
 }
 ```
 
-### Pattern: List with Filters and Pagination
+## Error Handling Integration
 
-```tsx
-function FeedbackList() {
-  const feedback = useUserFeedbackCollection()
-  const [filter, setFilter] = useQueryParam<QueryFilter>('query')
+TanStack Query hooks integrate seamlessly with the error handling system. Errors will be available on the `error` property.
 
-  useEffect(() => {
-    feedback.list({
-      filter: buildFilterString(filter),
-      expand: 'user',
-    })
-  }, [filter])
-
-  return (
-    <div>
-      <FilterControls value={filter} onChange={setFilter} />
-      {feedback.data && (
-        <div>
-          {feedback.data.items.map(item => <Item key={item.id} {...item} />)}
-          <Pagination
-            current={feedback.data.getPage()}
-            total={feedback.data.getTotalPages()}
-          />
-        </div>
-      )}
-    </div>
-  )
-}
-```
-
----
-
-## Error Handling
-
-Mutations throw `ApiError` (or wrapper errors) that can be caught and handled:
-
-```tsx
-const collection = useUserFeedbackCollection()
-
-await collection.create(data)  // throws ApiError on failure
-
-// Or with try-catch:
-try {
-  await collection.create(data)
-} catch (err) {
-  const apiError = getApiError(err)
-  if (apiError.hasValidationError('message')) {
-    // Show field-specific error
-  } else {
-    // Show general error
-  }
-}
-```
-
-See [Error Handling](./error-handling.md) for details.
-
----
+See [Error Handling](./error-handling.md) for complete error handling patterns.
 
 ## Best Practices
 
-1. **Create a hook per collection** — Even if you're only wrapping the base hook, the typed wrapper provides type safety and a home for domain methods
-2. **Use `attachUserOnCreate` for user-scoped data** — Automatically includes the current user in creates; more reliable than manual assignment
-3. **Expand relations in queries** — Pre-expand needed relations in `list` / `getOne` calls to avoid N+1 queries
-4. **Let mutations invalidate cache** — Don't manually call `refetch` after mutations; let TanStack Query's invalidation handle it
-5. **Avoid `useEffect` for side effects** — Prefer `onSuccess` callbacks in forms or side-effect hooks; see [State Management](./state-management.md)
+### Create a Hook per Collection
 
----
+Even if you're only wrapping the base hook, the typed wrapper provides type safety and a home for domain methods:
 
-## See Also
+```tsx
+// ✅ Good: Typed wrapper with domain methods
+export function useUserFeedbackCollection() {
+  const base = usePocketbaseCollection<UserFeedbackRecord>('user_feedback')
+  
+  return {
+    ...base,
+    uploadAttachment: async (id, file) => {
+      const formData = new FormData()
+      formData.append('attachment', file)
+      await base.update(id, formData)
+    }
+  }
+}
 
-- [PocketBase Client Library](./pocketbase-client.md) — how `lib/pb` works under the hood
-- [Querying](./querying.md) — backend query patterns in PocketBase migrations and hooks
-- [Error Handling](./error-handling.md) — normalizing and displaying API errors
+// ❌ Bad: Direct usage without wrapper
+const feedback = usePocketbaseCollection('user_feedback')  // No type safety
+```
+
+### Use `attachUserOnCreate` for User-Scoped Data
+
+Automatically includes the current user in creates; more reliable than manual assignment:
+
+```tsx
+const feedback = usePocketbaseCollection('user_feedback', {
+  attachUserOnCreate: true  // Automatically adds user: authStore.record.id
+})
+```
+
+### Expand Relations in Queries
+
+Pre-expand needed relations in `list` / `getOne` calls to avoid N+1 queries:
+
+```tsx
+// ✅ Good: Pre-expand relations
+feedback.list({ expand: 'user,feedback_actions' })
+
+// ❌ Bad: Separate queries for relations
+feedback.list()
+// Then separate queries for each user/feedback_action
+```
+
+### Let Mutations Invalidate Cache
+
+Don't manually call `refetch` after mutations; let TanStack Query's invalidation handle it:
+
+```tsx
+// ✅ Good: Automatic invalidation
+await feedback.create(data)  // Automatically invalidates list queries
+
+// ❌ Bad: Manual refetch
+await feedback.create(data)
+feedback.list()  // Unnecessary manual refetch
+```
+
+### Avoid `useEffect` for Side Effects
+
+Prefer `onSuccess` callbacks in forms or side-effect hooks:
+
+```tsx
+// ✅ Good: onSuccess callback
+const { formRef, handleSubmit } = useFormState({
+  onSuccess: () => {
+    navigate('/feedback')
+  }
+})
+
+// ❌ Bad: useEffect for side effects
+useEffect(() => {
+  if (feedback.success) {
+    navigate('/feedback')
+  }
+}, [feedback.success])
+```
+
+## Performance Considerations
+
+### Use Appropriate Query Methods
+
+```tsx
+// For lists with pagination
+feedback.list({ page: 1, perPage: 20 })
+
+// For all data (use sparingly)
+feedback.all()
+
+// For single records
+feedback.getOne(id)
+```

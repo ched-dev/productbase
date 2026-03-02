@@ -9,7 +9,7 @@ import {
 } from '@mantine/core'
 // import Inbox from '@/data/models/Inbox'
 import { useNavHelpers } from '@/hooks/useNavHelpers'
-import Icon, { IconProps } from './Icon'
+import Icon, { IconProps } from '../Icon'
 import classes from './NavBar.module.css'
 
 interface NavBarProps {}

@@ -6,43 +6,17 @@ This guide explains how ProductBase automatically generates TypeScript types fro
 
 The `generate-pb-types` script (`frontend/tasks/generate-pb-types.mjs`) reconstructs your PocketBase schema by replaying migrations, then generates TypeScript interfaces for each collection.
 
-### Workflow
-
-1. **Write migration** → Add a new PocketBase collection in `pocketbase/pb_migrations/*.js`
-2. **Run script** → `npm run generate-pb-types`
-3. **Commit types** → Generated file `frontend/src/types/PBCollections.d.ts` is committed
-4. **Use in code** → Collection interfaces are imported and used in hooks and components
-
----
-
-## Running the Script
-
-### When to Run
-
-After creating or modifying migrations:
-
-```bash
+```sh
 cd frontend
 npm run generate-pb-types
-
-# Or from project root:
-npm --prefix frontend run generate-pb-types
 ```
 
-### What It Does
+### Workflow
 
-1. Reads all `.js` migration files from `pocketbase/pb_migrations/` (in order)
-2. Replays them against a mock PocketBase runtime to reconstruct the current schema
-3. Maps PocketBase field types to TypeScript types
-4. Generates `frontend/src/types/PBCollections.d.ts`
-
-### If It Fails
-
-- **Silent failures**: Migrations that fail are ignored (usually system-level settings migrations)
-- **Malformed migrations**: Fix the migration file and retry
-- **Schema confusion**: Check that migrations are in the correct order (numerically named)
-
----
+1. **Write migration** → Add a new PocketBase collection in `pocketbase/pb_migrations/*.js` (this can also be done from the [PocketBase Admin Panel](./pocketbase-admin-panel.md))
+2. **Run script** → In the frontend, `npm run generate-pb-types`
+3. **Commit types** → Generated file `frontend/src/types/PBCollections.d.ts` is committed
+4. **Use in code** → Collection interfaces are imported and used in hooks and components
 
 ## Generated File Structure
 
@@ -95,8 +69,6 @@ export type CollectionRecords = {
   - `collectionName` is a string literal (e.g., `'user_feedback'`)
 - **`CollectionRecords`** — Union type mapping collection names to their record type
 
----
-
 ## Using Generated Types
 
 ### In Collection Hooks
@@ -127,27 +99,6 @@ function FeedbackItem({ feedback }: { feedback: UserFeedbackRecord }) {
 }
 ```
 
-### Generic Type-Safe Handlers
-
-```tsx
-import type { CollectionRecords } from '@/types'
-
-function saveRecord<K extends keyof CollectionRecords>(
-  name: K,
-  record: CollectionRecords[K]
-) {
-  // 'record' is typed as the correct interface for the collection
-  console.log(record.created)  // OK, all records have 'created'
-  console.log(record.id)       // OK, all records have 'id'
-  // TypeScript knows about collection-specific fields
-}
-
-saveRecord('user_feedback', { message: 'Bug report', feedback_type: 'bug' })
-// TypeScript error if properties don't match UserFeedbackRecord
-```
-
----
-
 ## Type Mapping Reference
 
 How PocketBase field types map to TypeScript:
@@ -167,7 +118,6 @@ How PocketBase field types map to TypeScript:
 | `password` | (not exposed) | Only available server-side |
 | System fields | (in `PBBaseRecord`) | `id`, `created`, `updated`, `collectionId`, `collectionName` |
 
----
 
 ## Known Limitations
 
@@ -178,22 +128,9 @@ JSON fields become `unknown`:
 ```ts
 // PocketBase field: "metadata" (type: json)
 metadata?: unknown
-
-// To fix: cast when using
-const meta = feedback.metadata as Record<string, unknown>
-const camera = meta?.camera as string | undefined
 ```
 
-**Workaround:** Create a separate type definition and cast it:
-
-```ts
-interface FeedbackMetadata {
-  camera?: string
-  location?: string
-}
-
-const meta = feedback.metadata as FeedbackMetadata | undefined
-```
+TBD: A plan will need to be implemented for typing these on the frontend.
 
 ### `select` Fields Don't Capture Enum Values
 
@@ -208,51 +145,8 @@ export const FEEDBACK_TYPES = ['bug', 'feature', 'general'] as const
 export type FeedbackType = typeof FEEDBACK_TYPES[number]
 ```
 
-### `relation` Fields Don't Capture Related Type
-
-Relation fields become string IDs only:
-
-```ts
-// PocketBase field: "user_id" (type: relation, target: "users")
-user_id: string  // Should ideally be UsersRecord['id']
-
-// Use expand to get the actual related record
-feedback.getOne(id, { expand: 'user_id' })
-// Then access expanded data: feedback.data.user_id.email
-```
+TBD: A plan will need to be implemented for typing these on the frontend.
 
 ### System Fields Are Redundantly Declared
 
 The `id` and `collectionName` fields appear on both `PBBaseRecord` and individual record interfaces. This is intentional — the interface-level declarations narrow `collectionName` to a literal type for better type safety. Don't remove them.
-
----
-
-## Regenerating Types
-
-If your schema changes and you forget to regenerate:
-
-1. **Add a new collection** → migrations create it → `npm run generate-pb-types`
-2. **Modify a collection** → migrations update it → `npm run generate-pb-types`
-3. **Delete a collection** → migrations delete it → `npm run generate-pb-types`
-
-The generated file is always a snapshot of the current schema, so the workflow is: change schema → regenerate → commit both migration and generated types.
-
----
-
-## Script Implementation Notes
-
-The script:
-
-- Uses a mock PocketBase runtime (not a real database)
-- Replays migrations in order (relies on numeric filename sorting)
-- Catches and ignores migration errors (system migrations may fail in the mock)
-- Generates a single flat `.d.ts` file (all types in one place)
-- Does **not** recurse into nested `expand` fields (you still get strings for relation IDs)
-
----
-
-## See Also
-
-- [TanStack Query Hooks](./tanstack-query-hooks.md) — how to use generated types with collection hooks
-- [Collections](./collections.md) — defining collections and fields in PocketBase
-- [Migrations](./migrations.md) — writing migrations that define schema

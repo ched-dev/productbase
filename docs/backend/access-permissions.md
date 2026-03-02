@@ -40,3 +40,10 @@ someRelationField:length = 2
 // must be user in `allowed_users` relation field
 @request.auth.id != "" && allowed_users.id ?= @request.auth.id
 ```
+
+## See Also
+
+- [Backend Development](./development.md) - Backend development patterns
+- [Collections](./collections.md) - Collection management
+- [Hooks](./hooks.md) - Hook development patterns
+- [Querying](./querying.md) - Data retrieval patterns

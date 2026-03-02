@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom'
 import { Box, Group, useMantineColorScheme } from '@mantine/core'
 import * as config from '@/config'
-import ActionIconButton, { ActionIconButtonProps } from './ActionIconButton'
-import FeedbackWidget from './FeedbackWidget'
+import ActionIconButton, { ActionIconButtonProps } from '../forms/ActionIconButton'
+import FeedbackWidget from '../FeedbackWidget'
 import classes from './TitleBar.module.css'
 import { userLogout } from '@/lib/pb'
 

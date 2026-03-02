@@ -2,6 +2,8 @@
 
 Tasks that need further planning or reimplementation.
 
+- [ ] Handle non-typed Pocketbase data: JSON fields, enums
+- [ ] Mantine error colors
 - [ ] Update `make seed-collection` to be more dynamic and support attaching user
 - [ ] Update `npm run generate-pb-types` to show errors for failed migrations
 - [ ] User Feedback should collect metadata

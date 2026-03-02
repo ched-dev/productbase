@@ -14,7 +14,7 @@ Additionally, a **user** ties into the **organizations** feature outlined in `./
 
 ## Managing User Auth Settings
 
-Additional user management tasks can be completed in the [Pocketbase admin panel](./pocketbase-admin-panel.md). Here's some examples of actions:
+Additional user management tasks can be completed in the [Pocketbase admin panel](../frontend/pocketbase-admin-panel.md). Here's some examples of actions:
 - Enable / disable various auth methods (email login, OAuth, OTP, MFA)
 - Modify any of the emails sent related to auth (verification, password reset, etc.)
 - Change the durations on the Tokens generated for auth
@@ -23,3 +23,14 @@ Additional user management tasks can be completed in the [Pocketbase admin panel
 - Invite only registration (signup for limited users)
 - Impersonating a user (also can be done [through SDK code](https://pocketbase.io/docs/authentication/#users-impersonation))
 - Invalidating all user auth tokens for specific feature (auth duration, email verification, password reset, email change duration, protected file access)
+
+## See Also
+
+- [Backend Development](../backend/development.md) - Backend development patterns
+- [Collections](../backend/collections.md) - Collection management
+- [Migrations](../backend/migrations.md) - Migration management
+- [Hooks](../backend/hooks.md) - Hook development patterns
+- [Access Permissions](../backend/access-permissions.md) - API security
+- [Frontend Development](../frontend/development.md) - Frontend development patterns
+- [State Management](../frontend/state-management.md) - State management strategy
+- [Query Hooks](../frontend/query-hooks.md) - Data fetching patterns

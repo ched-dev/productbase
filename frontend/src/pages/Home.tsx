@@ -1,5 +1,5 @@
 import LoadingIcon from "@/components/LoadingIcon"
-import ScreenBody from "@/components/ScreenBody"
+import ScreenBody from "@/components/layout/ScreenBody"
 import { useUserFeedbackCollection } from "@/queryHooks"
 import { useEffect } from "react"
 

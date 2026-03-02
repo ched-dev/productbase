@@ -8,7 +8,7 @@ import EntriesSummary from './EntriesSummary'
 import EntryView from './Entry'
 import Filters from './Filters'
 import LoadingIcon from './LoadingIcon'
-import ScreenBody from './ScreenBody'
+import ScreenBody from './layout/ScreenBody'
 
 interface RowProps {
   data: {

@@ -2,6 +2,10 @@
 
 This guide documents error handling patterns in ProductBase, focusing on PocketBase API errors and validation.
 
+**Prerequisites:** [State Management](./state-management.md), [Components](./components.md), [Query Hooks](./query-hooks.md)
+
+**Related Topics:** [Frontend Development](./development.md), [Backend Development](../backend/development.md)
+
 ## `ApiError` Class
 
 The primary error class for normalizing PocketBase responses.
@@ -133,18 +137,12 @@ function CreateItemForm() {
     <form ref={formRef} onSubmit={handleSubmit(async (formData) => {
       await items.create(formData)
     })}>
-      {apiError && (
-        <Alert color="red" title="Error">
-          {apiError.message}
-        </Alert>
-      )}
+      <FormError apiError={apirError} />
       {/* form fields */}
     </form>
   )
 }
 ```
-
----
 
 ## Error Handling in Query Hooks
 
@@ -165,8 +163,6 @@ const { formRef, handleSubmit } = useFormState({
   {/* fields */}
 </form>
 ```
-
----
 
 ## Error Types from PocketBase
 
@@ -262,76 +258,6 @@ Server-side errors:
 
 **Action:** Log and show user a generic error message.
 
----
-
-## Error Handling in PocketBase Hooks
-
-Backend errors should be thrown appropriately from migrations and hooks.
-
-### Throwing Validation Errors
-
-```javascript
-// pocketbase/pb_migrations/1234_create_users_collection.js
-$app.save(usersCollection);
-
-// In a hook (main.pb.js):
-$app.onRecordBeforeCreate((e) => {
-  if (!e.record.getDataValue('email')) {
-    throw new BadRequest('Email is required');
-  }
-}, 'users');
-```
-
-### Throwing Generic Errors
-
-```javascript
-// Any thrown error in a hook becomes a 400 Bad Request:
-onRecordBeforeDelete((e) => {
-  const org = $app.findCollectionByNameOrId('organizations');
-  const memberships = $app.findRecordsByFilter(
-    'memberships',
-    'organization = "{:id}"',
-    { id: e.record.id }
-  );
-
-  if (memberships.length > 0) {
-    throw new Error('Cannot delete organization with active members');
-  }
-}, 'organizations');
-```
-
----
-
-## Best Practices
-
-1. **Always use `getApiError` to normalize** — Never assume error shape; always normalize
-   ```tsx
-   const apiError = getApiError(err)  // Safe for any error type
-   ```
-
-2. **Show field-specific errors when available** — Use `validationError(field)` for per-field display
-   ```tsx
-   if (apiError.hasValidationError('email')) {
-     // Show error near email input
-   }
-   ```
-
-3. **Show general errors when validation is empty** — Fall back to the top-level message
-   ```tsx
-   const message = apiError.hasValidationErrors()
-     ? 'Please fix the errors below'
-     : apiError.message
-   ```
-
-4. **Log for debugging** — In development, log the full error
-   ```tsx
-   if (IS_DEV) console.error('API error:', err, apiError)
-   ```
-
----
-
 ## See Also
 
-- [PocketBase Client Library](./pocketbase-client.md) — error normalization details
-- [TanStack Query Hooks](./tanstack-query-hooks.md) — error handling in mutations
 - [Components](./components.md) — `FieldError` component

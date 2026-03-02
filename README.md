@@ -48,11 +48,13 @@ Frontend
   - [x] Generated TypeScript files for Pocketbase Collections `npm run generate-pb-types`
   - [x] `queryHooks` to easily access PB collection data with TypeScript support
   - [x] PBDataList and PBData classes to help with squashing expanded relational data
+  - [ ] Keyboard shortcuts manager
 - [ ] Premade UI elements
   - [ ] Modal component
   - [ ] Toast notification system
   - [ ] Alert system
   - [ ] Empty states
+  - [ ] Show more pagination
 
 Hosting
 - [ ] Hosted on Railway (pocketbase w/ volume mount, backup bucket, file bucket)
@@ -78,6 +80,24 @@ Payments Integration
 Analytics Integration
 - [ ] Umami Integration
 - [ ] Sentry Integration
+
+## Documentation
+
+- [Backend Development](./docs/backend/development.md) - Backend development patterns
+- [Frontend Development](./docs/frontend/development.md) - Frontend development patterns
+- [Access Permissions](./docs/backend/access-permissions.md) - Access permissions patterns
+- [Collections](./docs/backend/collections.md) - Collection management
+- [Migrations](./docs/backend/migrations.md) - Migration management
+- [Backend Hooks](./docs/backend/hooks.md) - Backend hook patterns
+- [Backend Querying](./docs/backend/querying.md) - Backend querying patterns
+- [PocketBase Admin Panel](./docs/frontend/pocketbase-admin-panel.md) - Admin panel usage
+- [State Management](./docs/frontend/state-management.md) - State management strategy
+- [Query Hooks](./docs/frontend/query-hooks.md) - Data fetching patterns
+- [Components](./docs/frontend/components.md) - Component patterns and best practices
+- [Error Handling](./docs/frontend/error-handling.md) - Error handling patterns
+- [Routing](./docs/frontend/routing.md) - Navigation and URL patterns
+- [Custom Hooks](./docs/frontend/custom-hooks.md) - URL state and other custom hooks
+- [Type Generation](./docs/frontend/type-generation.md) - Type generation patterns
 
 ## Copyright
 

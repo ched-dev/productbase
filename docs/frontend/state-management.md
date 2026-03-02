@@ -2,16 +2,16 @@
 
 This guide explains when to use each state management tool in ProductBase.
 
-## Four State Tools
+## Overview
 
-ProductBase uses four complementary state systems, each optimized for different purposes:
+ProductBase uses complementary state systems, each optimized for different purposes:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │  Where should my state live?                                │
 ├─────────────────────────────────────────────────────────────┤
 │                                                             │
-│  🔗 Server State     → TanStack Query (queryHooks/)         │
+│  🔗 Server State     → TanStack Query Hooks (queryHooks/)   │
 │  🌍 Global State     → Zustand (stores/)                    │
 │  🎯 Local State      → React useState                       │
 │  🔍 URL State        → useQueryParam / UrlStore             │
@@ -19,13 +19,13 @@ ProductBase uses four complementary state systems, each optimized for different 
 └─────────────────────────────────────────────────────────────┘
 ```
 
----
+## State Tools
 
-## TanStack Query — Server State
+### Query Hooks — Server State
 
 Use for **data fetched from PocketBase**: lists, single records, computed values.
 
-### Characteristics
+#### Characteristics
 
 - **Source of truth**: PocketBase API
 - **Automatic invalidation**: Mutations trigger cache refreshes
@@ -33,10 +33,10 @@ Use for **data fetched from PocketBase**: lists, single records, computed values
 - **Caching**: 5-minute stale-while-revalidate
 - **Loading states**: Built-in `loading`, `fetching`, `error`
 
-### When to Use
+#### When to Use
 
 ```tsx
-// ✅ DO: Use TanStack Query for server data
+// ✅ DO: Use Query Hooks for server data
 const feedback = useUserFeedbackCollection()
 useEffect(() => {
   feedback.all()
@@ -49,49 +49,25 @@ useEffect(() => {
 }, [])
 ```
 
-### Advantages
+#### Advantages
 
 - Automatic cache sharing across components
 - Built-in stale-while-revalidate pattern
 - No manual refetch logic after mutations
 - Type-safe with generated `PBCollections` types
 
-### Examples
-
-```tsx
-// List with pagination
-const feedback = useUserFeedbackCollection()
-feedback.list({ expand: 'user' })
-
-// Single record
-feedback.getOne(id, { expand: 'user' })
-
-// Create with invalidation
-const newFeedback = await feedback.create(formData)
-
-// Update with invalidation
-await feedback.update(id, { message: '...' })
-
-// Delete with invalidation
-await feedback.delete(id)
-```
-
-See [TanStack Query Hooks](./tanstack-query-hooks.md) for full API.
-
----
-
-## Zustand Stores — Global State
+### Zustand Stores — Global State
 
 Use for **app-wide state that outlives components**: auth loading, theme, feature flags.
 
-### Characteristics
+#### Characteristics
 
 - **Lifespan**: App-wide, survives component unmount
 - **Mutability**: Imperative setters
 - **Performance**: Optional subscription (don't re-render on every state change)
 - **Simplicity**: No boilerplate, just a hook
 
-### When to Use
+#### When to Use
 
 ```tsx
 // ✅ DO: Use Zustand for truly global state
@@ -107,45 +83,18 @@ const { user, setUser } = useUserStore()  // ❌ Bad
 const user = getCachedUser()               // ✅ Good (or TanStack Query)
 ```
 
-### Current Stores
-
-- **`AppStore`** — `loaded: boolean`
-  - Used to gate UI rendering until auth bootstrap completes
-  - Set after `refreshAuth()` and `cacheUser()`
-
-### Typical Pattern
-
-```tsx
-// Bootstrap (once on app start)
-async function initializeApp() {
-  await refreshAuth()
-  await cacheUser()
-  useAppStore.getState().setLoaded(true)
-}
-
-// In components (check before rendering)
-function App() {
-  const { loaded } = useAppStore()
-  return loaded ? <MainUI /> : <SplashScreen />
-}
-```
-
-See [Zustand Stores](./zustand-stores.md) for full API.
-
----
-
-## React State — Local State
+### React State — Local State
 
 Use for **component-scoped, temporary state**: forms, animations, UI toggles.
 
-### Characteristics
+#### Characteristics
 
 - **Scope**: Single component or subtree via `<Provider>`
 - **Lifespan**: Unmounts when component unmounts
 - **Mutability**: `useState` setter
 - **Performance**: Component-local re-renders (fast)
 
-### When to Use
+#### When to Use
 
 ```tsx
 // ✅ DO: Use React state for form UI
@@ -157,29 +106,12 @@ const [userEmail, setUserEmail] = useState('')  // ❌ Loses value on remount
 
 // ❌ DON'T: Duplicate server state
 const [savedFeedback, setSavedFeedback] = useState([])  // ❌ Bad
-// Use TanStack Query instead
+// Use Query Hooks instead
 ```
 
-### Common Patterns
+#### Note on `useFormState`
 
-```tsx
-// Form field state
-const [formData, setFormData] = useState({ message: '', type: '' })
-
-// Modal/popover state
-const [modalOpen, setModalOpen] = useState(false)
-
-// Filtered view state
-const [filterOpen, setFilterOpen] = useState(false)
-const [sortBy, setSortBy] = useState('-created')
-
-// Error display state
-const [apiError, setApiError] = useState<ApiError | null>(null)
-```
-
-### Note on `useFormState`
-
-The custom `useFormState` hook is a React state wrapper, not TanStack Query. Use it alongside query hooks:
+The custom `useFormState` hook is a React state wrapper. Use it alongside query hooks:
 
 ```tsx
 const { formRef, handleSubmit } = useFormState({
@@ -194,20 +126,17 @@ const collection = useUserFeedbackCollection()
 </form>
 ```
 
----
-
-## URL State — Persistent, Shareable State
+### URL State — Persistent, Shareable State
 
 Use for **state that should survive page refresh or be shareable via link**: filters, pagination, viewed item.
 
-### Characteristics
+#### Characteristics
 
 - **Persistence**: Survives page refresh
 - **Sharing**: Entire app state in the URL
-- **Synchronization**: Multiple browser tabs can sync via `onbeforeunload`
 - **Queryability**: Bookmarkable and searchable
 
-### When to Use
+#### When to Use
 
 ```tsx
 // ✅ DO: Store filters in URL
@@ -220,9 +149,9 @@ useListView({ items: feedback.data.items, onParamsUpdate: ... })
 const [filter, setFilter] = useState({ tags: [] })  // ❌ Lost on refresh
 ```
 
-### Two URL Systems
+#### Two URL Systems
 
-#### System 1: `useQueryParam` (React hooks, JSON-encoded)
+##### System 1: `useQueryParam` (React hooks, JSON-encoded)
 
 ```tsx
 const [filter, setFilter] = useQueryParam<QueryFilter>('query', { tags: [] })
@@ -234,7 +163,7 @@ const [filter, setFilter] = useQueryParam<QueryFilter>('query', { tags: [] })
 - Filters and search parameters
 - Tight React integration
 
-#### System 2: `UrlStore` (Imperative singleton, dot-notation)
+##### System 2: `UrlStore` (Imperative singleton, dot-notation)
 
 ```tsx
 const store = useUrlStore()
@@ -247,26 +176,7 @@ store.set({ filters: { exif: { cameraMake: 'Canon' } } })
 - Imperative navigation from query hooks
 - Backward compatibility with existing URL schemes
 
-See [Custom Hooks](./custom-hooks.md) and [Zustand Stores](./zustand-stores.md#urlstore--url-parameter-state).
-
----
-
-## Decision Matrix
-
-| State | Server? | Global? | Temporary? | Shareable? | Use... |
-|-------|---------|---------|-----------|-----------|--------|
-| Feedback list | Yes | — | — | Yes (list page) | TanStack Query |
-| Current user | Yes | Yes* | — | Yes (in cookie) | TanStack Query + cache |
-| App loading | No | Yes | — | No | Zustand |
-| Form input | No | No | Yes | No | React state |
-| Form errors | No | No | Yes | No | React state |
-| Filter params | Derived | No | Yes | Yes | useQueryParam |
-| Modal open | No | No | Yes | No | React state |
-| Selected item | No | No | Yes | Yes | URL state (viewingId) |
-
-*User data is cached in a cookie (fast access) but sourced from server (TanStack Query) on refresh.
-
----
+See [Custom Hooks](./custom-hooks.md)
 
 ## Anti-Patterns
 
@@ -320,12 +230,13 @@ useEffect(() => {
 - Manual refetch logic after mutations
 - Loading states are fragmented
 
-**Instead: Use TanStack Query**
+**Instead: Use Query Hooks**
 
 ```tsx
 // ✅ DO: Use query hooks
 const feedback = useUserFeedbackCollection()
 feedback.all()
+feedback.sort('-created')
 // feedback.data automatically updates when mutations invalidate
 ```
 
@@ -351,11 +262,29 @@ const useUIStore = create(() => ({
 const [feedbackModalOpen, setFeedbackModalOpen] = useState(false)
 ```
 
----
+## Best Practices
 
-## See Also
+### Avoid State Duplication
 
-- [TanStack Query Hooks](./tanstack-query-hooks.md)
-- [Zustand Stores](./zustand-stores.md)
-- [Custom Hooks](./custom-hooks.md) — URL state patterns
-- [Components](./components.md) — form patterns avoiding `useEffect`
+Don't store the same data in multiple state systems:
+
+```tsx
+// ❌ Bad: Duplicate state
+const [user, setUser] = useState(null)
+const { user: queryUser } = useUserQuery()
+
+// ✅ Good: Single source of truth
+const { data: user } = useUserQuery()
+```
+
+### Use URL State for Navigation
+
+Always use URL state for navigation-related state:
+
+```tsx
+// ✅ Good: URL state for navigation
+const [currentPage, setCurrentPage] = useQueryParam('page', 1)
+
+// ❌ Bad: React state for navigation
+const [currentPage, setCurrentPage] = useState(1)
+```

@@ -206,9 +206,9 @@ const linkHref = buildUrl('/feedback', { tags: ['bug'], operator: 'and' })
 ## Related Patterns
 
 - **URL as state**: All these hooks embrace storing UI state in the URL for shareability and persistence
-- **Two URL systems**: The app uses both JSON-encoded params (via `useQueryParam`) and dot-notation params (via `UrlStore` in `zustand-stores.md`); they coexist but aren't interchangeable
+- **Two URL systems**: The app uses both JSON-encoded params (via `useQueryParam`) and dot-notation params (via `UrlStore`); they coexist but aren't interchangeable
 - **Integration with TanStack Query**: `useListView` calls `onParamsUpdate` which typically triggers a new query fetch via a query hook
 
 See also:
 - [State Management](./state-management.md) — when to use these vs Zustand or React state
-- [TanStack Query Hooks](./tanstack-query-hooks.md) — how filter params flow into collection queries
+- [Query Hooks](./query-hooks.md) — how filter params flow into collection queries

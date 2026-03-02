@@ -18,16 +18,30 @@ Added fields should follow the snake case format, e.g. `alert_method_preferred`.
 
 To keep data integrity, make sure to set the validation options (min/max length, validation pattern, nonempty, etc.) as strict as possible. Errors when updating here will be auto-generated and returned from the API. This layer is our server-side field validation.
 
+Relational fields should use singular or plural of the related collection, based on one-to-one or one-to-many relationship. Don't use `*_id` field names. Pocketbase will store the unique id property in the field, but expanded relations will also live here, so a `user_id` with the full user won't make sense. Use this table for examples:
+|one-to-one|one-to-many|
+---
+|user|users|
+|feedback|feedback|
+|owner|owners|
+
 ### Field Naming
 - Use lowercase with underscores
 - Keep pluralized (e.g., `blog_posts`, not `blog_post`)
 - Date fields should start with `date_*`
+- Don't use `*_id` field names, use the relation name instead
 
-### Field Options
-- Hidden
-- Presentable
-- Unique
-- Nonempty
+### Field Types
+
+TBD
 
 ## Collection API Rules (Access Permissions)
 Collections have API Rules to define access permissions which will be auto-verified at the API layer. More info is available in [access-permissions.md](./access-permissions.md).
+
+## See Also
+
+- [Backend Development](./development.md) - Backend development patterns
+- [Migrations](./migrations.md) - Migration management
+- [Access Permissions](./access-permissions.md) - API security
+- [Hooks](./hooks.md) - Hook development patterns
+- [Querying](./querying.md) - Data retrieval patterns

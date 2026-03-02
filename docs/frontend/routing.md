@@ -65,24 +65,9 @@ When implementing new features that require new pages, use these URL patterns:
 </Routes>
 ```
 
----
-
 ## Imperative Navigation
 
-Use `lib/navigate.ts` for programmatic navigation outside of React components.
-
-### Setup (Once in `Router.tsx`)
-
-```tsx
-import { setNavigate } from '@/lib/navigate'
-import { useNavigate } from 'react-router-dom'
-
-function ExportNavigate() {
-  const navigate = useNavigate()
-  useEffect(() => { setNavigate(navigate); }, [navigate])
-  return null;
-}
-```
+Use `lib/navigate.ts` for programmatic navigation outside of React components or when you wish to navigate without user interaction, such as events.
 
 ### Usage (Anywhere in the app)
 
@@ -111,37 +96,13 @@ This pattern is essential for:
 - Navigating after a mutation from inside a query hook (not a component)
 - Navigation from utility functions that aren't React components
 
-See [Zustand Stores](./zustand-stores.md#programmatic-navigation) for imperative navigation via `UrlStore.navigate()`.
-
----
-
 ## Route Guards
 
-Currently, ProductBase has no route guards (authentication, authorization). To add them:
-
-```tsx
-// Example: require auth to view detail page
-function ProtectedRoute({ Component }: Props) {
-  const user = getCachedUser()
-  return user ? <Component /> : <Navigate to="/login" />
-}
-
-<Route path="/feedback/:id" Component={() => <ProtectedRoute Component={FeedbackDetail} />} />
-```
-
----
+TBD
 
 ## Related Patterns
 
 - **`useNavHelpers`** — Convenience hook for active route detection and navigation
-- **`setNavigate`** — Exporting React Router's navigate function for imperative use
 - **URL state** — Preserving filter/search/viewed-item in URL via `useQueryParam` and `useListView`
 
 See [Custom Hooks](./custom-hooks.md) for details.
-
----
-
-## See Also
-
-- [Components](./components.md) — page structure and layout
-- [TanStack Query Hooks](./tanstack-query-hooks.md) — fetching data for routes

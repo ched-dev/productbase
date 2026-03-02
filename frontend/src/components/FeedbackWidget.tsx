@@ -2,8 +2,9 @@ import { useState } from 'react'
 import { Alert, Button, Group, Popover, Radio, Stack, Switch, Text, Textarea } from '@mantine/core'
 import { useUserFeedbackCollection } from '@/queryHooks'
 import { useFormState } from '@/hooks/useFormState'
-import CancelButton from './CancelButton'
-import FieldError from './FieldError'
+import CancelButton from './forms/CancelButton'
+import FieldError from './forms/FieldError'
+import FormError from './forms/FormError'
 import Icon from './Icon'
 
 const FEEDBACK_TYPES = [
@@ -67,11 +68,7 @@ export default function FeedbackWidget() {
           name="reply_desired"
           label="I'd like a reply"
         />
-        {feedback.error && !feedback.error.hasValidationErrors() && (
-          <Alert color="red" icon={<Icon type="error" size="sm" />}>
-            {feedback.error.message}
-          </Alert>
-        )}
+        <FormError apiError={feedback.error} />
         <Group justify="flex-end">
           <CancelButton onClick={() => setOpened(false)} />
           <Button type="submit" color="teal" loading={feedback.loading}>

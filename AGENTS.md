@@ -84,7 +84,7 @@ npm run lint
 
 ### Updating Documentation
 If you are asked to do a task, confirm documentation is up-to-date with actual implementation. Documentation formats are in markdown, and the files you should update are available in multiple places:
-- `/docs/*.md` is documentation intended for developers and operators of the project, including AI agents
+- `/docs/**.md` is documentation intended for developers and operators of the project, including AI agents
 - `/AGENTS.md` is documentation for AI Agents
 
 ## Important Notes
@@ -110,3 +110,7 @@ make db-reset
 ```
 
 For details on available dev commands, see the [Dev Tools](./README_dev.md#dev-tools) section in `README_dev.md` or run `make help`.
+
+## Documentation
+
+Find any documentation you need from the [./docs/INDEX.md](./docs/INDEX.md) file.
