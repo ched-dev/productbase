@@ -8,13 +8,17 @@
  */
 
 // Hook to prevent user registration when allow_user_registrations is false
-onRecordCreateExecute((e) => {
+onRecordCreateRequest((e) => {
   const { app, auth, record } = e
 
-  // Only apply this check for public registration (non-admin requests)
   if (auth?.isSuperuser()) {
     e.next()
     return
+  }
+
+  // authed user trying to create new user
+  if (auth?.id) {
+    throw new BadRequestError('User already logged in')
   }
 
   // custom existing user check
@@ -22,6 +26,7 @@ onRecordCreateExecute((e) => {
     // handle email already taken
     const existing = app.findAuthRecordByEmail('users', record.get('email'))
     if (existing) {
+      app.logger().info('Registration rejected: duplicate email', 'user.id', existing.get('id'))
       const msg = 'Account already exists'
       throw new BadRequestError(msg, {
         email: new ValidationError('validation_not_unique', 'Email already in use'),
@@ -59,6 +64,7 @@ onRecordCreateExecute((e) => {
       const allowRegistrations = settings.get('allow_user_registrations')
 
       if (!allowRegistrations) {
+        app.logger().info('Registration rejected: registrations disabled')
         const msg = 'User registrations are currently disabled'
         throw new ForbiddenError(msg, {
           auth: new ValidationError('auth/user_registration_disabled', msg),
@@ -76,6 +82,7 @@ onRecordCreateExecute((e) => {
     }
   }
 
+  app.logger().info('Registration allowed', 'user.id', record.get('id'))
   // calling `e.next()` triggers validation - will fail if email already exists
   e.next()
 }, 'users') // only for users records
@@ -98,6 +105,10 @@ onRecordCreateRequest((e) => {
   // save the organization first
   e.next()
 
+  app.logger().info('Organization created',
+    'orgId', record.id,
+    'ownerId', auth.id)
+
   // create the owner membership
   const membershipsCol = app.findCollectionByNameOrId('memberships')
   const membership = new Record(membershipsCol)
@@ -106,11 +117,15 @@ onRecordCreateRequest((e) => {
   membership.set('role', 'owner')
   membership.set('invited_by', auth.id)
   app.save(membership)
+
+  app.logger().info('Owner membership auto-created',
+    'orgId', record.id,
+    'userId', auth.id)
 }, 'organizations')
 
 // Prevent deleting a membership with role "owner"
 onRecordDeleteRequest((e) => {
-  const { auth, record } = e
+  const { app, auth, record } = e
 
   if (auth?.isSuperuser()) {
     e.next()
@@ -118,6 +133,10 @@ onRecordDeleteRequest((e) => {
   }
 
   if (record.get('role') === 'owner') {
+    app.logger().warn('Membership delete blocked: owner role',
+      'membershipId', record.id,
+      'orgId', record.get('organization'),
+      'userId', auth.id)
     throw new BadRequestError('Cannot delete the owner membership. Transfer ownership first.', {
       role: new ValidationError('validation_owner_protected', 'Owner membership cannot be deleted'),
     })
@@ -145,6 +164,9 @@ onRecordDeleteRequest((e) => {
       { userId: record.id }
     )
     if (ownedOrgs && ownedOrgs.length > 0) {
+      app.logger().warn('User delete blocked: owns organizations',
+        'userId', record.id,
+        'orgCount', ownedOrgs.length)
       throw new BadRequestError('Cannot delete user who owns organizations. Transfer ownership or delete organizations first.', {
         user: new ValidationError('validation_user_owns_orgs', 'User owns one or more organizations'),
       })
@@ -192,10 +214,18 @@ onRecordUpdateRequest((e) => {
   }
 
   if (!newOwnerMembership) {
+    app.logger().warn('Ownership transfer blocked: new owner not a member',
+      'orgId', record.id,
+      'newOwnerId', newOwnerId)
     throw new BadRequestError('New owner must be an existing member of the organization.', {
       owner: new ValidationError('validation_not_member', 'User is not a member of this organization'),
     })
   }
+
+  app.logger().info('Ownership transfer started',
+    'orgId', record.id,
+    'fromUserId', oldOwnerId,
+    'toUserId', newOwnerId)
 
   // save the org update first
   e.next()
@@ -220,4 +250,9 @@ onRecordUpdateRequest((e) => {
   // update new owner membership to owner
   newOwnerMembership.set('role', 'owner')
   app.save(newOwnerMembership)
+
+  app.logger().info('Ownership transfer completed',
+    'orgId', record.id,
+    'newOwnerId', newOwnerId,
+    'oldOwnerId', oldOwnerId)
 }, 'organizations')

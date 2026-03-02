@@ -2,6 +2,8 @@
 
 Tasks that need further planning or reimplementation.
 
+- [ ] User can create multiple Organizations
+- [ ] User should be able to close Organization
 - [ ] Forms attach authed user at server side
 - [x] Are `e.app` and `$app` different permissions?
 - [ ] Create a form button group

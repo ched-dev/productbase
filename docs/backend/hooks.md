@@ -258,21 +258,43 @@ onRecordAfterCreateSuccess((e) => {
 }, 'main_collection')
 ```
 
-## Debugging Hooks
+## Logging
 
-Add logging to debug hook execution:
+The PocketBase logger is accessed via `app.logger()` and implements the [`slog.Logger`](https://pocketbase.io/jsvm/interfaces/slog.Logger.html) interface. It supports structured logging with key-value pairs passed as additional arguments.
+
+### Log Levels
+
+| Method | Level |
+|--------|-------|
+| `debug(msg, ...args)` | Debug — verbose, hidden by default |
+| `info(msg, ...args)` | Info |
+| `warn(msg, ...args)` | Warning |
+| `error(msg, ...args)` | Error |
+
+### Example
 
 ```js
 onRecordCreateRequest((e) => {
   const { app, auth, record } = e
 
-  app.logger().log('Hook executed for:', record.collectionName)
-  app.logger().debug('Auth:', auth)
-  app.logger().debug('Record data:', record)
+  app.logger().info(
+    'Record created',
+    'collection', record.collectionName,
+    'recordId', record.id,
+    'userId', auth?.id
+  )
 
   e.next()
-}, 'users')
+}, 'orders')
 ```
+
+### Additional Methods
+
+- `with(...args)` — returns a new logger that includes the given key-value attributes in every log entry
+- `withGroup(name)` — returns a new logger that groups subsequent attributes under the given name
+- `enabled(ctx, level)` — checks whether the logger emits at the given level
+
+### Viewing Logs
 
 Check logs in Docker:
 ```bash
