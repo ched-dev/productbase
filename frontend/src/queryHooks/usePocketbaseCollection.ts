@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import type { CommonOptions, RecordFullListOptions, RecordListOptions, RecordOptions } from 'pocketbase'
 import { usePbClient } from '@/lib/pb/client'
@@ -81,6 +81,7 @@ export function usePocketbaseCollection<T = Record<string, unknown>>(
   const [allParams,    setAllParams]    = useState<RecordFullListOptions | null>(null)
   const [getOneParams, setGetOneParams] = useState<{ id: string; opts: RecordOptions } | null>(null)
   const [lastActiveOp, setLastActiveOp] = useState<LastActiveOp>(null)
+  const lastDataRef = useRef<PBDataList | PBData | undefined>(undefined)
 
   // ---- Read: list (paginated) ----
   const listQuery = useQuery({
@@ -240,6 +241,11 @@ export function usePocketbaseCollection<T = Record<string, unknown>>(
   const active = activeQuery ?? activeMutation
   const rawError = active?.error ?? null
 
+  const currentData = activeQuery?.data ?? (activeMutation?.data as PBData | undefined)
+  if (currentData !== undefined) {
+    lastDataRef.current = currentData
+  }
+
   return {
     list,
     all,
@@ -252,6 +258,6 @@ export function usePocketbaseCollection<T = Record<string, unknown>>(
     loading:  active?.isPending ?? false,
     success:  active?.isSuccess ?? false,
     error:    rawError ? getApiError(rawError) : null,
-    data:     activeQuery?.data ?? (activeMutation?.data as PBData | undefined),
+    data:     currentData ?? lastDataRef.current,
   }
 }

@@ -1,15 +1,20 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Badge, Button, Card, Fieldset, Group, Select, Stack, Text, TextInput } from '@mantine/core'
+import { Button, Card, Fieldset, Group, Select, Stack, Text } from '@mantine/core'
 import LoadingIcon from '@/components/LoadingIcon'
+import MembershipBadge from '@/components/badges/MembershipBadge'
+import SelfBadge from '@/components/badges/SelfBadge'
 import ScreenBody from '@/components/layout/ScreenBody'
 import SaveButton from '@/components/forms/SaveButton'
 import FormError from '@/components/forms/FormError'
 import FieldError from '@/components/forms/FieldError'
+import EmailInput from '@/components/forms/EmailInput'
 import { useFormState } from '@/hooks/useFormState'
 import { useOrganizationsCollection, useMembershipsCollection } from '@/queryHooks'
 import { usePbClient } from '@/lib/pb/client'
 import type { PBData, PBDataList } from '@/lib/pb/data'
+import ContentContainer from '@/components/layout/ContentContainer'
+import ConfirmationMessage from '@/components/forms/ConfirmationMessage'
 
 export default function OrganizationMembers() {
   const { id } = useParams<{ id: string }>()
@@ -61,106 +66,112 @@ export default function OrganizationMembers() {
 
   return (
     <ScreenBody>
-      <Group justify="space-between" mb="lg">
-        <h1>Members</h1>
-        <Text c="dimmed">{org.name as string ?? ''}</Text>
-      </Group>
+      <ContentContainer>
+        <Group justify="space-between" mb="lg">
+          <h1>Members</h1>
+          <Text c="dimmed">{org.name as string ?? ''}</Text>
+        </Group>
 
-      {canManageMembers && (
-        <>
-          <Text fw={600} mb="sm">Invite Member</Text>
-          <FormError apiError={apiError} />
-          <form
-            ref={formRef}
-            onSubmit={handleSubmit(async (formData) => {
-              if (id) {
-                await members.invite(
-                  id,
-                  formData.get('invite_email') as string,
-                  inviteRole || 'member',
-                )
-              }
+        {canManageMembers && (
+          <>
+            <Text fw={600} mb="sm">Invite Member</Text>
+            <FormError apiError={apiError} />
+            <form
+              ref={formRef}
+              onSubmit={handleSubmit(async (formData) => {
+                if (id) {
+                  await members.invite(
+                    id,
+                    formData.get('invite_email') as string,
+                    inviteRole || 'member',
+                  )
+                }
+              })}
+            >
+              <Group align="flex-end" mb="lg">
+                <Fieldset legend="Email">
+                  <EmailInput name="invite_email" required placeholder="user@example.com" />
+                  <FieldError name="invite_email" apiError={apiError} />
+                </Fieldset>
+                <Select
+                  label="Role"
+                  data={[
+                    { value: 'member', label: 'Member' },
+                    { value: 'admin', label: 'Admin' },
+                  ]}
+                  value={inviteRole}
+                  onChange={setInviteRole}
+                  w={120}
+                />
+                <SaveButton submit loading={members.loading} label="Invite" />
+              </Group>
+            </form>
+          </>
+        )}
+
+        <Text fw={600} mb="sm">Current Members</Text>
+        {members.error && (
+          <FormError apiError={members.error} />
+        )}
+        {members.loading ? (
+          <LoadingIcon />
+        ) : memberItems.length === 0 ? (
+          <Text c="dimmed">No members.</Text>
+        ) : (
+          <Stack gap="xs">
+            {memberItems.map((member) => {
+              const memberUserId = (member.user as Record<string, unknown>)?.id || (member.user as string)
+              const isCurrentUser = memberUserId === currentUserId
+              const isMemberOwner = member.role === 'owner'
+
+              return (
+                <Card key={member.id} shadow="xs" padding="sm" withBorder>
+                  <Group justify="space-between">
+                    <Group>
+                      <Text>
+                        {(member.user as Record<string, unknown>)?.name as string
+                          || (member.user as Record<string, unknown>)?.email as string
+                          || (member.invite_email as string)
+                          || 'Pending'}
+                      </Text>
+                      {isCurrentUser && <SelfBadge />}
+                    </Group>
+                    <Group>
+                      {canManageMembers && !isMemberOwner && !isCurrentUser && (
+                        <ConfirmationMessage
+                          message="Are you sure you want to remove this member?"
+                          confirmLabel="Remove"
+                          onConfirm={() => handleRemoveMember(member.id)}
+                        >
+                          {(open) => (
+                            <Button variant="subtle" color="red" size="xs" onClick={open}>
+                              Remove
+                            </Button>
+                          )}
+                        </ConfirmationMessage>
+                      )}
+                      {isCurrentUser && !isMemberOwner && (
+                        <ConfirmationMessage
+                          message="Are you sure you want to leave this organization?"
+                          confirmLabel="Leave"
+                          onConfirm={() => handleRemoveMember(member.id)}
+                        >
+                          {(open) => (
+                            <Button variant="subtle" color="red" size="xs" onClick={open}>
+                              Leave
+                            </Button>
+                          )}
+                        </ConfirmationMessage>
+                      )}
+                      <MembershipBadge role={member.role as string} />
+                    </Group>
+                  </Group>
+                </Card>
+              )
             })}
-          >
-            <Group align="flex-end" mb="lg">
-              <Fieldset legend="Email">
-                <TextInput name="invite_email" type="email" required placeholder="user@example.com" />
-                <FieldError name="invite_email" apiError={apiError} />
-              </Fieldset>
-              <Select
-                label="Role"
-                data={[
-                  { value: 'member', label: 'Member' },
-                  { value: 'admin', label: 'Admin' },
-                ]}
-                value={inviteRole}
-                onChange={setInviteRole}
-                w={120}
-              />
-              <SaveButton submit loading={members.loading} label="Invite" />
-            </Group>
-          </form>
-        </>
-      )}
-
-      <Text fw={600} mb="sm">Current Members</Text>
-      {members.loading ? (
-        <LoadingIcon />
-      ) : memberItems.length === 0 ? (
-        <Text c="dimmed">No members.</Text>
-      ) : (
-        <Stack gap="xs">
-          {memberItems.map((member) => {
-            const memberUserId = (member.user as Record<string, unknown>)?.id || (member.user as string)
-            const isCurrentUser = memberUserId === currentUserId
-            const isMemberOwner = member.role === 'owner'
-
-            return (
-              <Card key={member.id} shadow="xs" padding="sm" withBorder>
-                <Group justify="space-between">
-                  <Group>
-                    <Text>
-                      {(member.user as Record<string, unknown>)?.name as string
-                        || (member.user as Record<string, unknown>)?.email as string
-                        || (member.invite_email as string)
-                        || 'Pending'}
-                    </Text>
-                    {isCurrentUser && <Badge variant="dot" color="green" size="sm">You</Badge>}
-                  </Group>
-                  <Group>
-                    <Badge
-                      variant="light"
-                      color={member.role === 'owner' ? 'yellow' : member.role === 'admin' ? 'blue' : 'gray'}
-                    >
-                      {member.role as string}
-                    </Badge>
-                    {canManageMembers && !isMemberOwner && !isCurrentUser && (
-                      <Button
-                        variant="subtle"
-                        color="red"
-                        size="xs"
-                        onClick={() => handleRemoveMember(member.id)}
-                      >
-                        Remove
-                      </Button>
-                    )}
-                    {isCurrentUser && !isMemberOwner && (
-                      <Button
-                        variant="subtle"
-                        color="red"
-                        size="xs"
-                        onClick={() => handleRemoveMember(member.id)}
-                      >
-                        Leave
-                      </Button>
-                    )}
-                  </Group>
-                </Group>
-              </Card>
-            )
-          })}
-        </Stack>
-      )}
+          </Stack>
+        )}
+      </ContentContainer>
     </ScreenBody>
   )
 }

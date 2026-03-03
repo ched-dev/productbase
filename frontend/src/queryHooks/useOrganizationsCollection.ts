@@ -14,7 +14,7 @@ export function useOrganizationsCollection(): UseOrganizationsCollectionReturn {
   })
 
   const listMyOrgs = useCallback(() => {
-    base.all({ expand: 'owner' })
+    base.all({ expand: 'owner,memberships_via_organization' })
   }, [base.all])
 
   const transferOwnership = useCallback(

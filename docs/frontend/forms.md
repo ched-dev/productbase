@@ -8,9 +8,21 @@ Forms in ProductBase provide a consistent way to implement across the entire app
 
 ## Form Components
 
-Components that provide common form inputs.
+Components that provide common form inputs. These are used sitewide so you can modify in one place for styling or functionality.
 
 **Location:** `src/components/forms/`
+
+| Component | Description |
+|---|---|
+| ActionIconButton | Icon button with optional confirmation and navigation |
+| CancelButton | Styled cancel button for forms |
+| ConfirmationMessage | Modal dialog for confirming destructive actions |
+| DestructiveButton | Red button for destructive actions |
+| EmailInput | Email text input with client-side validation |
+| FieldError | Inline validation error for individual fields |
+| FormActionsGroup | Wrapper for grouping form action buttons |
+| FormError | Alert for form-level API errors |
+| SaveButton | Save/submit button with loading state |
 
 ### ActionIconButton
 
@@ -73,6 +85,37 @@ A wrapper component for form action buttons (Cancel, Save) that provides consist
   <SaveButton submit loading={isSubmitting} />
 </FormActionsGroup>
 ```
+
+### DestructiveButton
+
+A styled button for destructive/dangerous actions with red styling.
+
+**Props:**
+- `onClick?: React.MouseEventHandler<HTMLButtonElement>` - Click handler
+- `label?: string` - Button text (defaults to 'Confirm')
+- `loading?: boolean` - Loading state
+- `disabled?: boolean` - Disabled state
+
+**Usage:**
+```tsx
+<DestructiveButton onClick={handleDelete} label="Delete" />
+```
+
+### EmailInput
+
+A text input for email addresses that validates the value on blur, requiring a proper `user@domain.tld` format. Wraps Mantine's `TextInput` with `type="email"` hardcoded.
+
+**Props:** All `TextInput` props except `type`.
+
+**Usage:**
+```tsx
+<EmailInput name="email" required placeholder="user@example.com" />
+```
+
+**Behavior:**
+- On blur, validates against a regex requiring `local@domain.tld` format
+- Blocks form submission via `setCustomValidity` when validation fails (browser shows native tooltip)
+- Clears validation when the user resumes typing
 
 ### FieldError
 

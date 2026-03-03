@@ -23,20 +23,24 @@ Memberships allow users to belong to multiple **organizations**.
 
 **Unique index** on `(user, organization)` where user is not empty.
 
-## Roles
+## Roles & Permissions
 
-| Role | Can manage members | Can edit org | Can delete org | Can be removed |
-|------|--------------------|-------------|----------------|----------------|
-| `owner` | Yes | Yes | Yes | No (must transfer first) |
-| `admin` | Yes | No | No | Yes |
-| `member` | No | No | No | Yes (or can leave) |
+| Action | Owner | Admin | Member |
+|--------|-------|-------|--------|
+| View/list org (must be member) | Yes | Yes | Yes |
+| Edit org | Yes | No | No |
+| Delete org | Yes | No | No |
+| Invite member | Yes | Yes | No |
+| Change member role | Yes | No | No |
+| Remove member (admin) | Yes | Yes | No |
+| Remove member (member) | Yes | Yes | No |
+| Transfer owner | Yes | No | No |
+| Leave org | No (must transfer) | Yes | Yes |
 
-## API Rules
-
-- **List/View**: Own memberships, or any membership in an org you belong to
-- **Create**: Org owner or admin
-- **Update**: Org owner only (for role changes)
-- **Delete**: Owner/admin can remove non-owner members; members can leave (unless owner)
+- "Owner" refers to the `organization.owner` field on the organizations collection.
+- Owner membership cannot be deleted by anyone — must transfer ownership first.
+- Organization creation requires any authenticated user.
+- Joining an Organziation allows the Owner to see members email address.
 
 ## Auto-created Membership
 
@@ -44,7 +48,8 @@ When an organization is created, a membership with `role: "owner"` is automatica
 
 ## Deletion Protections
 
-- Memberships with `role: "owner"` cannot be deleted (hook enforced)
+- Memberships with `role: "owner"` cannot be deleted — the `handleDeleteProtection` hook returns a descriptive error ("Transfer ownership first")
+- Admins and members cannot see the owner membership for deletion (API rule returns 404)
 - The owner must transfer ownership before leaving or being removed
 
 ## See Also

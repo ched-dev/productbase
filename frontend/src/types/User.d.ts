@@ -8,6 +8,7 @@ export type CachedUser = Pick<User, "name" | "avatar">;
  */
 export type User = {
   id: string; // "4t2ndxzae6w8j99"
+  email: string; // "user@example.com"
   name: string; // "dev user"
   avatar: string; // "somefile.jpg"
   verified: boolean;

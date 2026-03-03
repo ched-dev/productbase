@@ -10,13 +10,9 @@ ProductBase follows a structured component architecture with clear separation of
 
 #### Reusable Components
 
-Components that can be used across multiple pages and contexts.
+Components that can be used across multiple pages and contexts. See the [Component Reference](#component-reference) for a full list.
 
 **Location:** `src/components/`
-
-**Examples:**
-- `Modal` - Modal dialog component
-- `LoadingIcon` - Loading spinner
 
 **Characteristics:**
 - No business logic
@@ -42,36 +38,57 @@ Components that represent complete pages or major sections.
 
 #### Layout Components
 
-Components that provide common layout structure.
+Components that provide common layout structure. See the [Component Reference](#component-reference) for a full list.
 
 **Location:** `src/components/layout/`
-
-**Examples:**
-- `Layout` - Main app layout
-- `ScreenBody` - Page content wrapper
-- `TitleBar` - Page title and actions
 
 **Characteristics:**
 - Provide consistent layout
 - Handle navigation
 - May contain navigation state
 
+#### Badge Components
+
+Components that display status or role indicators. See the [Component Reference](#component-reference) for a full list.
+
+**Location:** `src/components/badges/`
+
+**Characteristics:**
+- Consistent visual indicators across pages
+- Props-driven with standardized colors
+
 #### Form Components
 
-Components that provide common form inputs.
+Components that provide common form inputs. See [Forms](./forms.md#form-components) for a full list and detailed documentation.
 
 **Location:** `src/components/forms/`
-
-For detailed form component documentation and patterns, see [Forms](./forms.md).
-
-**Examples:**
-- `CancelButton` - Cancel action in forms
-- `SaveButton` - Save and Submit action in forms
-- `FieldError` - Display an error for a particular field
 
 **Characteristics:**
 - One place to edit style
 - Consistency in code across froms
+
+## Component Reference
+
+| Component | Description |
+|---|---|
+| **`components/*`** | |
+| Auth | Login and sign-up forms with authentication state |
+| DateChooser | Date picker with quick-select buttons and day navigation |
+| DateDisplay | Clickable date with toggleable format (local/relative) |
+| Entries | Virtualized entry list with filtering and search |
+| FeedbackWidget | Popover widget for collecting user feedback |
+| Icon | Maps icon names to Tabler icons with size/stroke options |
+| LoadingIcon | Ring-shaped loading spinner |
+| RingLoader | Custom SVG ring loader for Mantine |
+| RouteLoading | Loading screen during route transitions |
+| **`components/badges/*`** | |
+| MembershipBadge | Color-coded role badge (owner=yellow, admin=blue, member=gray) |
+| SelfBadge | Green dot badge indicating the current authenticated user |
+| **`components/layout/*`** | |
+| ContentContainer | Constrained-width container for centering content |
+| NavBar | Main navigation bar with page links and new-item menu |
+| ScreenBody | Page layout wrapper with navbar and scrollable content area |
+| TitleBar | Top header with theme toggle, search, settings, and logout |
 
 ## Component Patterns
 
@@ -284,6 +301,8 @@ Function naming inside components have the following rules:
 
 Don't use `useEffect()` to react to state changes. Prefer having callbacks instead. If you are creating new reusable code, prefer to make callbacks instead of forcing consumer to use `useEffect()` for event triggers.
 
+A confirmation message should be used on all destructive actions. Use provided `<ConfirmationMessage>` component.
+
 ## Path Alias
 
 The `@/` alias points to `frontend/src/`. Use it instead of relative imports:
@@ -297,3 +316,33 @@ import ScreenBody from '@/components/ScreenBody'
 import { getApiError } from '../../../../lib/pb/errors'
 import ScreenBody from '../../components/ScreenBody'
 ```
+
+## Mantine Usage
+
+The Mantine packages provide a lot of useful reusable components, hooks, and UI patterns that should be kept when implementing new code inside components.
+
+ProductBase frequently wraps Mantine components and uses them sitewide to allow one source of truth for changing UI. The only way to achieve this is to reuse or create a reusable component which is used everywhere.
+
+ProductBase reusable components live in `frontend/src/components/*`.
+
+### Mantine Components
+
+`@mantine/core` package includes:
+
+- **Layout:** `Box`, `Container`, `Group`, `Stack`
+- **Inputs:** `TextInput`, `Textarea`, `Select`, `Radio`, `Switch`
+- **Buttons:** `Button`, `ActionIcon`
+- **Feedback:** `Alert`, `Loader`
+- **Data Display:** `Badge`, `Card`, `Text`
+- **Overlays:** `Modal`, `Popover`
+- **Other:** `Fieldset`, `MantineProvider`
+
+### Mantine Hooks
+
+`@mantine/hooks` package provides lots of common React hooks for local state. This package includes:
+
+- `useDisclosure` - Manages boolean state with `open`/`close` callbacks (e.g. modals, popovers)
+
+### Mantine Best Practices
+
+When adding a `size` property on wrapper components, use the `MantineSpacing` type instead of `MantineSize`. The `MantineSpacing` type includes custom defined sizes in the theme while the other does not.

@@ -33,7 +33,17 @@ onRecordUpdateRequest((e) => {
 
 // --- Memberships ---
 
+onRecordCreateRequest((e) => {
+  const Memberships = require(`${__hooks}/lib/hooks/memberships.js`)
+  Memberships.handleCreateProtection(e)
+}, 'memberships')
+
 onRecordDeleteRequest((e) => {
   const Memberships = require(`${__hooks}/lib/hooks/memberships.js`)
   Memberships.handleDeleteProtection(e)
+}, 'memberships')
+
+onRecordEnrich((e) => {
+  const Memberships = require(`${__hooks}/lib/hooks/memberships.js`)
+  Memberships.handleEnrichWithUser(e)
 }, 'memberships')

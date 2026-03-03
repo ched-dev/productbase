@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import type { MembershipsRecord } from '@/types'
-import { usePocketbaseCollection, UsePocketbaseCollectionReturn } from './usePocketbaseCollection'
+import { AUTH_USER, usePocketbaseCollection, UsePocketbaseCollectionReturn } from './usePocketbaseCollection'
 
 export interface UseMembershipsCollectionReturn extends UsePocketbaseCollectionReturn<MembershipsRecord> {
   listByOrg: (orgId: string) => void
@@ -11,11 +11,15 @@ export function useMembershipsCollection(): UseMembershipsCollectionReturn {
   const base = usePocketbaseCollection<MembershipsRecord>('memberships', {
     sort: '-created',
     expand: 'user,organization',
+    attachOnCreate: { invited_by: AUTH_USER },
   })
 
   const listByOrg = useCallback(
     (orgId: string) => {
-      base.all({ filter: `organization.id = "${orgId}"`, expand: 'user,invited_by' })
+      base.all({
+        filter: `organization.id = "${orgId}"`,
+        expand: 'user,invited_by'
+      })
     },
     [base.all],
   )

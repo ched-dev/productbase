@@ -13,7 +13,7 @@ const FormError = ({ apiError, title = 'Error' }: FormErrorProps) => {
   }
 
   return (
-    <Alert color="red" title={title} icon={<Icon type="error" size="sm" />}>
+    <Alert color="red" title={title} mb="md" icon={<Icon type="error" size="sm" />}>
       {apiError.message}
     </Alert>
   )

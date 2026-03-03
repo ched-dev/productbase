@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Fieldset, Group, Select, Stack, Text, TextInput, Textarea } from '@mantine/core'
 import ScreenBody from '@/components/layout/ScreenBody'
+import ContentContainer from '@/components/layout/ContentContainer'
 import SaveButton from '@/components/forms/SaveButton'
 import FormError from '@/components/forms/FormError'
 import FieldError from '@/components/forms/FieldError'
@@ -11,6 +12,7 @@ import { useFormState } from '@/hooks/useFormState'
 import { useOrganizationsCollection, useMembershipsCollection } from '@/queryHooks'
 import { navigate } from '@/lib/navigate'
 import type { PBData, PBDataList } from '@/lib/pb/data'
+import type { User } from '@/types/User'
 import FormActionsGroup from '@/components/forms/FormActionsGroup'
 
 export default function OrganizationForm() {
@@ -67,84 +69,93 @@ export default function OrganizationForm() {
     if (transferTarget && id) {
       const membership = nonOwnerMembers.find((m) => m.id === transferTarget)
       if (membership) {
-        await orgs.transferOwnership(id, membership.user as string)
+        const userId = typeof membership.user === 'object'
+          ? (membership.user as User).id
+          : membership.user as string
+        await orgs.transferOwnership(id, userId)
       }
     }
   }
 
   return (
     <ScreenBody>
-      <h1>{isEdit ? 'Edit Organization' : 'Create Organization'}</h1>
+      <ContentContainer>
+        <h1>{isEdit ? 'Edit Organization' : 'Create Organization'}</h1>
 
-      <FormError apiError={apiError} />
+        <FormError apiError={apiError} />
 
-      <form
-        ref={formRef}
-        onSubmit={handleSubmit(onSubmit)}
-      >
-        <Stack gap="sm">
-          <Fieldset legend="Name">
-            <TextInput
-              name="name"
-              required
-              defaultValue={org ? (org.name as string) : ''}
-              placeholder="Organization name"
-            />
-            <FieldError name="name" apiError={apiError} />
-          </Fieldset>
+        <form
+          ref={formRef}
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <Stack gap="sm">
+            <Fieldset legend="Name">
+              <TextInput
+                name="name"
+                required
+                defaultValue={org ? (org.name as string) : ''}
+                placeholder="Organization name"
+              />
+              <FieldError name="name" apiError={apiError} />
+            </Fieldset>
 
-          <Fieldset legend="Description">
-            <Textarea
-              name="description"
-              defaultValue={org ? ((org.description as string) || '') : ''}
-              placeholder="Optional description"
-              autosize
-              minRows={2}
-            />
-            <FieldError name="description" apiError={apiError} />
-          </Fieldset>
+            <Fieldset legend="Description">
+              <Textarea
+                name="description"
+                defaultValue={org ? ((org.description as string) || '') : ''}
+                placeholder="Optional description"
+                autosize
+                minRows={2}
+              />
+              <FieldError name="description" apiError={apiError} />
+            </Fieldset>
 
-          <FormActionsGroup>
-            <CancelButton onClick={() => navigate(isEdit ? `/organizations/${id}` : '/organizations')} />
-            <SaveButton submit loading={orgs.loading} label={isEdit ? 'Save' : 'Create'} />
-          </FormActionsGroup>
-        </Stack>
-      </form>
+            <FormActionsGroup>
+              <CancelButton onClick={() => navigate(isEdit ? `/organizations/${id}` : '/organizations')} />
+              <SaveButton submit loading={orgs.loading} label={isEdit ? 'Save' : 'Create'} />
+            </FormActionsGroup>
+          </Stack>
+        </form>
 
-      {isEdit && org && (
-        <>
-          <Text fw={600} size="lg" mt="xl" mb="sm">Transfer Ownership</Text>
-          <Text size="sm" c="dimmed" mb="sm">
-            Transfer ownership to another member. You will become an admin.
-          </Text>
+        {isEdit && org && (
+          <>
+            <Text fw={600} size="lg" mt="xl" mb="sm">Transfer Ownership</Text>
+            <Text size="sm" c="dimmed" mb="sm">
+              Transfer ownership to another member. You will become an admin.
+            </Text>
 
-          <FormError apiError={transferError} />
+            <FormError apiError={transferError} />
 
-          {nonOwnerMembers.length === 0 ? (
-            <Text size="sm" c="dimmed">No other members to transfer ownership to. Invite members first.</Text>
-          ) : (
-            <form
-              ref={transferFormRef}
-              onSubmit={handleTransferSubmit(onTransferSubmit)}
-            >
-              <Group>
-                <Select
-                  placeholder="Select a member"
-                  data={nonOwnerMembers.map((m) => ({
-                    value: m.id,
-                    label: (m.user as Record<string, unknown>)?.name
-                      ? `${(m.user as Record<string, unknown>).name} (${m.role})`
-                      : `${(m.invite_email as string) || m.user} (${m.role})`,
-                  }))}
-                  value={transferTarget}
-                  onChange={setTransferTarget}
-                />
-                <SaveButton submit loading={orgs.loading} label="Transfer" disabled={!transferTarget} />
-              </Group>
-            </form>
-          )}
-        </>
-      )}
+            {nonOwnerMembers.length === 0 ? (
+              <Text size="sm" c="dimmed">No other members to transfer ownership to. Invite members first.</Text>
+            ) : (
+              <form
+                ref={transferFormRef}
+                onSubmit={handleTransferSubmit(onTransferSubmit)}
+              >
+                <Group>
+                  <Select
+                    placeholder="Select a member"
+                    w={300}
+                    data={nonOwnerMembers.map((m) => {
+                      const user = m.user as User
+                      return {
+                        value: m.id,
+                        label: user.name
+                          ? `${user.name}${user.email ? ` (${user.email})` : ''}`
+                          : (m.invite_email as string) || 'Unknown member',
+                      }
+                    })}
+                    value={transferTarget}
+                    onChange={setTransferTarget}
+                  />
+                  <SaveButton submit loading={orgs.loading} label="Transfer" disabled={!transferTarget} />
+                </Group>
+              </form>
+            )}
+          </>
+        )}
+      </ContentContainer>
     </ScreenBody>
   )
 }
