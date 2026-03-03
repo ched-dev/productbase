@@ -3,6 +3,7 @@ import { Suspense, lazy, useEffect } from 'react'
 import Layout from './Layout'
 import RouteLoading from './components/RouteLoading'
 import { setNavigate } from './lib/navigate'
+import { routes } from './lib/routes'
 
 // Lazy load components for code splitting
 const Home = lazy(() => import('./pages/Home'))
@@ -18,12 +19,12 @@ export function Router() {
       <Suspense fallback={<RouteLoading />}>
         <Routes>
           <Route Component={Layout}>
-            <Route path="/" Component={() => <Home />} />
-            <Route path="/organizations" Component={() => <OrganizationList />} />
-            <Route path="/organizations/new" Component={() => <OrganizationForm />} />
-            <Route path="/organizations/:id" Component={() => <OrganizationDetail />} />
-            <Route path="/organizations/:id/edit" Component={() => <OrganizationForm />} />
-            <Route path="/organizations/:id/members" Component={() => <OrganizationMembers />} />
+            <Route path={routes.home.path} Component={() => <Home />} />
+            <Route path={routes.organizations.list.path} Component={() => <OrganizationList />} />
+            <Route path={routes.organizations.new.path} Component={() => <OrganizationForm />} />
+            <Route path={routes.organizations.detail.path} Component={() => <OrganizationDetail />} />
+            <Route path={routes.organizations.edit.path} Component={() => <OrganizationForm />} />
+            <Route path={routes.organizations.members.path} Component={() => <OrganizationMembers />} />
           </Route>
         </Routes>
       </Suspense>

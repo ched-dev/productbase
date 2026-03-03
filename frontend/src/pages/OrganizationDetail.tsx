@@ -1,13 +1,17 @@
 import { useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { Button, Card, Group, Stack, Text } from '@mantine/core'
+import { routes } from '@/lib/routes'
+import { navigate } from '@/lib/navigate'
 import MembershipBadge from '@/components/badges/MembershipBadge'
 import SelfBadge from '@/components/badges/SelfBadge'
 import LoadingIcon from '@/components/LoadingIcon'
+import NotFoundView from '@/components/NotFoundView'
 import ScreenBody from '@/components/layout/ScreenBody'
 import { useOrganizationsCollection, useMembershipsCollection } from '@/queryHooks'
 import { usePbClient } from '@/lib/pb/client'
 import type { PBData, PBDataList } from '@/lib/pb/data'
+import type { User } from '@/types/User'
 import ContentContainer from '@/components/layout/ContentContainer'
 
 export default function OrganizationDetail() {
@@ -27,11 +31,26 @@ export default function OrganizationDetail() {
   const org = orgs.data as PBData | undefined
   const memberList = members.data as PBDataList | undefined
 
-  if (orgs.loading || !org) {
+  if (!id) {
+    navigate(routes.organizations.list())
+    return null
+  }
+
+  if (orgs.loading) {
     return <ScreenBody><LoadingIcon /></ScreenBody>
   }
 
-  const ownerId = (org.owner as Record<string, unknown>)?.id || (org.owner as string)
+  if (orgs.error?.status === 404 || !org) {
+    return (
+      <NotFoundView
+        message="Organization not found."
+        backTo={routes.organizations.list()}
+        backLabel="Back to Organizations"
+      />
+    )
+  }
+
+  const ownerId = (org.owner as User)?.id || (org.owner as string)
   const isOwner = ownerId === currentUserId
   const memberItems = memberList?.items || []
 
@@ -47,11 +66,11 @@ export default function OrganizationDetail() {
           </div>
           <Group>
             {isOwner && (
-              <Button variant="outline" component={Link} to={`/organizations/${id}/edit`}>
+              <Button variant="outline" component={Link} to={routes.organizations.edit({ id })}>
                 Settings
               </Button>
             )}
-            <Button component={Link} to={`/organizations/${id}/members`}>
+            <Button component={Link} to={routes.organizations.members({ id })}>
               Members ({memberItems.length})
             </Button>
           </Group>
@@ -69,12 +88,12 @@ export default function OrganizationDetail() {
                 <Group justify="space-between">
                   <Group gap="xs">
                     <Text>
-                      {(member.user as Record<string, unknown>)?.name as string
-                        || (member.user as Record<string, unknown>)?.email as string
+                      {(member.user as User)?.name as string
+                        || (member.user as User)?.email as string
                         || (member.invite_email as string)
                         || 'Hidden Member'}
                     </Text>
-                    {((member.user as Record<string, unknown>)?.id || (member.user as string)) === currentUserId && (
+                    {((member.user as User)?.id || (member.user as string)) === currentUserId && (
                       <SelfBadge />
                     )}
                   </Group>
@@ -83,7 +102,7 @@ export default function OrganizationDetail() {
               </Card>
             ))}
             {memberItems.length > 5 && (
-              <Button variant="subtle" component={Link} to={`/organizations/${id}/members`}>
+              <Button variant="subtle" component={Link} to={routes.organizations.members({ id })}>
                 View all {memberItems.length} members
               </Button>
             )}

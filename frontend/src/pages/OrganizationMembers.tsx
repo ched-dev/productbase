@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Button, Card, Fieldset, Group, Select, Stack, Text } from '@mantine/core'
 import LoadingIcon from '@/components/LoadingIcon'
+import NotFoundView from '@/components/NotFoundView'
 import MembershipBadge from '@/components/badges/MembershipBadge'
 import SelfBadge from '@/components/badges/SelfBadge'
 import ScreenBody from '@/components/layout/ScreenBody'
@@ -10,9 +11,11 @@ import FormError from '@/components/forms/FormError'
 import FieldError from '@/components/forms/FieldError'
 import EmailInput from '@/components/forms/EmailInput'
 import { useFormState } from '@/hooks/useFormState'
+import { routes } from '@/lib/routes'
 import { useOrganizationsCollection, useMembershipsCollection } from '@/queryHooks'
 import { usePbClient } from '@/lib/pb/client'
 import type { PBData, PBDataList } from '@/lib/pb/data'
+import type { User } from '@/types/User'
 import ContentContainer from '@/components/layout/ContentContainer'
 import ConfirmationMessage from '@/components/forms/ConfirmationMessage'
 
@@ -41,18 +44,28 @@ export default function OrganizationMembers() {
   const org = orgs.data as PBData | undefined
   const memberList = members.data as PBDataList | undefined
 
-  if (orgs.loading || !org) {
+  if (orgs.loading) {
     return <ScreenBody><LoadingIcon /></ScreenBody>
   }
 
-  const ownerId = (org.owner as Record<string, unknown>)?.id || (org.owner as string)
+  if (orgs.error?.status === 404 || !org) {
+    return (
+      <NotFoundView
+        message="Organization not found."
+        backTo={routes.organizations.list()}
+        backLabel="Back to Organizations"
+      />
+    )
+  }
+
+  const ownerId = (org.owner as User)?.id || (org.owner as string)
   const isOwner = ownerId === currentUserId
   const memberItems = memberList?.items || []
 
   // check if current user is admin
   const currentMembership = memberItems.find(
     (m) => {
-      const memberUserId = (m.user as Record<string, unknown>)?.id || (m.user as string)
+      const memberUserId = (m.user as User)?.id || (m.user as string)
       return memberUserId === currentUserId
     },
   )
@@ -120,7 +133,7 @@ export default function OrganizationMembers() {
         ) : (
           <Stack gap="xs">
             {memberItems.map((member) => {
-              const memberUserId = (member.user as Record<string, unknown>)?.id || (member.user as string)
+              const memberUserId = (member.user as User)?.id || (member.user as string)
               const isCurrentUser = memberUserId === currentUserId
               const isMemberOwner = member.role === 'owner'
 
@@ -129,8 +142,8 @@ export default function OrganizationMembers() {
                   <Group justify="space-between">
                     <Group>
                       <Text>
-                        {(member.user as Record<string, unknown>)?.name as string
-                          || (member.user as Record<string, unknown>)?.email as string
+                        {(member.user as User)?.name as string
+                          || (member.user as User)?.email as string
                           || (member.invite_email as string)
                           || 'Pending'}
                       </Text>

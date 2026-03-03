@@ -8,7 +8,8 @@
       "Bash(npm run generate-pb-types)",
       "Bash(npx tsc *)",
       "Bash(npm test)",
-      "WebFetch(domain:pocketbase.io)"
+      "WebFetch(domain:pocketbase.io)",
+      "Bash(npm run lint)"
     ]
   }
 }

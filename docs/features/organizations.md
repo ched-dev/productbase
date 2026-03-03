@@ -6,6 +6,8 @@ This file is intended to help AI Coding Agents know important information about 
 
 The **organizations** feature was implemented based on the blog article: https://www.flightcontrol.dev/blog/ultimate-guide-to-multi-tenant-saas-data-modeling
 
+Another helpful article to the "why" can be found in the blog article: https://blog.bullettrain.co/teams-should-be-an-mvp-feature/
+
 In PocketBase, we created collections for **organizations** and **memberships** which rely on **users**.
 
 ## Collection Schema

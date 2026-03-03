@@ -1,12 +1,14 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Button, Card, Group, Stack, Text } from '@mantine/core'
+import { routes } from '@/lib/routes'
 import LoadingIcon from '@/components/LoadingIcon'
 import ScreenBody from '@/components/layout/ScreenBody'
 import MembershipBadge from '@/components/badges/MembershipBadge'
 import { useOrganizationsCollection } from '@/queryHooks'
 import { usePbClient } from '@/lib/pb/client'
 import type { PBDataList } from '@/lib/pb/data'
+import type { User } from '@/types/User'
 import ContentContainer from '@/components/layout/ContentContainer'
 
 export default function OrganizationList() {
@@ -25,7 +27,7 @@ export default function OrganizationList() {
       <ContentContainer>
         <Group justify="space-between" mb="lg">
           <h1>Organizations</h1>
-          <Button component={Link} to="/organizations/new">
+          <Button component={Link} to={routes.organizations.new()}>
             Create Organization
           </Button>
         </Group>
@@ -37,7 +39,7 @@ export default function OrganizationList() {
         ) : (
           <Stack gap="sm">
             {orgList.items.map((org) => (
-              <Card key={org.id} shadow="xs" padding="md" withBorder component={Link} to={`/organizations/${org.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+              <Card key={org.id} shadow="xs" padding="md" withBorder component={Link} to={routes.organizations.detail({ id: org.id })} style={{ textDecoration: 'none', color: 'inherit' }}>
                 <Group justify="space-between">
                   <div>
                     <Text fw={600}>{org.name as string}</Text>
@@ -48,7 +50,7 @@ export default function OrganizationList() {
                   {(() => {
                     const memberships = (org.memberships as Array<Record<string, unknown>>) || []
                     const myMembership = memberships.find((m) => {
-                      const uid = (m.user as Record<string, unknown>)?.id || m.user
+                      const uid = (m.user as User)?.id || m.user
                       return uid === currentUserId
                     })
                     return myMembership ? <MembershipBadge role={myMembership.role as string} /> : null

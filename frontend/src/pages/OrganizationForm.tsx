@@ -8,16 +8,18 @@ import FormError from '@/components/forms/FormError'
 import FieldError from '@/components/forms/FieldError'
 import CancelButton from '@/components/forms/CancelButton'
 import LoadingIcon from '@/components/LoadingIcon'
+import NotFoundView from '@/components/NotFoundView'
 import { useFormState } from '@/hooks/useFormState'
 import { useOrganizationsCollection, useMembershipsCollection } from '@/queryHooks'
 import { navigate } from '@/lib/navigate'
+import { routes } from '@/lib/routes'
 import type { PBData, PBDataList } from '@/lib/pb/data'
 import type { User } from '@/types/User'
 import FormActionsGroup from '@/components/forms/FormActionsGroup'
 
 export default function OrganizationForm() {
   const { id } = useParams<{ id: string }>()
-  const isEdit = Boolean(id)
+  const isEdit = id !== undefined
   const orgs = useOrganizationsCollection()
   const members = useMembershipsCollection()
   const [transferTarget, setTransferTarget] = useState<string | null>(null)
@@ -25,16 +27,16 @@ export default function OrganizationForm() {
   const { formRef, apiError, handleSubmit } = useFormState({
     onSuccess: () => {
       if (isEdit) {
-        navigate(`/organizations/${id}`)
+        navigate(routes.organizations.detail({ id }))
       } else {
-        navigate('/organizations')
+        navigate(routes.organizations.list())
       }
     },
   })
 
   const { formRef: transferFormRef, apiError: transferError, handleSubmit: handleTransferSubmit } = useFormState({
     onSuccess: () => {
-      navigate(`/organizations/${id}`)
+      if (isEdit) navigate(routes.organizations.detail({ id }))
     },
   })
 
@@ -45,8 +47,18 @@ export default function OrganizationForm() {
     }
   }, [id])
 
-  if (isEdit && (orgs.loading || !orgs.data)) {
+  if (isEdit && orgs.loading) {
     return <ScreenBody><LoadingIcon /></ScreenBody>
+  }
+
+  if (isEdit && (orgs.error?.status === 404 || !orgs.data)) {
+    return (
+      <NotFoundView
+        message="Organization not found."
+        backTo={routes.organizations.list()}
+        backLabel="Back to Organizations"
+      />
+    )
   }
 
   const org = isEdit ? (orgs.data as PBData) : null
@@ -111,7 +123,7 @@ export default function OrganizationForm() {
             </Fieldset>
 
             <FormActionsGroup>
-              <CancelButton onClick={() => navigate(isEdit ? `/organizations/${id}` : '/organizations')} />
+              <CancelButton onClick={() => navigate(isEdit ? routes.organizations.detail({ id }) : routes.organizations.list())} />
               <SaveButton submit loading={orgs.loading} label={isEdit ? 'Save' : 'Create'} />
             </FormActionsGroup>
           </Stack>

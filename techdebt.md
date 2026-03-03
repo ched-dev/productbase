@@ -12,13 +12,13 @@ Organizations
 
 High Priority
 - [ ] Add simple debug log in each custom hook handler to confirm it is being called and not blocked by API Rules
+- [ ] Go through manual collection creation process
 
 General
+- [ ] Create a Style Guide page for custom components
 - [ ] Update Auth.tsx to use new EmailInput field and formData
 - [ ] Update `npm run generate-pb-types` to show errors for failed migrations
 - [ ] Update `make seed-collection` to be more dynamic and support attaching user
-- [ ] Move CRUD URLs to live in query hook
-- [ ] Go through manual collection creation process
 - [ ] Forms attach authed user at server side
 - [x] Are `e.app` and `$app` different permissions?
 - [ ] Handle non-typed Pocketbase data: JSON fields, enums

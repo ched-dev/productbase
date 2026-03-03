@@ -79,6 +79,7 @@ Components that provide common form inputs. See [Forms](./forms.md#form-componen
 | FeedbackWidget | Popover widget for collecting user feedback |
 | Icon | Maps icon names to Tabler icons with size/stroke options |
 | LoadingIcon | Ring-shaped loading spinner |
+| NotFoundView | Full-page not-found state with message and back navigation |
 | RingLoader | Custom SVG ring loader for Mantine |
 | RouteLoading | Loading screen during route transitions |
 | **`components/badges/*`** | |

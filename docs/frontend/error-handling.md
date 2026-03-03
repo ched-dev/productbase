@@ -249,7 +249,26 @@ Record doesn't exist:
 }
 ```
 
-**Action:** Redirect to list or show "not found" message.
+**Action:** Use the `NotFoundView` component to show a not-found message with back navigation.
+
+```tsx
+import NotFoundView from '@/components/NotFoundView'
+
+if (collection.error?.status === 404 || !record) {
+  return (
+    <NotFoundView
+      message="Record not found."
+      backTo={routes.records.list()}
+      backLabel="Back to Records"
+    />
+  )
+}
+```
+
+`NotFoundView` props:
+- `message?: string` — display text (default: `"Not found."`)
+- `backTo: string` — route path for the back button
+- `backLabel?: string` — button text (default: `"Go Back"`)
 
 ### Server Errors (500, etc.)
 
