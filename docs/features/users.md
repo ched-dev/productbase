@@ -14,12 +14,12 @@ Additionally, a **user** ties into the **organizations** feature outlined in `./
 
 ## Roles & Permissions
 
-| Action | Self | Other User | Superuser |
-|--------|------|------------|-----------|
-| Register | Yes (if registrations enabled) | — | Yes (bypass) |
-| View profile | Yes | No | Yes (admin panel) |
-| Update profile | Yes | No | Yes (admin panel) |
-| Delete account | Yes (must not own orgs) | No | Yes (bypass) |
+| Action | Self | Other User | Superuser | Anonymous |
+|--------|------|------------|-----------|-----------|
+| Register | Yes (if registrations enabled) | — | Yes (bypass) | Yes (if registrations enabled) |
+| View profile | Yes | No | Yes (admin panel) | No |
+| Update profile | Yes | No | Yes (admin panel) | No |
+| Delete account | Yes (must not own orgs) | No | Yes (bypass) | No |
 
 - Registration can be disabled via the `_productbase_settings.allow_user_registrations` flag (enforced by hook).
 - Already-authenticated users cannot create new accounts (enforced by hook).

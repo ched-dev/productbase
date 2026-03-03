@@ -25,22 +25,21 @@ Memberships allow users to belong to multiple **organizations**.
 
 ## Roles & Permissions
 
-| Action | Owner | Admin | Member |
-|--------|-------|-------|--------|
-| View/list org (must be member) | Yes | Yes | Yes |
-| Edit org | Yes | No | No |
-| Delete org | Yes | No | No |
-| Invite member | Yes | Yes | No |
-| Change member role | Yes | No | No |
-| Remove member (admin) | Yes | Yes | No |
-| Remove member (member) | Yes | Yes | No |
-| Transfer owner | Yes | No | No |
-| Leave org | No (must transfer) | Yes | Yes |
+| Action | Owner | Admin | Member | Anonymous |
+|--------|-------|-------|--------|-----------|
+| View/list org (must be member) | Yes | Yes | Yes | No |
+| Edit org | Yes | No | No | No |
+| Delete org | Yes | No | No | No |
+| Invite member | Yes | Yes | No | No |
+| Change member role | Yes | No | No | No |
+| Remove member | Yes | Yes | No | No |
+| Transfer owner | Yes | No | No | No |
+| Leave org | No (must transfer) | Yes | Yes | No |
 
 - "Owner" refers to the `organization.owner` field on the organizations collection.
 - Owner membership cannot be deleted by anyone — must transfer ownership first.
 - Organization creation requires any authenticated user.
-- Joining an Organziation allows the Owner to see members email address.
+- Joining an Organization allows the Owner to see members email address.
 
 ## Auto-created Membership
 

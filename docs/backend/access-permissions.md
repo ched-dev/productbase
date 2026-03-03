@@ -88,7 +88,7 @@ Generate a permission matrix when:
 
 When asked to produce a permission matrix for a collection, follow these steps:
 
-1. **Identify roles and actors** — Determine who interacts with the collection. Look for relation fields (e.g., `user`, `owner`), membership roles (`owner`, `admin`, `member`), or any other actor distinctions.
+1. **Identify roles and actors** — Determine who interacts with the collection. Look for relation fields (e.g., `user`, `owner`), membership roles (`owner`, `admin`, `member`), or any other actor distinctions. Always include an **Anonymous** (unauthenticated) column to make the public access boundary explicit.
 
 2. **Read API rules** — Find the collection's migration file in `pocketbase/pb_migrations/` and extract the `listRule`, `viewRule`, `createRule`, `updateRule`, and `deleteRule`.
 
@@ -103,13 +103,13 @@ When asked to produce a permission matrix for a collection, follow these steps:
 ### Template
 
 ```markdown
-| Action | Role A | Role B | Role C |
-|--------|--------|--------|--------|
-| List/View | Yes | Yes | Yes |
-| Create | Yes | Yes | No |
-| Update | Yes | No | No |
-| Delete | Yes (must transfer first) | No | No |
-| Custom action | Yes | Yes | No |
+| Action | Role A | Role B | Role C | Anonymous |
+|--------|--------|--------|--------|-----------|
+| List/View | Yes | Yes | Yes | No |
+| Create | Yes | Yes | No | No |
+| Update | Yes | No | No | No |
+| Delete | Yes (must transfer first) | No | No | No |
+| Custom action | Yes | Yes | No | No |
 ```
 
 Replace Role A/B/C with the actual roles. Add or remove columns and rows as needed.

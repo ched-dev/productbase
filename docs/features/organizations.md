@@ -21,13 +21,13 @@ In PocketBase, we created collections for **organizations** and **memberships** 
 
 ## Roles & Permissions
 
-| Action | Owner | Admin | Member | Authenticated (non-member) |
-|--------|-------|-------|--------|---------------------------|
-| List/View | Yes | Yes | Yes | No |
-| Create | Yes* | Yes* | Yes* | Yes* |
-| Edit | Yes | No | No | No |
-| Delete | Yes | No | No | No |
-| Transfer ownership | Yes (new owner must be existing member) | No | No | No |
+| Action | Owner | Admin | Member | Authenticated (non-member) | Anonymous |
+|--------|-------|-------|--------|---------------------------|-----------|
+| List/View | Yes | Yes | Yes | No | No |
+| Create | Yes* | Yes* | Yes* | Yes* | No |
+| Edit | Yes | No | No | No | No |
+| Delete | Yes | No | No | No | No |
+| Transfer ownership | Yes (new owner must be existing member) | No | No | No | No |
 
 \* Any authenticated user with a verified account.
 
