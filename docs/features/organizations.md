@@ -19,11 +19,21 @@ In PocketBase, we created collections for **organizations** and **memberships** 
 | `created` | autodate | |
 | `updated` | autodate | |
 
-## API Rules
+## Roles & Permissions
 
-- **List/View**: Owner or any member (via memberships back-relation)
-- **Create**: Authenticated and verified users only (`@request.auth.verified = true`)
-- **Update/Delete**: Owner only
+| Action | Owner | Admin | Member | Authenticated (non-member) |
+|--------|-------|-------|--------|---------------------------|
+| List/View | Yes | Yes | Yes | No |
+| Create | Yes* | Yes* | Yes* | Yes* |
+| Edit | Yes | No | No | No |
+| Delete | Yes | No | No | No |
+| Transfer ownership | Yes (new owner must be existing member) | No | No | No |
+
+\* Any authenticated user with a verified account.
+
+- "Owner" refers to the `organization.owner` field.
+- Verification is enforced by hook (not the API rule) to provide descriptive errors.
+- Owner membership is auto-created on organization creation.
 
 ## Ownership Transfer
 

@@ -12,6 +12,20 @@ A **user** is a person who has signed up for the product. They can only login to
 
 Additionally, a **user** ties into the **organizations** feature outlined in `./docs/organizations.md`.
 
+## Roles & Permissions
+
+| Action | Self | Other User | Superuser |
+|--------|------|------------|-----------|
+| Register | Yes (if registrations enabled) | — | Yes (bypass) |
+| View profile | Yes | No | Yes (admin panel) |
+| Update profile | Yes | No | Yes (admin panel) |
+| Delete account | Yes (must not own orgs) | No | Yes (bypass) |
+
+- Registration can be disabled via the `_productbase_settings.allow_user_registrations` flag (enforced by hook).
+- Already-authenticated users cannot create new accounts (enforced by hook).
+- Users who own organizations must transfer or delete them before deleting their account (enforced by hook).
+- Superusers access the admin panel only, not the frontend.
+
 ## Managing User Auth Settings
 
 Additional user management tasks can be completed in the [Pocketbase admin panel](../frontend/pocketbase-admin-panel.md). Here's some examples of actions:

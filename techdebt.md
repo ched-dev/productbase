@@ -12,7 +12,6 @@ Organizations
 
 High Priority
 - [ ] Add simple debug log in each custom hook handler to confirm it is being called and not blocked by API Rules
-- [ ] API Rule matrix in docs vs comparison in migrations (could get current state of collections for active rules)
 
 General
 - [ ] Update Auth.tsx to use new EmailInput field and formData
