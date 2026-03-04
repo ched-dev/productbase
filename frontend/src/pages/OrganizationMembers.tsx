@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Button, Card, Fieldset, Group, Select, Stack, Text } from '@mantine/core'
+import { Card, Fieldset, Group, Select, Stack, Text } from '@mantine/core'
 import LoadingIcon from '@/components/LoadingIcon'
 import NotFoundView from '@/components/NotFoundView'
 import MembershipBadge from '@/components/badges/MembershipBadge'
@@ -18,6 +18,7 @@ import type { PBData, PBDataList } from '@/lib/pb/data'
 import type { User } from '@/types/User'
 import ContentContainer from '@/components/layout/ContentContainer'
 import ConfirmationMessage from '@/components/forms/ConfirmationMessage'
+import DangerButton from '@/components/forms/DangerButton'
 
 export default function OrganizationMembers() {
   const { id } = useParams<{ id: string }>()
@@ -157,9 +158,7 @@ export default function OrganizationMembers() {
                           onConfirm={() => handleRemoveMember(member.id)}
                         >
                           {(open) => (
-                            <Button variant="subtle" color="red" size="xs" onClick={open}>
-                              Remove
-                            </Button>
+                            <DangerButton label="Remove" size="xs" onClick={open} />
                           )}
                         </ConfirmationMessage>
                       )}
@@ -170,9 +169,7 @@ export default function OrganizationMembers() {
                           onConfirm={() => handleRemoveMember(member.id)}
                         >
                           {(open) => (
-                            <Button variant="subtle" color="red" size="xs" onClick={open}>
-                              Leave
-                            </Button>
+                            <DangerButton label="Leave" size="xs" onClick={open} />
                           )}
                         </ConfirmationMessage>
                       )}

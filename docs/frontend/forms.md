@@ -111,17 +111,22 @@ A wrapper component for form action buttons (Cancel, Save) that provides consist
 
 ### DangerButton
 
-A styled button for dangerous/destructive actions with red styling.
+A styled button for dangerous/destructive actions with subtle red styling. Uses the `subtle` variant for an inverse (text-only) appearance that still signals danger.
 
 **Props:**
 - `onClick?: React.MouseEventHandler<HTMLButtonElement>` - Click handler
 - `label?: string` - Button text (defaults to 'Confirm')
 - `loading?: boolean` - Loading state
 - `disabled?: boolean` - Disabled state
+- `size?: ButtonProps['size']` - Button size (Mantine size value)
 
 **Usage:**
 ```tsx
+// Default size in a confirmation dialog
 <DangerButton onClick={handleDelete} label="Delete" />
+
+// Compact inline usage
+<DangerButton label="Remove" size="xs" onClick={open} />
 ```
 
 ### EmailInput
