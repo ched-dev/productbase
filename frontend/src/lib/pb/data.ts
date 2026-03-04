@@ -208,6 +208,13 @@ class PBItemCollection {
   }
 
   /**
+   * Support standard array property at top level
+   */
+  get length(): number {
+    return this._items.length;
+  }
+
+  /**
    * Get the first item
    */
   get first(): PBRecord | undefined {
@@ -289,6 +296,13 @@ export class PBDataList {
    */
   get last(): PBRecord | undefined {
     return this.itemCollection.last;
+  }
+
+  /**
+   * Support standard array property at top level
+   */
+  get length(): number {
+    return this.itemCollection.items.length;
   }
 
   /**

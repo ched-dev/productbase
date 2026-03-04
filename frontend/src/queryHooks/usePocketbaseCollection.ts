@@ -30,7 +30,7 @@ export interface CollectionDefaults {
   attachOnCreate?: Record<string, string | typeof AUTH_USER>
 }
 
-type LastActiveOp = 'list' | 'all' | 'getOne' | 'create' | 'update' | 'delete' | null
+type LastActiveOp = 'list' | 'all' | 'getOne' | 'count' | 'create' | 'update' | 'delete' | null
 
 type PBSystemFields = 'id' | 'collectionId' | 'collectionName' | 'created' | 'updated'
 
@@ -38,6 +38,7 @@ export interface UsePocketbaseCollectionReturn<T = Record<string, unknown>> {
   list:     (opts?: RecordListOptions) => void
   all:      (opts?: RecordFullListOptions) => void
   getOne:   (id: string, opts?: RecordOptions) => void
+  count:    (opts?: RecordListOptions) => void
   create:   (data: Omit<T, PBSystemFields> | FormData, opts?: RecordOptions) => Promise<PBData>
   update:   (id: string, data: Partial<Omit<T, PBSystemFields>> | FormData, opts?: RecordOptions) => Promise<PBData>
   delete:   (id: string, opts?: CommonOptions) => Promise<void>
@@ -58,6 +59,8 @@ const collectionKeys = {
   allFull: (col: string, opts: object) => ['collection', col, 'all', opts] as const,
   ones:    (col: string) => ['collection', col, 'one'] as const,
   one:     (col: string, id: string, opts: object) => ['collection', col, 'one', id, opts] as const,
+  counts:  (col: string) => ['collection', col, 'count'] as const,
+  count:   (col: string, opts: object) => ['collection', col, 'count', opts] as const,
 }
 
 // ---- Hook ----
@@ -80,6 +83,7 @@ export function usePocketbaseCollection<T = Record<string, unknown>>(
   const [listParams,   setListParams]   = useState<RecordListOptions | null>(null)
   const [allParams,    setAllParams]    = useState<RecordFullListOptions | null>(null)
   const [getOneParams, setGetOneParams] = useState<{ id: string; opts: RecordOptions } | null>(null)
+  const [countParams,  setCountParams]  = useState<RecordListOptions | null>(null)
   const [lastActiveOp, setLastActiveOp] = useState<LastActiveOp>(null)
   const lastDataRef = useRef<PBDataList | PBData | undefined>(undefined)
 
@@ -127,6 +131,20 @@ export function usePocketbaseCollection<T = Record<string, unknown>>(
       return new PBData(result)
     },
     enabled: getOneParams !== null,
+    gcTime: 5 * 60 * 1000,
+  })
+
+  // ---- Read: count ----
+  const countQuery = useQuery({
+    queryKey: countParams
+      ? collectionKeys.count(collectionName, countParams)
+      : collectionKeys.counts(collectionName),
+    queryFn: async () => {
+      const { filter, ...rest } = countParams!
+      const result = await pb.collection(collectionName).getList(1, 1, { ...rest, filter, fields: 'id' })
+      return new PBDataList(result)
+    },
+    enabled: countParams !== null,
     gcTime: 5 * 60 * 1000,
   })
 
@@ -200,6 +218,14 @@ export function usePocketbaseCollection<T = Record<string, unknown>>(
     [stableDefaults],
   )
 
+  const count = useCallback(
+    (opts: RecordListOptions = {}) => {
+      setCountParams({ ...stableDefaults, ...opts })
+      setLastActiveOp('count')
+    },
+    [stableDefaults],
+  )
+
   // ---- Public write methods ----
   const create = useCallback(
     (data: Record<string, unknown> | FormData, opts?: RecordOptions) => {
@@ -230,6 +256,7 @@ export function usePocketbaseCollection<T = Record<string, unknown>>(
     lastActiveOp === 'list'   ? listQuery :
     lastActiveOp === 'all'    ? allQuery :
     lastActiveOp === 'getOne' ? getOneQuery :
+    lastActiveOp === 'count'  ? countQuery :
     null
 
   const activeMutation =
@@ -250,6 +277,7 @@ export function usePocketbaseCollection<T = Record<string, unknown>>(
     list,
     all,
     getOne,
+    count,
     create,
     update,
     delete: deleteRecord,

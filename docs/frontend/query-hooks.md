@@ -58,6 +58,7 @@ Inherits the PocketBase options, with additions for helpers.
 | `list` | `(opts?: ListOptions) => void` | Fetch paginated list |
 | `all` | `(opts?: ListOptions) => void` | Fetch all items (all pages) |
 | `getOne` | `(id: string, opts?: GetOneOptions) => void` | Fetch single record by ID |
+| `count` | `(opts?: ListOptions) => void` | Fetch total item count (lightweight — fetches 1 record with `fields: 'id'`). Access result via `data.getTotalItems()` |
 
 ##### Mutations (async, returns Promise)
 
@@ -199,6 +200,7 @@ List query results with pagination helpers:
 ```ts
 interface PBDataList<T> {
   items: T[]
+  length: number
   first: T
   last: T
   getPage(): number  // 1-based

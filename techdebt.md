@@ -13,7 +13,7 @@ Organizations
 High Priority
 - [ ] Add simple debug log in each custom hook handler to confirm it is being called and not blocked by API Rules
 - [ ] Go through manual collection creation process
-- [ ] Remove typescript errors (with outdated code)
+- [ ] Upgrade to Mantine v9 beta
 
 Auth
 - [ ] MFA integration

@@ -87,8 +87,6 @@ const apiError = getApiError(err, {
 **Built-in remaps:**
 - `'Failed to create record.'` → `'Invalid Data.'`
 
----
-
 ## Error Handling in Forms
 
 Integrate `ApiError` with `useFormState` and `FieldError` components.

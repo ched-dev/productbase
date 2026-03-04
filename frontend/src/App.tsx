@@ -1,5 +1,4 @@
 import '@mantine/core/styles.css'
-import 'react-virtualized/styles.css'
 import '@/global.css'
 
 import { MantineProvider } from '@mantine/core'

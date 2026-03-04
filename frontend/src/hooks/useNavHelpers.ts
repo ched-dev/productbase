@@ -30,7 +30,11 @@ export function useNavHelpers() {
   )
 
   /**
-   * Navigate to another path within the app
+   * Creates a callback to navigate to another path within the app  
+   * Use when you want to pass to an onClick callback
+   * ```
+   * onClick={navigateTo('/path')} // triggers when the click happens
+   * ```
    * @param href `/path/name`
    * @returns void
    */

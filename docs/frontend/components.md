@@ -73,9 +73,6 @@ Components that provide common form inputs. See [Forms](./forms.md#form-componen
 |---|---|
 | **`components/*`** | |
 | Auth | Login and sign-up forms with authentication state |
-| DateChooser | Date picker with quick-select buttons and day navigation |
-| DateDisplay | Clickable date with toggleable format (local/relative) |
-| Entries | Virtualized entry list with filtering and search |
 | FeedbackWidget | Popover widget for collecting user feedback |
 | Icon | Maps icon names to Tabler icons with size/stroke options |
 | LoadingIcon | Ring-shaped loading spinner |
@@ -139,43 +136,13 @@ class FeedbackCard extends BaseCard {
 
 ## List Patterns
 
-### 1. List with Pagination
+### List with Pagination
 
 TBD
 
-### 2. Virtualized Lists
+### Virtualized Lists
 
-For long lists, use virtualization:
-
-```tsx
-import { VariableSizeList } from 'react-window'
-
-export function FeedbackList() {
-  const feedback = useUserFeedbackCollection()
-  const { listRef, viewingId } = useListView({
-    items: feedback.data?.items || [],
-    onParamsUpdate: handleFilterChange
-  })
-
-  return (
-    <VariableSizeList
-      ref={listRef}
-      height={600}
-      itemCount={feedback.data?.items.length || 0}
-      itemSize={() => 100}
-    >
-      {({ index, style }) => (
-        <div style={style}>
-          <FeedbackCard
-            feedback={feedback.data.items[index]}
-            viewing={feedback.data.items[index].id === viewingId}
-          />
-        </div>
-      )}
-    </VariableSizeList>
-  )
-}
-```
+For long lists, use virtualization. See example in [VirtualizedListExample](../../frontend/src/components/examples/VirtualizedListExample.tsx).
 
 ## Detail Patterns
 

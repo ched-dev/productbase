@@ -163,36 +163,7 @@ const FeedbackDetail = lazy(() => import('./pages/FeedbackDetail'))
 
 ### Virtualization
 
-```tsx
-// For long lists
-import { VariableSizeList } from 'react-window'
-
-export function FeedbackList() {
-  const feedback = useUserFeedbackCollection()
-  const { listRef, viewingId, scrollToIndex } = useListView({
-    items: feedback.data?.items || [],
-    onParamsUpdate: handleFilterChange
-  })
-
-  return (
-    <VariableSizeList
-      ref={listRef}
-      height={600}
-      itemCount={feedback.data?.items.length || 0}
-      itemSize={() => 100}
-    >
-      {({ index, style }) => (
-        <div style={style}>
-          <FeedbackCard
-            feedback={feedback.data.items[index]}
-            viewing={feedback.data.items[index].id === viewingId}
-          />
-        </div>
-      )}
-    </VariableSizeList>
-  )
-}
-```
+For long lists, use virtualization. See example in [VirtualizedListExample](../../frontend/src/components/examples/VirtualizedListExample.tsx).
 
 ### Memoization
 

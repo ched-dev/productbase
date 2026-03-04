@@ -1,30 +1,35 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
-import { VariableSizeList as List } from 'react-window'
+import { VirtuosoHandle } from 'react-virtuoso'
 import { ParamsFilter, QueryFilter } from '@/lib/UrlParams'
 import { useQueryParam } from './useQueryParam'
 
 interface UseListViewProps<T> {
   items: (T & { id: string })[]
+  /**
+   * Callback to handle updates when the params change  
+   * TODO: update needed - relies on QueryFilter for tracker
+   */
   onParamsUpdate: (params: ParamsFilter | null) => void
 }
 
-interface UseListViewReturn {
-  listRef: React.Ref<List>
+interface UseListViewReturn<T> {
+  listItems: (T & { id: string })[]
+  listRef: React.RefObject<VirtuosoHandle | null>
   viewingId: string | null
   urlProps: string
   setViewingIndex: (index: number | null) => void
   scrollToIndex: (index?: number) => void
   scrollToTop: () => void
   scrollToBottom: (setIndex?: boolean) => void
-  getViewingIndex: (id: UseListViewReturn['viewingId']) => number
+  getViewingIndex: (id: UseListViewReturn<T>['viewingId']) => number
 }
 
 export const useListView = <T>({
   items = [],
   onParamsUpdate,
-}: UseListViewProps<T>): UseListViewReturn => {
-  const listRef = useRef<List>(null)
+}: UseListViewProps<T>): UseListViewReturn<T> => {
+  const listRef = useRef<VirtuosoHandle>(null)
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -62,24 +67,24 @@ export const useListView = <T>({
   )
 
   const scrollToIndex = useCallback((index = 0) => {
-    listRef.current?.scrollToItem(Number(index), 'start')
+    listRef.current?.scrollToIndex({ index: Number(index), align: 'start' })
   }, [])
 
   const scrollToTop = useCallback(() => {
-    listRef.current?.scrollToItem(0, 'start')
+    listRef.current?.scrollToIndex({ index: 0, align: 'start' })
     setViewingIndex(0)
   }, [setViewingIndex])
 
   const scrollToBottom = useCallback(
     (setIndex = true) => {
-      listRef.current?.scrollToItem(items.length - 1, 'end')
+      listRef.current?.scrollToIndex({ index: items.length - 1, align: 'end' })
       setIndex && setViewingIndex(items.length - 1)
     },
     [items.length, setViewingIndex]
   )
 
   const getViewingIndex = useCallback(
-    (id: UseListViewReturn['viewingId']) =>
+    (id: UseListViewReturn<T>['viewingId']) =>
       items.findIndex((entry) => entry.id === id),
     [items]
   )
@@ -108,6 +113,7 @@ export const useListView = <T>({
   }, [location.search])
 
   return {
+    listItems: items,
     listRef,
     viewingId: getViewingId(),
     urlProps: getUrlProps(),

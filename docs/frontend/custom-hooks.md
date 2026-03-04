@@ -69,11 +69,9 @@ const onSubmit = async (data: FormData) => {
 </form>
 ```
 
----
-
 ## `useListView`
 
-Manages a virtualized list view with URL-synchronized state. Tracks which item is "viewing" (selected) and integrates with `react-window` for performance.
+Manages a virtualized list view with URL-synchronized state. Tracks which item is "viewing" (selected) and integrates with `react-virtuoso` for performance.
 
 ### API
 
@@ -82,7 +80,8 @@ useListView<T>({
   items: (T & { id: string })[]
   onParamsUpdate: (params: ParamsFilter | null) => void
 }): {
-  listRef: React.Ref<VariableSizeList>
+  listItems: (T & { id: string })[]
+  listRef: React.RefObject<VirtuosoHandle | null>
   viewingId: string | null
   urlProps: string
   setViewingIndex: (index: number | null) => void
@@ -95,27 +94,7 @@ useListView<T>({
 
 ### Usage
 
-```tsx
-const feedback = useUserFeedbackCollection()
-const { listRef, viewingId, urlProps, scrollToIndex, scrollToBottom } = useListView({
-  items: feedback.data?.items || [],
-  onParamsUpdate: (params) => {
-    // Called when the query filter changes from the URL
-  },
-})
-
-<VariableSizeList ref={listRef} {...listProps}>
-  {({ index, style }) => (
-    <div style={style}>
-      <FeedbackCard
-        item={feedback.data.items[index]}
-        viewing={feedback.data.items[index].id === viewingId}
-        {...parseQueryString(urlProps)}
-      />
-    </div>
-  )}
-</VariableSizeList>
-```
+See example in [VirtualizedListExample](../../frontend/src/components/examples/VirtualizedListExample.tsx).
 
 ### Behavior
 
@@ -125,8 +104,6 @@ const { listRef, viewingId, urlProps, scrollToIndex, scrollToBottom } = useListV
 - `onParamsUpdate` is called whenever URL search params change (used to propagate filter updates)
 - `urlProps` is a query string fragment (e.g., `"?viewingId=abc123"`) for building links that preserve state
 - `scrollToBottom(true)` scrolls to the bottom and optionally sets the viewed item to the last one
-
----
 
 ## `useNavHelpers`
 
@@ -166,8 +143,6 @@ const { routeMatches, navigateTo } = useNavHelpers()
 - `reload()` is equivalent to `window.location.reload()`
 - `goBack()` is equivalent to `navigate(-1)`
 
----
-
 ## `useQueryParam`
 
 Two hooks for managing URL query parameters as JSON-encoded, typed values.
@@ -206,8 +181,6 @@ const linkHref = buildUrl('/feedback', { tags: ['bug'], operator: 'and' })
 - `useBuildQueryUrl` preserves all current URL params except the `query` param itself
   - This ensures `viewingId` (from `useListView`) persists when building filter links
   - Default `operator` is set to `'and'` in the built URL for consistency
-
----
 
 ## Related Patterns
 

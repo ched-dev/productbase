@@ -51,16 +51,6 @@ const AuthGate = ({ children }: React.PropsWithChildren) => {
     return (
       <>
         <FormError apiError={apiError} />
-        {isSubmitting && (
-          <p className={classes.errorMessage}>
-            <Loader
-              type="ring"
-              color="white"
-              size="xl"
-              aria-label="Logging In"
-            />
-          </p>
-        )}
         <form ref={formRef} onSubmit={handleSubmit(onSubmit)}>
           {mode == 'signup' && (
             <Fieldset legend="Name" className={classes.fieldset}>

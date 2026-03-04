@@ -17,7 +17,7 @@ export default defineConfig({
           vendor: ['react', 'react-dom', 'react-router-dom', '@mantine/core', '@mantine/hooks'],
 
           // Virtualization libraries
-          virtualization: ['react-virtualized', 'react-window', 'react-virtualized-auto-sizer'],
+          virtualization: ['react-virtuoso'],
 
           // Utilities
           utils: ['lodash', 'moment']
