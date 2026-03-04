@@ -13,8 +13,7 @@ interface Props {
 export default function DestructiveButton({ onClick, label = 'Confirm', loading, disabled }: Props) {
   return (
     <Button
-      variant="filled"
-      color="red"
+      variant="danger"
       onClick={onClick}
       loading={loading}
       disabled={disabled}

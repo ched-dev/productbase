@@ -12,8 +12,7 @@ export default function SaveButton({ submit, onClick, label = 'Save', loading, d
   return (
     <Button
       type={submit ? 'submit' : undefined}
-      variant="filled"
-      color="teal"
+      variant="success"
       onClick={onClick}
       loading={loading}
       disabled={disabled}
