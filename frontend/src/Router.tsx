@@ -1,9 +1,9 @@
-import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom'
-import { Suspense, lazy, useEffect } from 'react'
+import { Suspense, lazy } from 'react'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import AuthGate from './components/AuthGate'
-import Layout from './Layout'
+import NavigateHelpers from './components/productbase/NavigateHelpers'
 import RouteLoading from './components/RouteLoading'
-import { setNavigate } from './lib/navigate'
+import Layout from './Layout'
 import { routes } from './lib/routes'
 
 // Lazy load components for code splitting
@@ -16,7 +16,7 @@ const OrganizationMembers = lazy(() => import('./pages/OrganizationMembers'))
 export function Router() {
   return (
     <BrowserRouter>
-      <ExportNavigate />
+      <NavigateHelpers />
       <AuthGate>
         <Suspense fallback={<RouteLoading />}>
           <Routes>
@@ -33,16 +33,4 @@ export function Router() {
       </AuthGate>
     </BrowserRouter>
   )
-}
-
-
-function ExportNavigate() {
-  const navigate = useNavigate();
-  
-  // Initialize navigate on first render
-  useEffect(() => {
-    setNavigate(navigate);
-  }, [navigate]);
-  
-  return null;
 }

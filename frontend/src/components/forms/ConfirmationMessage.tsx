@@ -1,7 +1,7 @@
 import { Modal, Text } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import CancelButton from './CancelButton'
-import DestructiveButton from './DestructiveButton'
+import DangerButton from './DangerButton'
 import FormActionsGroup from './FormActionsGroup'
 
 interface ConfirmationMessageProps {
@@ -38,7 +38,7 @@ export default function ConfirmationMessage({
         <Text mb="lg">{message}</Text>
         <FormActionsGroup>
           <CancelButton onClick={close} label={cancelLabel} />
-          <DestructiveButton onClick={handleConfirm} label={confirmLabel} />
+          <DangerButton onClick={handleConfirm} label={confirmLabel} />
         </FormActionsGroup>
       </Modal>
     </>

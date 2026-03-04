@@ -1,4 +1,4 @@
-import { navigate } from '@/lib/navigate'
+import { navigateUsingRouter } from '@/hooks/useNavigateHelpers'
 import fromPairs from 'lodash/fromPairs'
 import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
@@ -80,7 +80,7 @@ const urlStorage = {
   },
   navigate: (path: string, newValue: UrlStorageData) => {
     urlStorage.currentValue = urlStorage.createUrlState(newValue, false)
-    navigate(path + '?' + urlStorage.currentValue)
+    navigateUsingRouter(path + '?' + urlStorage.currentValue)
   },
 }
 

@@ -2,12 +2,13 @@ import { useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { Button, Card, Group, Stack, Text } from '@mantine/core'
 import { routes } from '@/lib/routes'
-import { navigate } from '@/lib/navigate'
+import { useNavigateHelpers } from '@/hooks/useNavigateHelpers'
 import MembershipBadge from '@/components/badges/MembershipBadge'
 import SelfBadge from '@/components/badges/SelfBadge'
 import LoadingIcon from '@/components/LoadingIcon'
 import NotFoundView from '@/components/NotFoundView'
 import ScreenBody from '@/components/layout/ScreenBody'
+import SecondaryButton from '@/components/forms/SecondaryButton'
 import { useOrganizationsCollection, useMembershipsCollection } from '@/queryHooks'
 import { usePbClient } from '@/lib/pb/client'
 import type { PBData, PBDataList } from '@/lib/pb/data'
@@ -16,6 +17,7 @@ import ContentContainer from '@/components/layout/ContentContainer'
 
 export default function OrganizationDetail() {
   const { id } = useParams<{ id: string }>()
+  const { navigate } = useNavigateHelpers()
   const orgs = useOrganizationsCollection()
   const members = useMembershipsCollection()
   const pb = usePbClient()
@@ -66,9 +68,7 @@ export default function OrganizationDetail() {
           </div>
           <Group>
             {isOwner && (
-              <Button variant="outline" component={Link} to={routes.organizations.edit({ id })}>
-                Settings
-              </Button>
+              <SecondaryButton label="Settings" href={routes.organizations.edit({ id })} />
             )}
             <Button component={Link} to={routes.organizations.members({ id })}>
               Members ({memberItems.length})
@@ -102,9 +102,7 @@ export default function OrganizationDetail() {
               </Card>
             ))}
             {memberItems.length > 5 && (
-              <Button variant="subtle" component={Link} to={routes.organizations.members({ id })}>
-                View all {memberItems.length} members
-              </Button>
+              <SecondaryButton label={`View all ${memberItems.length} members`} href={routes.organizations.members({ id })} />
             )}
           </Stack>
         )}

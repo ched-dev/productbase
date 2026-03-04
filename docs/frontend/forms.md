@@ -17,12 +17,13 @@ Components that provide common form inputs. These are used sitewide so you can m
 | ActionIconButton | Icon button with optional confirmation and navigation |
 | CancelButton | Styled cancel button for forms |
 | ConfirmationMessage | Modal dialog for confirming destructive actions |
-| DestructiveButton | Red button for destructive actions |
+| DangerButton | Red button for dangerous/destructive actions |
 | EmailInput | Email text input with client-side validation |
 | FieldError | Inline validation error for individual fields |
 | FormActionsGroup | Wrapper for grouping form action buttons |
 | FormError | Alert for form-level API errors |
 | SaveButton | Save/submit button with loading state |
+| SecondaryButton | Subtle button for non-primary actions and navigation |
 
 ### ActionIconButton
 
@@ -67,8 +68,35 @@ A styled cancel button that provides consistent styling across forms.
 
 **Usage:**
 ```tsx
-<CancelButton onClick={() => navigate('/dashboard')} />
+<CancelButton onClick={close} />
+
+// if going to navigate away, use the goBackOrNavigate helper to return to previous page or use fallback URL if no history available
+const { goBackOrNavigate } = useNavigateHelpers()
+
+<CancelButton onClick={() => goBackOrNavigate(routes.organizations.list())} />
 ```
+
+### SecondaryButton
+
+A styled button for non-primary actions such as navigation, settings, or alternative paths. Uses the subtle variant (same as CancelButton) to visually distinguish from primary actions. Supports both click handlers and navigation via React Router links.
+
+**Props:**
+- `label: string` - Button text (required)
+- `href?: string` - Navigation URL (uses React Router Link)
+- `onClick?: React.MouseEventHandler<HTMLButtonElement>` - Click handler
+
+**Usage:**
+```tsx
+// Navigation action
+<SecondaryButton label="Settings" href="/organizations/123/edit" />
+
+// Click handler action
+<SecondaryButton label="Switch Mode" onClick={() => handleSwitch()} />
+```
+
+**When to use SecondaryButton vs CancelButton:**
+- Use `CancelButton` when dismissing or canceling a form/modal (e.g., closing a dialog, abandoning edits)
+- Use `SecondaryButton` for non-primary actions like navigation, settings, alternative paths, or mode switching
 
 ### FormActionsGroup
 
@@ -86,19 +114,25 @@ A wrapper component for form action buttons (Cancel, Save) that provides consist
 </FormActionsGroup>
 ```
 
-### DestructiveButton
+### DangerButton
 
-A styled button for destructive/dangerous actions with red styling.
+A styled button for dangerous/destructive actions with red styling. Defaults to a filled red button. Pass `invert` for a subtle (text-only) variant useful for inline or less prominent danger actions.
 
 **Props:**
 - `onClick?: React.MouseEventHandler<HTMLButtonElement>` - Click handler
 - `label?: string` - Button text (defaults to 'Confirm')
 - `loading?: boolean` - Loading state
 - `disabled?: boolean` - Disabled state
+- `size?: ButtonProps['size']` - Button size (Mantine size value)
+- `invert?: boolean` - Use subtle variant instead of filled (default: false)
 
 **Usage:**
 ```tsx
-<DestructiveButton onClick={handleDelete} label="Delete" />
+// Default filled style in a confirmation dialog
+<DangerButton onClick={handleDelete} label="Delete" />
+
+// Inverted subtle style for inline usage
+<DangerButton label="Remove" size="xs" invert onClick={open} />
 ```
 
 ### EmailInput

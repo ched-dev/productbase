@@ -4,6 +4,7 @@ import ContentContainer from '@/components/layout/ContentContainer'
 import Icon from '@/components/Icon'
 import { routes } from '@/lib/routes'
 import FormActionsGroup from './forms/FormActionsGroup'
+import SecondaryButton from './forms/SecondaryButton'
 
 interface NotFoundViewProps {
   message?: string
@@ -20,9 +21,7 @@ export default function NotFoundView({ message = 'Not found.', backTo, backLabel
           <Button component={Link} to={backTo}>
             {backLabel}
           </Button>
-          <Button variant="light" component={Link} to={routes.home()}>
-            Go Home
-          </Button>
+          <SecondaryButton label="Go Home" href={routes.home()} />
         </FormActionsGroup>
       </Alert>
     </ContentContainer>

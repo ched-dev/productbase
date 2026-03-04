@@ -105,30 +105,31 @@ See example in [VirtualizedListExample](../../frontend/src/components/examples/V
 - `urlProps` is a query string fragment (e.g., `"?viewingId=abc123"`) for building links that preserve state
 - `scrollToBottom(true)` scrolls to the bottom and optionally sets the viewed item to the last one
 
-## `useNavHelpers`
+## `useNavigateHelpers`
 
-Convenience wrapper around React Router v6's `useNavigate` and `useLocation` for common navigation actions.
+Convenience wrapper around React Router's `useNavigate` and `useLocation` for common navigation actions. Helps enforce useful UX patterns.
 
 ### API
 
 ```ts
-useNavHelpers(): {
+useNavigateHelpers(): {
   routeMatches(values: string[]): boolean
-  navigateTo(href: string): () => void
+  navigate: NavigateFunction // react routers navigate function
+  handleNavigate(href: string): () => void
   reload(): void
-  goBack(): void
+  goBackOrNavigate(fallback: string): void
 }
 ```
 
 ### Usage
 
 ```tsx
-const { routeMatches, navigateTo } = useNavHelpers()
+const { routeMatches, handleNavigate } = useNavigateHelpers()
 
 <NavBar>
   <NavItem
     active={routeMatches(['/home', '/dashboard'])}
-    onClick={navigateTo('/dashboard')}
+    onClick={handleNavigate('/dashboard')}
   >
     Dashboard
   </NavItem>
@@ -139,9 +140,22 @@ const { routeMatches, navigateTo } = useNavHelpers()
 
 - `routeMatches(values)` returns `true` if the current pathname matches any of the provided paths
   - The root path `/` uses exact matching; all other paths use case-insensitive `startsWith`
-- `navigateTo(href)` returns a thunk suitable for passing directly to `onClick` handlers
+- `navigate` is React Router's `useNavigate()` exposed directly for ad-hoc navigation within components
+- `handleNavigate(href)` returns a callback suitable for passing directly to `onClick` handlers
 - `reload()` is equivalent to `window.location.reload()`
-- `goBack()` is equivalent to `navigate(-1)`
+- `goBackOrNavigate(fallback)` navigates to the previous in-app page if one exists, otherwise navigates to the provided fallback URL. Both paths push onto the history stack so the browser back button returns to the page where the call was made.
+
+### Module-level Export: `navigateUsingRouter`
+
+For navigation **outside React** (plain stores, utility functions, places without Router context), import `navigateUsingRouter` directly:
+
+```ts
+import { navigateUsingRouter } from '@/hooks/useNavigateHelpers'
+
+navigateUsingRouter('/some-path')
+```
+
+This is a thin wrapper around React Router's navigate function, initialized at app startup in `NavigateHelpers` component. Use `useNavigateHelpers().navigate` in components and hooks instead.
 
 ## `useQueryParam`
 

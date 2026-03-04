@@ -7,7 +7,7 @@ import {
   Menu,
   MenuProps,
 } from '@mantine/core'
-import { useNavHelpers } from '@/hooks/useNavHelpers'
+import { useNavigateHelpers } from '@/hooks/useNavigateHelpers'
 import Icon, { IconProps } from '../Icon'
 import classes from './NavBar.module.css'
 import { routes } from '@/lib/routes'
@@ -48,7 +48,7 @@ const menuIconProps: Partial<IconProps> = {
 interface NavBarProps {}
 
 const NavBar: React.FC<NavBarProps> = () => {
-  const { routeMatches, navigateTo } = useNavHelpers()
+  const { routeMatches, handleNavigate } = useNavigateHelpers()
   const organizations = useOrganizationsCollection()
   const orgsCount = organizations.data instanceof PBDataList ? organizations.data.getTotalItems() : undefined
 
@@ -60,7 +60,7 @@ const NavBar: React.FC<NavBarProps> = () => {
     <Group className={classes.navbar}>
       <ActionIcon.Group>
         <ActionIcon
-          onClick={navigateTo('/')}
+          onClick={handleNavigate('/')}
           aria-label="Home"
           data-active={routeMatches(['/'])}
           {...actionIconProps}
@@ -73,7 +73,7 @@ const NavBar: React.FC<NavBarProps> = () => {
           <span>Home</span>
         </ActionIcon>
         <ActionIcon
-          onClick={navigateTo(routes.organizations.list())}
+          onClick={handleNavigate(routes.organizations.list())}
           aria-label="Organizations"
           data-active={routeMatches([routes.organizations.list()])}
           {...actionIconProps}
@@ -114,13 +114,13 @@ const NavBar: React.FC<NavBarProps> = () => {
 
           <Menu.Dropdown>
             <Menu.Item
-              onClick={navigateTo(routes.organizations.new())}
+              onClick={handleNavigate(routes.organizations.new())}
               leftSection={<Icon type="organization" {...menuIconProps} />}
             >
               Organization
             </Menu.Item>
             <Menu.Item
-              onClick={navigateTo('/new')}
+              onClick={handleNavigate('/new')}
               leftSection={<Icon type="create" {...menuIconProps} />}
             >
               Entry
