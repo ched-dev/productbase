@@ -8,9 +8,9 @@ interface Props {
 }
 
 /**
- * A destructive button for actions like delete, remove, destroy. used sitewide.
+ * A danger button for actions like delete, remove, destroy. used sitewide.
  */
-export default function DestructiveButton({ onClick, label = 'Confirm', loading, disabled }: Props) {
+export default function DangerButton({ onClick, label = 'Confirm', loading, disabled }: Props) {
   return (
     <Button
       variant="filled"

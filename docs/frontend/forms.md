@@ -17,7 +17,7 @@ Components that provide common form inputs. These are used sitewide so you can m
 | ActionIconButton | Icon button with optional confirmation and navigation |
 | CancelButton | Styled cancel button for forms |
 | ConfirmationMessage | Modal dialog for confirming destructive actions |
-| DestructiveButton | Red button for destructive actions |
+| DangerButton | Red button for dangerous/destructive actions |
 | EmailInput | Email text input with client-side validation |
 | FieldError | Inline validation error for individual fields |
 | FormActionsGroup | Wrapper for grouping form action buttons |
@@ -109,9 +109,9 @@ A wrapper component for form action buttons (Cancel, Save) that provides consist
 </FormActionsGroup>
 ```
 
-### DestructiveButton
+### DangerButton
 
-A styled button for destructive/dangerous actions with red styling.
+A styled button for dangerous/destructive actions with red styling.
 
 **Props:**
 - `onClick?: React.MouseEventHandler<HTMLButtonElement>` - Click handler
@@ -121,7 +121,7 @@ A styled button for destructive/dangerous actions with red styling.
 
 **Usage:**
 ```tsx
-<DestructiveButton onClick={handleDelete} label="Delete" />
+<DangerButton onClick={handleDelete} label="Delete" />
 ```
 
 ### EmailInput
