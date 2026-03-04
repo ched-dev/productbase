@@ -17,6 +17,7 @@ High Priority
 General
 - [ ] Create a Style Guide page for custom components
 - [ ] Update Auth.tsx to use new EmailInput field and formData
+- [ ] Cron job to delete old backups
 - [ ] Update `npm run generate-pb-types` to show errors for failed migrations
 - [ ] Update `make seed-collection` to be more dynamic and support attaching user
 - [ ] Forms attach authed user at server side
