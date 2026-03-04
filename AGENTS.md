@@ -5,7 +5,7 @@ This guide provides essential information for AI agents working on the ProductBa
 ## Project Overview
 
 **ProductBase** is a product starter template using Pocketbase as a backend. It's a monorepo containing:
-- **Frontend**: React 19 + Mantine UI (static site)
+- **Frontend**: React 19 + [Mantine](https://mantine.dev/) (static site)
 - **Backend**: Pocketbase (single-file backend with SQLite, auth, storage)
 - **Infrastructure**: Docker Compose for local development and deployments
 
@@ -25,7 +25,7 @@ The latest development setup information resides in the `./README_dev.md` file.
 
 | Component | Technology |
 |-----------|------------|
-| Frontend | React 19, Mantine UI 7, TypeScript |
+| Frontend | React 19, Mantine 7, TypeScript |
 | Global State Management | Zustand |
 | Query Management | TanStack Query |
 | Backend | Pocketbase (Go/JS) |

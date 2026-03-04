@@ -41,7 +41,7 @@ Email Integration
 - [ ] Emails can be emulated in dev mode
 
 Frontend
-- [x] React + [Mantine UI](https://ui.mantine.dev/) compiled to static site served via PocketBase
+- [x] React + [Mantine](https://mantine.dev/) compiled to static site served via PocketBase
 - [ ] Landing page design template
 - [ ] Mobile first design template
 - [x] Reusable coding standards to easily build out new features

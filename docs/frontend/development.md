@@ -4,7 +4,7 @@ This guide documents frontend development patterns and best practices for Produc
 
 ## Overview
 
-Frontend development in ProductBase follows modern React patterns with TypeScript, TanStack Query for data management, and Mantine UI for components. This section provides patterns and conventions for building maintainable frontend features.
+Frontend development in ProductBase follows modern React patterns with TypeScript, TanStack Query for data management, and [Mantine](https://mantine.dev/) for components. This section provides patterns and conventions for building maintainable frontend features.
 
 ## Development Workflow
 
