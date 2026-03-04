@@ -10,13 +10,14 @@ import SaveButton from './forms/SaveButton'
 import { useFormState } from '@/hooks/useFormState'
 import { useAuth } from '@/hooks/useAuth'
 import type { SignUpInfo } from '@/types/Auth'
+import { Outlet } from 'react-router-dom'
 
 const mockAccount = config.MOCK_ACCOUNT
 const hasDevAccount = Boolean(mockAccount.email && mockAccount.password)
 
 type AuthMode = 'login' | 'signup'
 
-const AuthGate = ({ children }: React.PropsWithChildren) => {
+const AuthGate = () => {
   const [mode, setMode] = useState<AuthMode>('login')
   const { loading, user, login, signup } = useAuth()
   const { formRef, submitted, success, apiError, handleSubmit, reset } = useFormState()
@@ -82,7 +83,7 @@ const AuthGate = ({ children }: React.PropsWithChildren) => {
   }
 
   if (user) {
-    return <>{children}</>
+    return <Outlet />
   }
 
   return (

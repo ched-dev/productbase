@@ -2,7 +2,7 @@ import { VirtualizedListExample } from "@/components/examples/VirtualizedListExa
 import ContentContainer from "@/components/layout/ContentContainer"
 import ScreenBody from "@/components/layout/ScreenBody"
 
-export default function Home() {
+export default function AppHome() {
   return (
     <ScreenBody>
       <ContentContainer>

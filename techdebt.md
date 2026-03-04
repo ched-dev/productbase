@@ -22,7 +22,7 @@ Auth
 
 General
 - [ ] Add API driven feature flag support
-- [ ] Add a landing page which doesn't require auth, links to login and signup
+- [ ] Update landing page design
 - [ ] Create a Style Guide page for custom components
 - [ ] Cron job to delete old backups
 - [ ] Auto-backup on deployment before migrations

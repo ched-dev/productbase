@@ -21,7 +21,7 @@ export default function NotFoundView({ message = 'Not found.', backTo, backLabel
           <Button component={Link} to={backTo}>
             {backLabel}
           </Button>
-          <SecondaryButton label="Go Home" href={routes.home()} />
+          <SecondaryButton label="Go Home" href={routes.appHome()} />
         </FormActionsGroup>
       </Alert>
     </ContentContainer>

@@ -1,28 +1,19 @@
-import { useEffect, useState } from 'react'
-import type { User } from '@/types/User'
-import { refreshAuth, userLogin, userLogout, userSignUp } from '@/lib/pb/auth'
-import { usePbClient } from '@/lib/pb/client'
+import { userLogin, userLogout, userSignUp } from '@/lib/pb/auth'
 import type { SignInInfo, SignUpInfo } from '@/types/Auth'
+import useAppStore from '@/stores/AppStore'
 
-const pb = usePbClient()
-
+/**
+ * A thin wrapper around the global AppStore auth values and actions
+ */
 export function useAuth() {
-  const [loading, setLoading] = useState(true)
-  const [user, setUser] = useState<User | null>(null)
-
-  useEffect(() => {
-    refreshAuth().then(() => {
-      setUser(pb.authStore.record as User | null)
-      setLoading(false)
-    })
-  }, [])
+  const appStore = useAppStore()
 
   /**
    * Login the user to the pocketbase backend
    */
   const login = async (account: SignInInfo) => {
-    const result = await userLogin(account)
-    setUser(result.user ?? null)
+    const { user } = await userLogin(account)
+    appStore.setUser(user ?? null)
   }
 
   /**
@@ -37,8 +28,22 @@ export function useAuth() {
    */
   const logout = async () => {
     await userLogout()
-    setUser(null)
+    appStore.setUser(null)
   }
 
-  return { loading, user, login, signup, logout }
+  /**
+   * Refresh the authentication token and update the user
+   */
+  const refreshAuth = async () => {
+    return appStore.refreshAuth()
+  }
+
+  return {
+    loading: !appStore.authLoaded,
+    user: appStore.user,
+    login,
+    signup,
+    logout,
+    refreshAuth
+  }
 }

@@ -9,6 +9,14 @@ import type { SerializeOptions } from "pocketbase";
 import type { SignInInfo, SignUpInfo } from "@/types/Auth";
 import type { User } from "@/types/User";
 
+/**
+ * NOTE: These should not be used directly as they will not update the AppStore
+ * which holds the auth state. Use the `useAuth()` hook to access auth in components.
+ */
+
+/**
+ * PocketBase client used everywhere
+ */
 const pb = usePbClient();
 
 export async function userLogin(account: SignInInfo) {
@@ -23,7 +31,8 @@ export async function userLogin(account: SignInInfo) {
 
   cacheAuth();
 
-  return { user: pb.authStore.record as User | null };
+  const user = pb.authStore.record as User | null
+  return { user };
 }
 export async function userLogout() {
   clearCachedAuth();
@@ -74,6 +83,7 @@ export async function refreshAuth() {
     pb.authStore.loadFromCookie(cookie.get(AUTH_COOKIE_KEY) || "");
 
     if (pb.authStore.isValid) {
+      console.log('Refreshing auth...')
       await pb.collection("users").authRefresh();
       cacheAuth();
     } else {
@@ -83,6 +93,8 @@ export async function refreshAuth() {
     console.log(e);
     clearCachedAuth();
   }
+
+  return pb.authStore?.record as User | null
 }
 
 /**

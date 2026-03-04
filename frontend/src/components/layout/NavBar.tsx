@@ -60,9 +60,9 @@ const NavBar: React.FC<NavBarProps> = () => {
     <Group className={classes.navbar}>
       <ActionIcon.Group>
         <ActionIcon
-          onClick={handleNavigate('/')}
+          onClick={handleNavigate(routes.appHome())}
           aria-label="Home"
-          data-active={routeMatches(['/'])}
+          data-active={routeMatches([routes.appHome()])}
           {...actionIconProps}
         >
           <Icon

@@ -17,7 +17,8 @@
  * ```
  */
 export const routes = {
-  home: defineRoute('/'),
+  publicLanding: defineRoute('/'),
+  appHome: defineRoute('/app'),
 
   resetPassword: defineRoute('/reset-password'),
   acceptInvite: defineRoute('/accept-invite'),
