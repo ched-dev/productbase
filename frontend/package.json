@@ -4,7 +4,9 @@
   "type": "module",
   "version": "0.1.0",
   "scripts": {
+    "predev": "node tasks/required-env-vars.mjs",
     "dev": "vite --host --port 8800",
+    "prebuild": "node tasks/required-env-vars.mjs",
     "build": "tsc && vite build",
     "generate-pb-types": "node tasks/generate-pb-types.mjs",
     "preview": "vite preview",

@@ -1,34 +1,11 @@
 #!/usr/bin/env node
 
-import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { loadEnv } from 'vite';
 import PocketBase from 'pocketbase';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const repoRoot = path.join(__dirname, '../..');
-const envPath = path.join(repoRoot, 'pocketbase', '.env');
-
-// Parse environment file
-function loadEnv(filePath) {
-  if (!fs.existsSync(filePath)) {
-    throw new Error(`Missing ${filePath}. Did you copy over env file examples?`);
-  }
-
-  const content = fs.readFileSync(filePath, 'utf8');
-  const env = {};
-  content.split('\n').forEach(line => {
-    const trimmed = line.trim();
-    if (trimmed && !trimmed.startsWith('#')) {
-      const [key, ...valueParts] = trimmed.split('=');
-      const value = valueParts.join('=').trim();
-      if (key) {
-        env[key] = value;
-      }
-    }
-  });
-  return env;
-}
 
 // Fake data generators
 const fakeDataGenerators = {
@@ -170,11 +147,14 @@ async function main() {
 
   try {
     // Load env
-    const pbEnv = loadEnv(envPath);
-    const pbUrl = process.env.PB_API_URL || 'http://localhost:8100';
+    const pbEnv = loadEnv('development', path.join(__dirname, '../../pocketbase'), '');
+    const pbUrl = pbEnv.POCKETBASE_API_URL;
     const superuserEmail = pbEnv.DEV_SUPERUSER_EMAIL;
     const superuserPassword = pbEnv.DEV_SUPERUSER_PASSWORD;
 
+    if (!pbUrl) {
+      throw new Error('POCKETBASE_API_URL missing in pocketbase/.env');
+    }
     if (!superuserEmail || !superuserPassword) {
       throw new Error('DEV_SUPERUSER_EMAIL or DEV_SUPERUSER_PASSWORD missing in pocketbase/.env');
     }

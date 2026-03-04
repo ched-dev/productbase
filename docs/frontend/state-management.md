@@ -80,7 +80,6 @@ const [modalOpen, setModalOpen] = useState(false)
 // ❌ DON'T: Use for server data
 // (use TanStack Query instead)
 const { user, setUser } = useUserStore()  // ❌ Bad
-const user = getCachedUser()               // ✅ Good (or TanStack Query)
 ```
 
 ### React State — Local State

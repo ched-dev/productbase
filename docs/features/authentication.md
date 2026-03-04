@@ -32,15 +32,13 @@ ProductBase uses **PocketBase** as its auth provider. Authentication is email/pa
 1. User submits email and password via `AuthGate` component
 2. `useAuth().login()` authenticates via PocketBase
 3. Auth token cached to cookie using `config.AUTH_COOKIE_KEY` and `config.AUTH_COOKIE_EXPIRATION_DAYS`
-3. User profile cached to separate cookie using `config.USER_COOKIE_KEY` and `config.USER_COOKIE_EXPIRATION_DAYS` (saves only `config.USER_FIELDS`)
-5. `AuthGate` component renders its children, revealing the app routes
+4. `AuthGate` component renders its children, revealing the app routes
 
 ### Sign Out
 
 1. `useAuth().logout()` calls `userLogout()`
 2. Auth cookie cleared via `clearCachedAuth()` (clears `pb.authStore` and removes cookie)
-3. User cookie cleared via `clearCachedUser()`
-4. React state set to `null`, causing `AuthGate` to render the login form
+3. React state set to `null`, causing `AuthGate` to render the login form
 
 ### Password Reset
 
@@ -60,7 +58,6 @@ ProductBase uses **PocketBase** as its auth provider. Authentication is email/pa
 | Cookie | Key | Expiration | Purpose |
 |--------|-----|------------|---------|
 | `productbase_auth` | `AUTH_COOKIE_KEY` | 1 day | Auth token and user metadata |
-| `productbase_user` | `USER_COOKIE_KEY` | 7 days | Cached user profile (name, avatar) |
 | `productbase_su_auth` | `AUTH_SUPERUSER_COOKIE_KEY` | 1 day | Superuser authentication |
 
 - Cookies use `sameSite: "strict"`

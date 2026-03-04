@@ -4,10 +4,10 @@ import {
   AUTH_COOKIE_KEY,
   IS_DEV,
 } from "@/config";
-import { cacheUser, clearCachedUser, getCachedUser } from "./user";
 import { usePbClient } from "./client";
 import type { SerializeOptions } from "pocketbase";
 import type { SignInInfo, SignUpInfo } from "@/types/Auth";
+import type { User } from "@/types/User";
 
 const pb = usePbClient();
 
@@ -23,14 +23,12 @@ export async function userLogin(account: SignInInfo) {
 
   cacheAuth();
 
-  // cache user data used in UI
-  const user = await cacheUser();
-  return { user };
+  return { user: pb.authStore.record as User | null };
 }
 export async function userLogout() {
   clearCachedAuth();
-  clearCachedUser();
-  return { user: getCachedUser() };
+  // force page reload to clear any local state
+  window.location.reload();
 }
 
 export async function sendForgotPasswordEmail(email: string) {

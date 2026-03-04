@@ -13,10 +13,12 @@ Organizations
 High Priority
 - [ ] Add simple debug log in each custom hook handler to confirm it is being called and not blocked by API Rules
 - [ ] Go through manual collection creation process
+- [ ] Remove typescript errors (with outdated code)
 
 Auth
 - [ ] MFA integration
 - [ ] Auth with third party providers
+- [ ] Update superuser.ts with changes to auth.ts
 
 General
 - [ ] Add API driven feature flag support
@@ -33,4 +35,5 @@ General
 - [ ] Squash migrations after a feature is completed
 - [ ] `nvm use # node v20+` for everyone
 - [ ] Replace public fav icons
-- [ ] Remove cached user code, not needed without SSR
+- [ ] Ability to update App Settings via environment variables cron job (removes migration)
+- [ ] Move TanStack Query stale time to config, update in main.tsx

@@ -1,16 +1,18 @@
 import { useEffect, useState } from 'react'
-import type { CachedUser } from '@/types'
+import type { User } from '@/types/User'
 import { refreshAuth, userLogin, userLogout, userSignUp } from '@/lib/pb/auth'
-import { getCachedUser } from '@/lib/pb'
+import { usePbClient } from '@/lib/pb/client'
 import type { SignInInfo, SignUpInfo } from '@/types/Auth'
+
+const pb = usePbClient()
 
 export function useAuth() {
   const [loading, setLoading] = useState(true)
-  const [user, setUser] = useState<CachedUser | null>(null)
+  const [user, setUser] = useState<User | null>(null)
 
   useEffect(() => {
     refreshAuth().then(() => {
-      setUser(getCachedUser())
+      setUser(pb.authStore.record as User | null)
       setLoading(false)
     })
   }, [])

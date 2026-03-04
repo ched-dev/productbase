@@ -18,7 +18,6 @@ export default function TitleBar() {
 
   const logoutUser = () => {
     userLogout()
-    window.location.reload()
   }
 
   return (

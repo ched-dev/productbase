@@ -22,9 +22,8 @@ These are useful for conditionally enabling dev-only features (e.g. mock account
 
 | Constant | Source | Description |
 |----------|--------|-------------|
-| `FALLBACK_PUBLIC_FRONTEND_URL` | Hardcoded | Fallback public URL (`https://productbase.ched.dev`) |
-| `PUBLIC_URL` | `VITE_FRONTEND_URL` env var, falls back to `FALLBACK_PUBLIC_FRONTEND_URL` | The public-facing site URL, used to build absolute links (e.g. in emails) |
-| `API_URL` | `VITE_PB_API_URL` env var | PocketBase API URL used by the PocketBase client. This will be the same as `PUBLIC_URL` when in production, but different in dev. |
+| `PUBLIC_URL` | `VITE_FRONTEND_URL` env var | The public-facing site URL, used to build absolute links (e.g. in emails) |
+| `API_URL` | `VITE_POCKETBASE_API_URL` env var | PocketBase API URL used by the PocketBase client. This will be the same as `PUBLIC_URL` when in production, but different in dev. |
 
 ## Dev Mock Account
 
@@ -38,18 +37,6 @@ When `IS_DEV` is `true`, `MOCK_ACCOUNT` is populated from environment variables 
 
 In dev, the login form can be submitted with no values if the `MOCK_ACCOUNT` is present.
 In production, all fields default to empty strings and require a value to submit.
-
-## User Cache Cookies
-
-These constants control how the currently logged-in user's display info is cached in a cookie.
-
-| Constant | Value | Description |
-|----------|-------|-------------|
-| `USER_FIELDS` | `["name", "avatar"]` | Which `CachedUser` fields to persist |
-| `USER_COOKIE_KEY` | `"productbase_user"` | Cookie name for cached user info |
-| `USER_COOKIE_EXPIRATION_DAYS` | `7` | Days before the user info cookie expires |
-
-This cookie stores UI display data only — it does not contain auth tokens.
 
 ## Auth Cookies
 

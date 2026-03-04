@@ -1,5 +1,4 @@
-import type { CachedUser } from "./types";
-import { SignUpInfo } from "./types/Auth";
+import type { SignUpInfo } from "./types/Auth"
 
 /**
  * App Config and Debugging Settings
@@ -18,21 +17,38 @@ export const IS_DEV = import.meta.env.DEV
 /**
  * Is the app running in production?
  */
-export const IS_PROD = !IS_DEV;
+export const IS_PROD = !IS_DEV
 
 /**
  * Is the app running in the browser?
  */
-export const IS_BROWSER = !import.meta.env.SSR;
+export const IS_BROWSER = !import.meta.env.SSR
 
-/**
- * Fallback for PUBLIC_FRONTEND_URL
- */
-export const FALLBACK_PUBLIC_FRONTEND_URL = "https://productbase.ched.dev";
 /**
  * Public site URL
  */
-export const PUBLIC_URL = import.meta.env.VITE_FRONTEND_URL || FALLBACK_PUBLIC_FRONTEND_URL;
+export const PUBLIC_URL = import.meta.env.VITE_FRONTEND_URL
+
+/**
+ * PocketBase API URL
+ */
+export const API_URL = import.meta.env.VITE_POCKETBASE_API_URL
+
+/**
+ * Used to store authStore data from PB
+ */
+export const AUTH_COOKIE_KEY = "productbase_auth"
+
+/**
+ * Used to store superuser authStore data from PB
+ */
+export const AUTH_SUPERUSER_COOKIE_KEY = "productbase_su_auth"
+
+/**
+ * Number of days before auth cookie expires
+ * _Only applies to the auth token_
+ */
+export const AUTH_COOKIE_EXPIRATION_DAYS = 1
 
 /**
  * Default account info used to login locally. Uses the `DEV_MOCK_USER_*` env values
@@ -45,38 +61,10 @@ export const MOCK_ACCOUNT: SignUpInfo = IS_DEV ? {
 } : { name: '', email: '', password: '' }
 
 /**
- * User fields to save to cache
+ * Checks that required config values are present and logs errors for any missing ones.
+ * Called before the app mounts. Can be called anywhere features require a config value.
  */
-export const USER_FIELDS: (keyof CachedUser)[] = ["name", "avatar"];
-
-/**
- * Used to store UI displayed user info (USER_FIELDS)
- */
-export const USER_COOKIE_KEY = "productbase_user";
-
-/**
- * Number of days before user cookie expires
- * _Only applies to the user info, not tokens_
- */
-export const USER_COOKIE_EXPIRATION_DAYS = 7;
-
-/**
- * Used to store authStore data from PB
- */
-export const AUTH_COOKIE_KEY = "productbase_auth";
-
-/**
- * Used to store superuser authStore data from PB
- */
-export const AUTH_SUPERUSER_COOKIE_KEY = "productbase_su_auth";
-
-/**
- * Number of days before auth cookie expires
- * _Only applies to the auth token_
- */
-export const AUTH_COOKIE_EXPIRATION_DAYS = 1;
-
-/**
- * PB API URL
- */
-export const API_URL = import.meta.env.VITE_PB_API_URL;
+export function requiredConfigCheck(configObj: Record<string, unknown>, keys: string[]) {
+  const missing = keys.filter(key => configObj[key] === undefined)
+  missing.forEach(key => console.error(`[config] Missing required config: ${key}`))
+}

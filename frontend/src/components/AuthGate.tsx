@@ -13,7 +13,6 @@ import type { SignUpInfo } from '@/types/Auth'
 
 const mockAccount = config.MOCK_ACCOUNT
 const hasDevAccount = Boolean(mockAccount.email && mockAccount.password)
-console.log('hasDevAccount', hasDevAccount)
 
 type AuthMode = 'login' | 'signup'
 
