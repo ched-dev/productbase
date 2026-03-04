@@ -17,11 +17,10 @@ High Priority
 Auth
 - [ ] MFA integration
 - [ ] Auth with third party providers
-- [ ] Move forgot password and accept invite routes to routes file
 
 General
+- [ ] Add API driven feature flag support
 - [ ] Add a landing page which doesn't require auth, links to login and signup
-- [ ] Add config.ts information
 - [ ] Create a Style Guide page for custom components
 - [ ] Cron job to delete old backups
 - [ ] Auto-backup on deployment before migrations
@@ -34,3 +33,4 @@ General
 - [ ] Squash migrations after a feature is completed
 - [ ] `nvm use # node v20+` for everyone
 - [ ] Replace public fav icons
+- [ ] Remove cached user code, not needed without SSR

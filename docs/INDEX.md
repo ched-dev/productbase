@@ -21,6 +21,7 @@ Welcome to the ProductBase documentation index! This file serves as a comprehens
 ### Frontend Architecture
 
 - **[Pocketbase Admin Panel](./frontend/pocketbase-admin-panel.md)** - Admin panel configuration, schema management, and user management
+- **[Configuration](./frontend/config.md)** - App-wide constants, environment detection, Base URLs, and cookie settings
 - **[Frontend Development](./frontend/development.md)** - Frontend development patterns and best practices
 - **[State Management](./frontend/state-management.md)** - State management strategy using TanStack Query, Zustand, React state, and URL state
   - **[Query Hooks](./frontend/query-hooks.md)** - Collection query hooks architecture and usage patterns

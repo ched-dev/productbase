@@ -45,16 +45,6 @@ export const MOCK_ACCOUNT: SignUpInfo = IS_DEV ? {
 } : { name: '', email: '', password: '' }
 
 /**
- * URL of reset password page
- */
-export const USER_RESET_PASSWORD_URL = PUBLIC_URL + "/reset-password";
-
-/**
- * URL of accept invite page
- */
-export const USER_ACCEPT_INVITE_URL = PUBLIC_URL + "/accept-invite";
-
-/**
  * User fields to save to cache
  */
 export const USER_FIELDS: (keyof CachedUser)[] = ["name", "avatar"];

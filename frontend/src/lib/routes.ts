@@ -19,6 +19,9 @@
 export const routes = {
   home: defineRoute('/'),
 
+  resetPassword: defineRoute('/reset-password'),
+  acceptInvite: defineRoute('/accept-invite'),
+
   organizations: {
     list: defineRoute('/organizations'),
     new: defineRoute('/organizations/new'),
