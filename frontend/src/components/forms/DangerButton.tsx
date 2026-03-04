@@ -6,15 +6,16 @@ interface Props {
   loading?: boolean
   disabled?: boolean
   size?: ButtonProps['size']
+  invert?: boolean
 }
 
 /**
  * A danger button for actions like delete, remove, destroy. used sitewide.
  */
-export default function DangerButton({ onClick, label = 'Confirm', loading, disabled, size }: Props) {
+export default function DangerButton({ onClick, label = 'Confirm', loading, disabled, size, invert }: Props) {
   return (
     <Button
-      variant="subtle"
+      variant={invert ? 'subtle' : 'filled'}
       color="red"
       size={size}
       onClick={onClick}

@@ -158,7 +158,7 @@ export default function OrganizationMembers() {
                           onConfirm={() => handleRemoveMember(member.id)}
                         >
                           {(open) => (
-                            <DangerButton label="Remove" size="xs" onClick={open} />
+                            <DangerButton label="Remove" size="xs" invert onClick={open} />
                           )}
                         </ConfirmationMessage>
                       )}
@@ -169,7 +169,7 @@ export default function OrganizationMembers() {
                           onConfirm={() => handleRemoveMember(member.id)}
                         >
                           {(open) => (
-                            <DangerButton label="Leave" size="xs" onClick={open} />
+                            <DangerButton label="Leave" size="xs" invert onClick={open} />
                           )}
                         </ConfirmationMessage>
                       )}
