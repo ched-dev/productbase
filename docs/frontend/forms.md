@@ -88,7 +88,7 @@ A wrapper component for form action buttons (Cancel, Save) that provides consist
 
 ### DestructiveButton
 
-A styled button for destructive/dangerous actions with red styling.
+A styled button for destructive/dangerous actions using the `danger` custom variant.
 
 **Props:**
 - `onClick?: React.MouseEventHandler<HTMLButtonElement>` - Click handler

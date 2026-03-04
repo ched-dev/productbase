@@ -311,6 +311,27 @@ ProductBase reusable components live in `frontend/src/components/*`.
 
 - `useDisclosure` - Manages boolean state with `open`/`close` callbacks (e.g. modals, popovers)
 
+### Custom Variants
+
+ProductBase defines custom variants via `variantColorResolver` in the theme (`src/theme.ts`). These variants are available on `Button`, `ActionIcon`, `Badge`, and other components that support `variantColorResolver`. Custom variant types are declared in `src/types/mantine.d.ts`.
+
+| Variant | Color | Text Color | Use Case |
+|---|---|---|---|
+| `primary` | Blue | White | Primary actions |
+| `secondary` | Gray | White | Secondary actions |
+| `success` | Teal | White | Save, create, confirm actions |
+| `danger` | Red | White | Destructive, delete actions |
+| `warning` | Yellow | Black | Caution, warning actions |
+| `info` | Cyan | White | Informational actions |
+
+**Usage:**
+```tsx
+<Button variant="success">Save</Button>
+<Button variant="danger">Delete</Button>
+```
+
+When adding new custom variants, update both the `variantColorResolver` in `src/theme.ts` and the type declarations in `src/types/mantine.d.ts`.
+
 ### Mantine Best Practices
 
 When adding a `size` property on wrapper components, use the `MantineSpacing` type instead of `MantineSize`. The `MantineSpacing` type includes custom defined sizes in the theme while the other does not.
