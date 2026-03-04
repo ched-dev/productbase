@@ -14,10 +14,17 @@ High Priority
 - [ ] Add simple debug log in each custom hook handler to confirm it is being called and not blocked by API Rules
 - [ ] Go through manual collection creation process
 
+Auth
+- [ ] MFA integration
+- [ ] Auth with third party providers
+- [ ] Move forgot password and accept invite routes to routes file
+
 General
+- [ ] Add a landing page which doesn't require auth, links to login and signup
+- [ ] Add config.ts information
 - [ ] Create a Style Guide page for custom components
-- [ ] Update Auth.tsx to use new EmailInput field and formData
 - [ ] Cron job to delete old backups
+- [ ] Auto-backup on deployment before migrations
 - [ ] Update `npm run generate-pb-types` to show errors for failed migrations
 - [ ] Update `make seed-collection` to be more dynamic and support attaching user
 - [ ] Forms attach authed user at server side
@@ -26,4 +33,4 @@ General
 - [ ] Mantine error colors
 - [ ] Squash migrations after a feature is completed
 - [ ] `nvm use # node v20+` for everyone
-- [ ] Replace public icons
+- [ ] Replace public fav icons

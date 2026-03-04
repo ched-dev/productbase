@@ -6,7 +6,7 @@ import { SignUpInfo } from "./types/Auth";
  */
 
 /**
- * The version of ProductBase
+ * The version of ProductBase frontend template
  */
 export const VERSION = `1.0`
 
@@ -35,12 +35,13 @@ export const FALLBACK_PUBLIC_FRONTEND_URL = "https://productbase.ched.dev";
 export const PUBLIC_URL = import.meta.env.VITE_FRONTEND_URL || FALLBACK_PUBLIC_FRONTEND_URL;
 
 /**
- * Default account info used to login locally
+ * Default account info used to login locally. Uses the `DEV_MOCK_USER_*` env values
+ * if we are in dev mode.
  */
 export const MOCK_ACCOUNT: SignUpInfo = IS_DEV ? {
-  name: 'dev user',
-  email: 'fake@gmail.com',
-  password: 'password',
+  name: import.meta.env.VITE_DEV_MOCK_USER_NAME || 'dev user',
+  email: import.meta.env.VITE_DEV_MOCK_USER_EMAIL || '',
+  password: import.meta.env.VITE_DEV_MOCK_USER_PASSWORD || '',
 } : { name: '', email: '', password: '' }
 
 /**

@@ -33,9 +33,10 @@ Welcome to the ProductBase documentation index! This file serves as a comprehens
 
 ### 👥 User and Organization Features
 
+- **[Authentication](./features/authentication.md)** - Auth flows, session management, route protection, and registration controls
 - **[Users](./features/users.md)** - User types, management, and authentication patterns (frontend perspective)
 - **[Organizations](./features/organizations.md)** - Multi-tenant organization feature implementation
-- **[Memberships](./features/memberships.md)** - User membership system and relationships
+- **[Memberships](./features/memberships.md)** - User membership system and relationships for Organizations
 
 ## 🎯 Development Pathways
 
@@ -47,6 +48,7 @@ Follow the [README_dev.md](../README_dev.md) to get your environment setup local
 
 - **Adding a New Collection**: [Collections](./backend/collections.md) → [Migrations](./backend/migrations.md) → [Type Generation](./frontend/type-generation.md) → [Query Hooks](./frontend/query-hooks.md)
 - **Creating New Components**: [Components](./frontend/components.md) → [Custom Hooks](./frontend/custom-hooks.md) → [State Management](./frontend/state-management.md)
+- **Authentication & Users**: [Authentication](./features/authentication.md) → [Users](./features/users.md) → [Pocketbase Admin Panel](./frontend/pocketbase-admin-panel.md)
 - **Multi-tenant Features**: [Organizations](./features/organizations.md) → [Memberships](./features/memberships.md) → [Access Permissions](./backend/access-permissions.md)
 
 ## 📖 Documentation Conventions

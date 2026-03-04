@@ -61,4 +61,4 @@ Ownership can be transferred via the organization edit page. When the `owner` fi
 
 ## See Also
 
-- [Memberships](./memberships.md) — Member management and roles
+- [Memberships](./memberships.md) — Member management and roles within Organization

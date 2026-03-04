@@ -37,3 +37,8 @@ Additional user management tasks can be completed in the [Pocketbase admin panel
 - Invite only registration (signup for limited users)
 - Impersonating a user (also can be done [through SDK code](https://pocketbase.io/docs/authentication/#users-impersonation))
 - Invalidating all user auth tokens for specific feature (auth duration, email verification, password reset, email change duration, protected file access)
+
+## See Also
+
+- [Authentication](./authentication.md) — Auth flows, session management, and route protection
+- [Organizations](./organizations.md) — Organization management
