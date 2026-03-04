@@ -23,6 +23,7 @@ Components that provide common form inputs. These are used sitewide so you can m
 | FormActionsGroup | Wrapper for grouping form action buttons |
 | FormError | Alert for form-level API errors |
 | SaveButton | Save/submit button with loading state |
+| SecondaryButton | Subtle button for non-primary actions and navigation |
 
 ### ActionIconButton
 
@@ -69,6 +70,28 @@ A styled cancel button that provides consistent styling across forms.
 ```tsx
 <CancelButton onClick={() => navigate('/dashboard')} />
 ```
+
+### SecondaryButton
+
+A styled button for non-primary actions such as navigation, settings, or alternative paths. Uses the subtle variant (same as CancelButton) to visually distinguish from primary actions. Supports both click handlers and navigation via React Router links.
+
+**Props:**
+- `label: string` - Button text (required)
+- `href?: string` - Navigation URL (uses React Router Link)
+- `onClick?: React.MouseEventHandler<HTMLButtonElement>` - Click handler
+
+**Usage:**
+```tsx
+// Navigation action
+<SecondaryButton label="Settings" href="/organizations/123/edit" />
+
+// Click handler action
+<SecondaryButton label="Switch Mode" onClick={() => handleSwitch()} />
+```
+
+**When to use SecondaryButton vs CancelButton:**
+- Use `CancelButton` when dismissing or canceling a form/modal (e.g., closing a dialog, abandoning edits)
+- Use `SecondaryButton` for non-primary actions like navigation, settings, alternative paths, or mode switching
 
 ### FormActionsGroup
 

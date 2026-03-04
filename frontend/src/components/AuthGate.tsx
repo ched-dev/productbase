@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { Fieldset, Group, Loader, Text, TextInput } from '@mantine/core'
 import classes from './AuthGate.module.css'
 import * as config from '@/config'
-import CancelButton from './forms/CancelButton'
 import EmailInput from './forms/EmailInput'
+import SecondaryButton from './forms/SecondaryButton'
 import FieldError from './forms/FieldError'
 import FormError from './forms/FormError'
 import SaveButton from './forms/SaveButton'
@@ -71,9 +71,9 @@ const AuthGate = ({ children }: React.PropsWithChildren) => {
           </Group>
           <Group className={classes.loginButton}>
             {mode === 'login' ? (
-              <CancelButton onClick={() => handleModeSwitch('signup')} label="Don't have an account? Sign up" />
+              <SecondaryButton onClick={() => handleModeSwitch('signup')} label="Don't have an account? Sign up" />
             ) : (
-              <CancelButton onClick={() => handleModeSwitch('login')} label="Already have an account? Login" />
+              <SecondaryButton onClick={() => handleModeSwitch('login')} label="Already have an account? Login" />
             )}
           </Group>
         </form>
