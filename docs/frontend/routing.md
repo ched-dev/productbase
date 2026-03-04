@@ -108,17 +108,38 @@ When adding new route groups, follow these URL patterns:
 
 ## Imperative Navigation
 
-Use `lib/navigate.ts` for programmatic navigation outside of React components or when you wish to navigate without user interaction, such as events.
+There are two standard navigation patterns:
 
-### Usage (Anywhere in the app)
+1. **In React components and hooks**: use `useNavigateHelpers().navigate` (React Router's navigate via the hook)
+2. **Outside React** (plain stores, utility functions, without Router context): use `navigateUsingRouter()` from `@/hooks/useNavigateHelpers`
+
+### Usage in Components and Hooks
 
 ```tsx
-// In a query hook after mutation success
-import { navigate } from '@/lib/navigate'
+// In a component
 import { routes } from '@/lib/routes'
+import { useNavigateHelpers } from '@/hooks/useNavigateHelpers'
+
+export default function FeedbackForm() {
+  const { navigate } = useNavigateHelpers()
+
+  const { formRef, handleSubmit } = useFormState({
+    onSuccess: () => {
+      navigate(routes.feedback.detail({ id }))
+    },
+  })
+  // ...
+}
+```
+
+```tsx
+// In a custom hook
+import { routes } from '@/lib/routes'
+import { useNavigateHelpers } from '@/hooks/useNavigateHelpers'
 
 export function useUserFeedbackCollection() {
   const base = usePocketbaseCollection<UserFeedbackRecord>('user_feedback', ...)
+  const { navigate } = useNavigateHelpers()
 
   return {
     ...base,
@@ -131,12 +152,16 @@ export function useUserFeedbackCollection() {
 }
 ```
 
-### Use Case
+### Usage Outside React
 
-This pattern is essential for:
-- Redirecting somewhere after successful form submission
-- Navigating after a mutation from inside a query hook (not a component)
-- Navigation from utility functions that aren't React components
+```tsx
+// In a plain store or utility function (without Router context)
+import { navigateUsingRouter } from '@/hooks/useNavigateHelpers'
+
+urlStorage.navigate = (path: string, newValue: UrlStorageData) => {
+  navigateUsingRouter(path + '?' + qs.stringify(newValue))
+}
+```
 
 ## Route Guards
 
@@ -145,11 +170,12 @@ This pattern is essential for:
 Detail and edit pages that require an `:id` param should redirect to the resource's list page if `id` is missing. Place the guard **after all hooks** (to avoid violating React's rules of hooks) but **before any rendering logic**:
 
 ```tsx
-import { navigate } from '@/lib/navigate'
 import { routes } from '@/lib/routes'
+import { useNavigateHelpers } from '@/hooks/useNavigateHelpers'
 
 export default function FeedbackDetail() {
   const { id } = useParams<{ id: string }>()
+  const { navigate } = useNavigateHelpers()
   const feedback = useFeedbackCollection()
 
   // Hooks must come first
@@ -176,7 +202,7 @@ This pattern:
 
 ## Related Patterns
 
-- **`useNavHelpers`** — Convenience hook for active route detection and navigation
+- **`useNavigateHelpers`** — Convenience hook for active route detection and navigation
 - **URL state** — Preserving filter/search/viewed-item in URL via `useQueryParam` and `useListView`
 
 See [Custom Hooks](./custom-hooks.md) for details.

@@ -68,7 +68,12 @@ A styled cancel button that provides consistent styling across forms.
 
 **Usage:**
 ```tsx
-<CancelButton onClick={() => navigate('/dashboard')} />
+<CancelButton onClick={close} />
+
+// if going to navigate away, use the goBackOrNavigate helper to return to previous page or use fallback URL if no history available
+const { goBackOrNavigate } = useNavigateHelpers()
+
+<CancelButton onClick={() => goBackOrNavigate(routes.organizations.list())} />
 ```
 
 ### SecondaryButton

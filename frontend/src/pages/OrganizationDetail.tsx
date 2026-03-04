@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { Button, Card, Group, Stack, Text } from '@mantine/core'
 import { routes } from '@/lib/routes'
-import { navigate } from '@/lib/navigate'
+import { useNavigateHelpers } from '@/hooks/useNavigateHelpers'
 import MembershipBadge from '@/components/badges/MembershipBadge'
 import SelfBadge from '@/components/badges/SelfBadge'
 import LoadingIcon from '@/components/LoadingIcon'
@@ -17,6 +17,7 @@ import ContentContainer from '@/components/layout/ContentContainer'
 
 export default function OrganizationDetail() {
   const { id } = useParams<{ id: string }>()
+  const { navigate } = useNavigateHelpers()
   const orgs = useOrganizationsCollection()
   const members = useMembershipsCollection()
   const pb = usePbClient()
