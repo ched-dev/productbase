@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := help
 
-.PHONY: help db-reset migrations-sync seed-collection
+.PHONY: help db-reset migrations-sync collections-sync seed-collection
 
 help: ## Show available commands
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-20s\033[0m %s\n", $$1, $$2}'
@@ -13,6 +13,16 @@ db-reset: ## Tear down stack and delete local pb_data (irreversible)
 
 migrations-sync: ## Sync migration history after deleting migration files
 	docker compose exec pocketbase /pb/pocketbase migrate history-sync
+
+collections-sync: ## Snapshot collections schema, generate TypeScript types, and remove migration
+	@BEFORE=$$(ls pocketbase/pb_migrations/*.js 2>/dev/null | sort); \
+	echo "y" | docker compose exec -T pocketbase /pb/pocketbase migrate collections; \
+	AFTER=$$(ls pocketbase/pb_migrations/*.js 2>/dev/null | sort); \
+	NEW_FILE=$$(comm -13 <(echo "$$BEFORE") <(echo "$$AFTER")); \
+	if [ -z "$$NEW_FILE" ]; then echo "No new migration file created." && exit 1; fi; \
+	cd frontend && npm run generate-pb-types; \
+	rm $$NEW_FILE; \
+	echo "✓ Deleted migration: $$NEW_FILE"
 
 seed-collection: ## Seed a PocketBase collection with fake data (COLLECTION=name COUNT=1)
 	@[ "$(COLLECTION)" ] || (echo "Error: COLLECTION is required. Usage: make seed-collection COLLECTION=<name> [COUNT=1]" && exit 1)

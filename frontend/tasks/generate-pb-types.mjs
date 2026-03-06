@@ -49,6 +49,14 @@ const mockApp = {
     collectionStore.delete(collection.id);
     collectionStore.delete(collection.name);
     return Promise.resolve();
+  },
+  importCollections(collections, _deleteUnused) {
+    for (const config of collections) {
+      const collection = new Collection(config);
+      collectionStore.set(collection.id, collection);
+      collectionStore.set(collection.name, collection);
+    }
+    return Promise.resolve();
   }
 };
 
