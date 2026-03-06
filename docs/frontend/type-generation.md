@@ -4,17 +4,23 @@ This guide explains how ProductBase automatically generates TypeScript types fro
 
 ## Overview
 
-The `generate-pb-types` script (`frontend/tasks/generate-pb-types.mjs`) reconstructs your PocketBase schema by replaying migrations, then generates TypeScript interfaces for each collection.
+The type generation process snapshots your PocketBase collection schema and generates TypeScript interfaces for each collection. It's run automatically via the `make collections-sync` command.
 
 ```sh
-cd frontend
-npm run generate-pb-types
+make collections-sync
 ```
+
+**Note:** The underlying `npm run generate-pb-types` script requires a snapshot migration file argument and should not be run directly. Always use `make collections-sync` from the project root.
+
+**Source of Truth:** `frontend/src/types/PBCollections.d.ts` is the source of truth for the current state of all PocketBase collections. Refer to it to understand what collections exist, their fields, types, validation rules, and API access rules (all available in the JSDoc snapshot comment above each interface).
 
 ### Workflow
 
-1. **Write migration** → Add a new PocketBase collection in `pocketbase/pb_migrations/*.js` (this can also be done from the [PocketBase Admin Panel](./pocketbase-admin-panel.md))
-2. **Run script** → In the frontend, `npm run generate-pb-types`
+1. **Make changes** → Add a new PocketBase collection or modify an existing one (from the [PocketBase Admin Panel](./pocketbase-admin-panel.md) or migrations)
+2. **Sync types** → Run `make collections-sync` from the project root
+   - Creates a snapshot of your current collections schema
+   - Generates TypeScript types from the snapshot
+   - Cleans up the temporary snapshot migration file
 3. **Commit types** → Generated file `frontend/src/types/PBCollections.d.ts` is committed
 4. **Use in code** → Collection interfaces are imported and used in hooks and components
 

@@ -9,7 +9,7 @@ Generate all frontend files needed to expose a PocketBase collection as full CRU
 
 ## Before You Start
 
-1. Read the collection's TypeScript interface from `frontend/src/types/PBCollections.d.ts`
+1. Read the collection's TypeScript interface from `frontend/src/types/PBCollections.d.ts` — this is the source of truth for the current state of all PocketBase collections, including fields, types, validation rules, and API access rules (all available in the JSDoc snapshot comment above each interface)
 2. Identify the collection name (the `collectionName` literal type in the interface) and the Record interface name
 3. Read the existing patterns — use the reference files in this skill's `references/` directory
 

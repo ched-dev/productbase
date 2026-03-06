@@ -25,7 +25,6 @@ General
 - [ ] Update landing page design
 - [ ] Create a Style Guide page for custom components
 - [ ] Auto-backup on deployment before migrations
-- [ ] Update `npm run generate-pb-types` to show errors for failed migrations
 - [ ] Update `make seed-collection` to be more dynamic and support attaching user
 - [ ] Forms attach authed user at server side
 - [x] Are `e.app` and `$app` different permissions?
