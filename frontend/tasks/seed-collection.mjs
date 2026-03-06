@@ -36,38 +36,6 @@ const fakeDataGenerators = {
     };
   },
 
-  feedback_actions: async (pb) => {
-    const actions = ['reviewed', 'responded', 'closed', 'escalated', 'archived'];
-
-    // Get an existing user_feedback record
-    const feedbackRecords = await pb.collection('user_feedback').getList(1, 1);
-    if (feedbackRecords.items.length === 0) {
-      throw new Error('No user_feedback records found. Please seed user_feedback first.');
-    }
-
-    return {
-      user_feedback: feedbackRecords.items[0].id,
-      action: actions[Math.floor(Math.random() * actions.length)]
-    };
-  },
-
-  user_preferences: async (pb) => {
-    const methods = ['email', 'sms', 'push', 'none'];
-
-    // Get an existing user record
-    const users = await pb.collection('users').getList(1, 1);
-    if (users.items.length === 0) {
-      throw new Error('No users found. Please ensure dev users are created via migrations.');
-    }
-
-    return {
-      user: users.items[0].id,
-      alert_preferred_method: methods[Math.floor(Math.random() * methods.length)],
-      alert_phone_number: Math.random() > 0.5 ? `+1555${Math.floor(Math.random() * 9000000).toString().padStart(7, '0')}` : undefined,
-      alert_phone_number_subscribed: Math.random() > 0.5
-    };
-  },
-
   organizations: async (pb) => {
     const names = [
       'Acme Corp', 'Globex Industries', 'Initech', 'Umbrella Co',
@@ -170,13 +138,14 @@ async function main() {
     let errors = 0;
 
     for (let i = 0; i < count; i++) {
+      let data
       try {
-        const data = await generator(pb);
+        data = await generator(pb, i);
         const record = await pb.collection(collection).create(data);
-        console.log(`✓ Created record: ${record.id}`);
+        console.log(`✓ Created record ${i + 1}: ${record.id}`);
         created++;
       } catch (e) {
-        console.error(`✗ Failed to create record ${i + 1}: ${e.message}`);
+        console.error(`✗ Failed to create record ${i + 1}: ${JSON.stringify({ e, data })}`);
         errors++;
       }
     }

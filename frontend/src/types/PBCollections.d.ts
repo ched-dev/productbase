@@ -13,13 +13,6 @@ interface PBBaseRecord {
   updated: string;
 }
 
-export interface FeedbackActionsRecord extends PBBaseRecord {
-  id: string;
-  user_feedback: string;
-  action: string;
-  collectionName: 'feedback_actions';
-}
-
 export interface MembershipsRecord extends PBBaseRecord {
   id: string;
   user?: string;
@@ -49,19 +42,8 @@ export interface UserFeedbackRecord extends PBBaseRecord {
   collectionName: 'user_feedback';
 }
 
-export interface UserPreferencesRecord extends PBBaseRecord {
-  id: string;
-  user: string;
-  alert_preferred_method: string;
-  alert_phone_number?: string;
-  alert_phone_number_subscribed?: boolean;
-  collectionName: 'user_preferences';
-}
-
 export type CollectionRecords = {
-  feedback_actions: FeedbackActionsRecord;
   memberships: MembershipsRecord;
   organizations: OrganizationsRecord;
   user_feedback: UserFeedbackRecord;
-  user_preferences: UserPreferencesRecord;
 };

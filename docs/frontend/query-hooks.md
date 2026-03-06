@@ -43,7 +43,7 @@ Inherits the PocketBase options, with additions for helpers.
 |--------|------|-------------|
 | `expand` | `string` | PocketBase relation expansion syntax (e.g., `'user,feedback_actions'`) |
 | `sort` | `string` | Default sort string (e.g., `'-created'` for descending date) |
-| `filter` | `string` | Default PocketBase filter expression |
+| `filter` | `string` | Default PocketBase filter expression. Cannot use `@request.*` in here unless a superuser. |
 | `perPage` | `number` | Items per page for paginated `list()` (default: 30) |
 | `fields` | `string` | Comma-separated field selection (e.g., `'id,name,created'`) |
 | **added helpers below** | | |

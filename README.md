@@ -35,6 +35,12 @@ User Feedback Widget
 - [x] Collects feedback type, message, and if a reply is desired
 - [ ] Add a hook to forward feedback elsewhere (Slack, Linear, etc.)
 
+User Notifications Widget
+- [ ] In app notifications menu
+
+User Referrals
+- [ ] Users can refer each other via custom codes
+
 Email Integration
 - [ ] SMTP connection via Pocketbase
 - [ ] Code-based email templating
