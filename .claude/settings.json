@@ -4,6 +4,7 @@
       "WebFetch(domain:pocketbase.io)",
       "WebFetch(domain:tabler.io)",
       "Bash(grep *)",
+      "Bash(git commit:*)",
       "Bash(make collections-sync)",
       "Bash(npx tsc *)",
       "Bash(npm test *)",
