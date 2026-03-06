@@ -1,8 +1,6 @@
 /// <reference path="../pb_data/types.d.ts" />
 migrate((app) => {
   const collection = new Collection({
-    "createRule": null,
-    "deleteRule": null,
     "fields": [
       {
         "autogeneratePattern": "[a-z0-9]{15}",
@@ -105,12 +103,12 @@ migrate((app) => {
     ],
     "id": "pbc_3683687721",
     "indexes": [],
-    "listRule": null,
+    "listRule": "user.id = @request.auth.id",
     "name": "user_feedback",
     "system": false,
     "type": "base",
-    "updateRule": null,
-    "viewRule": null
+    "createRule": "user.id = @request.auth.id",
+    "viewRule": "user.id = @request.auth.id"
   });
 
   return app.save(collection);

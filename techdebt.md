@@ -24,7 +24,6 @@ General
 - [ ] Add API driven feature flag support
 - [ ] Update landing page design
 - [ ] Create a Style Guide page for custom components
-- [ ] Cron job to delete old backups
 - [ ] Auto-backup on deployment before migrations
 - [ ] Update `npm run generate-pb-types` to show errors for failed migrations
 - [ ] Update `make seed-collection` to be more dynamic and support attaching user
