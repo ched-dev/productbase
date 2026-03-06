@@ -1,4 +1,5 @@
 .DEFAULT_GOAL := help
+SHELL := /bin/bash
 
 .PHONY: help db-reset migrations-sync collections-sync seed-collection
 
@@ -20,7 +21,7 @@ collections-sync: ## Snapshot collections schema, generate TypeScript types, and
 	AFTER=$$(ls pocketbase/pb_migrations/*.js 2>/dev/null | sort); \
 	NEW_FILE=$$(comm -13 <(echo "$$BEFORE") <(echo "$$AFTER")); \
 	if [ -z "$$NEW_FILE" ]; then echo "No new migration file created." && exit 1; fi; \
-	cd frontend && npm run generate-pb-types; \
+	npm run --prefix frontend generate-pb-types -- $$NEW_FILE; \
 	rm $$NEW_FILE; \
 	echo "✓ Deleted migration: $$NEW_FILE"
 
