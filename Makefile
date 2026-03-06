@@ -21,7 +21,7 @@ collections-sync: ## Snapshot collections schema, generate TypeScript types, and
 	AFTER=$$(ls pocketbase/pb_migrations/*.js 2>/dev/null | sort); \
 	NEW_FILE=$$(comm -13 <(echo "$$BEFORE") <(echo "$$AFTER")); \
 	if [ -z "$$NEW_FILE" ]; then echo "No new migration file created." && exit 1; fi; \
-	npm run --prefix frontend generate-pb-types -- $$NEW_FILE; \
+	npm run --prefix frontend generate-pb-types -- $(CURDIR)/$$NEW_FILE; \
 	rm $$NEW_FILE; \
 	echo "✓ Deleted migration: $$NEW_FILE"
 
