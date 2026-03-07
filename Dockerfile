@@ -6,7 +6,7 @@ ARG VITE_FRONTEND_URL=$VITE_FRONTEND_URL
 ARG VITE_POCKETBASE_API_URL=$VITE_POCKETBASE_API_URL
 
 RUN npm install
-RUN npm build
+RUN npm run build
 
 # Stage 2: Build the Go backend with Pocketbase as a framework
 FROM golang:1.24-alpine AS backend-builder
@@ -36,11 +36,15 @@ FROM alpine:latest AS production
 # Build arguments for runtime configuration
 ARG POCKETBASE_APPLICATION_NAME=$POCKETBASE_APPLICATION_NAME
 ARG POCKETBASE_API_URL=$POCKETBASE_API_URL
-ARG S3_ACCESS_KEY_ID=$S3_ACCESS_KEY_ID
-ARG S3_SECRET_ACCESS_KEY=$S3_SECRET_ACCESS_KEY
-ARG S3_ENDPOINT=$S3_ENDPOINT
-ARG S3_REGION=$S3_REGION
+ARG S3_FILES_ACCESS_KEY_ID=$S3_FILES_ACCESS_KEY_ID
+ARG S3_FILES_SECRET_ACCESS_KEY=$S3_FILES_SECRET_ACCESS_KEY
+ARG S3_FILES_ENDPOINT=$S3_FILES_ENDPOINT
+ARG S3_FILES_REGION=$S3_FILES_REGION
 ARG S3_FILES_BUCKET=$S3_FILES_BUCKET
+ARG S3_BACKUPS_ACCESS_KEY_ID=$S3_BACKUPS_ACCESS_KEY_ID
+ARG S3_BACKUPS_SECRET_ACCESS_KEY=$S3_BACKUPS_SECRET_ACCESS_KEY
+ARG S3_BACKUPS_ENDPOINT=$S3_BACKUPS_ENDPOINT
+ARG S3_BACKUPS_REGION=$S3_BACKUPS_REGION
 ARG S3_BACKUPS_BUCKET=$S3_BACKUPS_BUCKET
 ARG SMTP_SEND_NAME=$SMTP_SEND_NAME
 ARG SMTP_SEND_ADDRESS=$SMTP_SEND_ADDRESS
@@ -48,7 +52,7 @@ ARG SMTP_SERVER=$SMTP_SERVER
 ARG SMTP_PORT=$SMTP_PORT
 ARG SMTP_USER=$SMTP_USER
 ARG SMTP_PASSWORD=$SMTP_PASSWORD
-ARG RAILWAY_VOLUME_MOUNT_PATH=$RAILWAY_VOLUME_MOUNT_PATH
+ARG VOLUME_MOUNT_PATH=$VOLUME_MOUNT_PATH
 
 # Install runtime dependencies
 RUN apk add --no-cache \
@@ -80,5 +84,4 @@ EXPOSE 8100
 # All static assets including index.html will be served from /pb/pb_public
 # Pocketbase admin will load under http://0.0.0.0:8100/_/
 # For local testing comment out this CMD and run: docker build -t pbase . && docker run -p 8100:8100 -it pbase
-# CMD ["/bin/sh", "-c", "DATA_DIR=\"/pb/pb_data\"; echo \"Starting ProductBase with Go + Pocketbase framework\"; echo \"Data directory: $DATA_DIR\"; exec ./pocketbase serve --dir=\"$DATA_DIR\" --migrationsDir=/pb/pb_migrations --hooksDir=/pb/pb_hooks --publicDir=/pb/pb_public --http=0.0.0.0:8100"]
-CMD ["/bin/sh","-c","echo \"Starting with volume mount: ${RAILWAY_VOLUME_MOUNT_PATH}\"; exec /pb/pocketbase serve --dir=\"${RAILWAY_VOLUME_MOUNT_PATH}\" --migrationsDir=/pb/pb_migrations --hooksDir=/pb/pb_hooks --publicDir=/pb/pb_public --http=0.0.0.0:8100"]
+CMD ["/bin/sh","-c","echo \"Starting with volume mount: ${VOLUME_MOUNT_PATH}\"; exec /pb/pocketbase serve --dir=\"${VOLUME_MOUNT_PATH}\" --migrationsDir=/pb/pb_migrations --hooksDir=/pb/pb_hooks --publicDir=/pb/pb_public --http=0.0.0.0:8100"]
