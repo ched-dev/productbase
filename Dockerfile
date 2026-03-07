@@ -68,7 +68,7 @@ RUN mkdir -p /pb/pb_public /pb/pb_migrations /pb/pb_hooks /pb/pb_data
 COPY --from=backend-builder /app/pocketbase /pb/pocketbase
 
 # Copy frontend static assets to pb_public
-COPY --from=frontend-builder /app/build /pb/pb_public
+COPY --from=frontend-builder /app/dist /pb/pb_public
 
 # Copy migrations and hooks
 COPY ./pocketbase/pb_migrations /pb/pb_migrations
