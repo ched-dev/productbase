@@ -44,6 +44,9 @@ The following variables will need to be added to your Railway deployment. Most o
 
 ```env
 # IMPORTANT: DO NOT INCLUDE ANY OF THE `DEV_SUPERUSER` or `DEV_USER` values
+# Frontend Build Vars
+VITE_FRONTEND_URL=$RAILWAY_PUBLIC_DOMAIN
+VITE_POCKETBASE_API_URL=$RAILWAY_PUBLIC_DOMAIN
 # General PocketBase Information
 POCKETBASE_APPLICATION_NAME=Project Name
 POCKETBASE_API_URL=$RAILWAY_PUBLIC_DOMAIN
