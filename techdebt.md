@@ -22,6 +22,7 @@ Auth
 
 Deployment Onboarding
 - [ ] Does the SMTP name and address still need to be populated without other SMTP?
+- [ ] Support other named environments as `development`
 
 General
 - [ ] Add API driven feature flag support

@@ -32,7 +32,7 @@ This will create a `production` environment by default.
 
 If you run into problems, see [Troubleshooting Template Deployment](#troubleshooting-template-deployment) below.
 
-## Create your Superuser
+### Create your Superuser
 
 - Click on the `productbase-docker` service
 - In the **Deployments** tab, find the latest deployment and click on **View logs** button
@@ -47,7 +47,7 @@ http://0.0.0.0:8100/_/#/pbinstal/ey...
 - You will see the PocketBase admin screen to create the Superuser
 - Fill out the information and create your Superuser
 
-## Troubleshooting Template Deployment
+### Troubleshooting Template Deployment
 
 If the deployment fails, look into the Build Logs and diagnose the issue. It's likely missing environment variables. Update the environment variables and deploy them.
 
@@ -56,9 +56,17 @@ If the deployment is successful but the public URL doesn't load properly:
 
 If you can't login to the frontend app, confirm you are using a **user** account and not a **superuser** account. The frontend app only uses the **user** for authentication.
 
-## Setting up a deployed development account
+### Ejecting for custom development
 
-When you want to develop on top of ProductBase, you may want to setup a development deployment to use for testing.
+Once you have decided you want to build out further on the ProductBase template app, you can [eject from the template](https://docs.railway.com/templates/deploy#eject-from-template-repository) to get a repository of your own to connect to. The repository will be created in your connected GitHub account.
+
+The template is intended to be ejected and developed on top of with your own custom features. You can also use the template as a pre-configured PocketBase setup if it fits your needs as-is, and you can refresh to latest updates from the `productbase-docker` Settings.
+
+Documentation for [building on ProductBase](../INDEX.md) are available.
+
+### Setting up a deployed development account
+
+When you want to develop on top of ProductBase, you may want to setup a development deployment to use for testing. You should have already [ejected for custom development](#ejecting-for-custom-development) before setting up a deployed development environment.
 
 Follow these steps to create a cloned development environment in Railway:
 - From within the project page, click the **production** dropdown in the left side of the top nav
@@ -85,17 +93,24 @@ DEV_MOCK_USER_NAME=mock account
 DEV_MOCK_USER_EMAIL=mock@gmail.com
 DEV_MOCK_USER_PASSWORD=password
 ```
-- Next we will reset the database by wiping it (it will be recreated after)
+- Click on **Deploy** button in the top left
+- Update the branch to point to the development branch
+  - Click on the `productbase-docker-volume`
+  - Change to **Settings**
+  - Under **Branch connected to development**, change the branch to **dev** (or whichever branch matches this new environment)
+- Next we will reset the database by wiping it (the database will automatically be recreated from scratch)
   - Click on the `productbase-docker-volume`
   - Change to **Settings**
   - Click **Wipe Volume**
   - The deployment will restart with the mock users created
 
-You can now use this as a base for PR environments (temporary preview environments).
+You can now use this as a base for PR environments (temporary preview environments) to automatically have superuser and mock accounts setup for faster testing.
 
-## Setting up PR deployment environments
+**WARNING:** If you ever use real users emails or contact info outside of `production` environment, ensure you have disabled any automated emails or contact features to prevent sending test data to customers.
 
-After you've setup the develop environment in Railway, you can enable PR environments to deploy a temporary environment when PRs are created or updated. A URL will be added to the PR via comment from the Railway bot.
+### Setting up PR deployment environments
+
+After you've setup the develop environment in Railway, you can enable PR environments to deploy a temporary preview environment when PRs are created or updated. A URL will be added to the PR via comment from the Railway bot.
 
 To enable the PR environments:
 - Open the **Project Settings**
@@ -104,6 +119,20 @@ To enable the PR environments:
 - Set the **Base Environment** to the development environment you created
 - In **Bot PR Environments** confirm **Enable Bot PR Environments** is *enabled* (should be enabled for AI bot PRs)
 - In **Focused PR Environments** confirm **Enable Focused PR Environments** is *disabled* (this won't deploy unchanged services, use enable if you want fresh environments)
+
+### Enabling Serverless for container sleeping
+
+You can enable **Serverless** on your `pocketbase-docker` service to allow it to sleep while there is no traffic. It will automatically spin back up when traffic starts again. This is a great option for development environments, or to save some money in no traffic times if you have infrequent visitors.
+
+### Syncing Environments
+
+In Railway, you can sync environments. This will copy the setup from an environment you select, to the environment you are in. This can be helpful if you have added services in an environment you want to recreate in another environment.
+
+**WARNING:** When you sync an environment, you are overwriting your environment variables with the ones from the environment you chose. This means if you sync `development` into the `production` environment, you may be copying over `DEV_*` environment variables. Be sure to remove them after syncing.
+
+ProductBase environment variables are mostly dynamic, helping prevent overwriting connection details in each environment.
+
+Syncing does not copy the volume mount data which houses the database. It will copy over all migrations, hooks, PocketBase version, and frontend from the environment.
 
 ## Reference
 
