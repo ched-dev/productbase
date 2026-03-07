@@ -6,20 +6,19 @@ migrate((app) => {
   const PORT = process.env.SMTP_PORT
   const USER = process.env.SMTP_USER
   const PASSWORD = process.env.SMTP_PASSWORD
-
-  // log for sanity check
-  console.log('ProductBase: Updating SMTP Settings |',
-    `SERVER=${SERVER}`,
-    `PORT=${PORT}`,
-    `USER=${USER}`,
-    `PASSWORD=${Boolean(PASSWORD)}`
-  );
-
+  
   const settings = app.settings();
-  settings.meta.senderName = SEND_NAME || 'Pocketbase';
+  settings.meta.senderName = SEND_NAME || 'ProductBase';
   settings.meta.senderAddress = SEND_ADDRESS || 'noreply@server.net';
 
   if (SERVER && PORT && USER && PASSWORD) {
+    // log for sanity check
+    console.log('ProductBase: Updating SMTP Settings |',
+      `SERVER=${SERVER}`,
+      `PORT=${PORT}`,
+      `USER=${USER}`,
+      `PASSWORD=${Boolean(PASSWORD)}`
+    );
     settings.smtp.enabled = true;
     settings.smtp.host = SERVER;
     settings.smtp.port = PORT;

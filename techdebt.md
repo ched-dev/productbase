@@ -20,6 +20,9 @@ Auth
 - [ ] Auth with third party providers
 - [ ] Update superuser.ts with changes to auth.ts
 
+Deployment Onboarding
+- [ ] Does the SMTP name and address still need to be populated without other SMTP?
+
 General
 - [ ] Add API driven feature flag support
 - [ ] Update landing page design

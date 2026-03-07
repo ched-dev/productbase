@@ -4,6 +4,8 @@
 
 Spin up a new Pocketbase project with the base configuration for a product.
 
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/DSlwFZ?referralCode=ched_dev&utm_medium=integration&utm_source=template&utm_campaign=repo_readme)
+
 ## Features
 
 AI Agent Friendly

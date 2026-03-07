@@ -84,4 +84,4 @@ EXPOSE 8100
 # All static assets including index.html will be served from /pb/pb_public
 # Pocketbase admin will load under http://0.0.0.0:8100/_/
 # For local testing comment out this CMD and run: docker build -t pbase . && docker run -p 8100:8100 -it pbase
-CMD ["/bin/sh","-c","echo \"Starting with volume mount: ${VOLUME_MOUNT_PATH}\"; exec /pb/pocketbase serve --dir=\"${VOLUME_MOUNT_PATH}\" --migrationsDir=/pb/pb_migrations --hooksDir=/pb/pb_hooks --publicDir=/pb/pb_public --http=0.0.0.0:${PORT:-8100}"]
+CMD ["/bin/sh","-c","echo \"Starting with volume mount: ${VOLUME_MOUNT_PATH}\"; exec /pb/pocketbase serve --dir=\"${VOLUME_MOUNT_PATH}\" --migrationsDir=/pb/pb_migrations --hooksDir=/pb/pb_hooks --publicDir=/pb/pb_public --http=0.0.0.0:8100"]
