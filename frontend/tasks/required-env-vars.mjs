@@ -48,13 +48,23 @@ for (const builtin of VITE_BUILTINS) {
   usedKeys.delete(builtin);
 }
 
-const env = loadEnv('production', root, '');
-const missing = [...usedKeys].filter(key => !env[key]);
+// Determine mode from npm lifecycle event (predev → development, else → production)
+const lifecycleEvent = process.env.npm_lifecycle_event ?? '';
+const mode = lifecycleEvent.includes('dev') ? 'development' : 'production';
+
+const env = loadEnv(mode, root, '');
+const missing = [...usedKeys]
+  .filter(key => !env[key])
+  .filter(key => !(mode === 'production' && key.startsWith('VITE_DEV')));
 
 if (missing.length > 0) {
   console.error(`\n✗ Missing required environment variables:\n`);
   missing.forEach(key => console.error(`  - ${key}`));
-  console.error(`\nCheck your frontend/.env file.\n`);
+  if (mode === 'production') {
+    console.error(`\nAdd env vars in Railway in the service settings\n`);
+  } else {
+    console.error(`\nAdd them to your frontend/.env file`);
+  }
   process.exit(1);
 }
 
