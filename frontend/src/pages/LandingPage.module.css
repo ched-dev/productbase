@@ -1,0 +1,24 @@
+.diagonalStrike {
+  position: relative;
+  display: inline-block;
+  color: #666;
+}
+
+.diagonalStrike::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    -20deg,
+    transparent calc(50% - 1px),
+    #9933ff calc(50% - 1px),
+    #9933ff calc(50% + 1px),
+    transparent calc(50% + 1px)
+  ), linear-gradient(
+    20deg,
+    transparent calc(50% - 1px),
+    #9933ff calc(50% - 1px),
+    #9933ff calc(50% + 1px),
+    transparent calc(50% + 1px)
+  );
+}

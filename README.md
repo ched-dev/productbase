@@ -25,6 +25,7 @@ User signup flow
 - [ ] Email Verification
 - [ ] Max failed login attempts
 - [ ] User Settings page
+- [ ] User action logs (see the journey of a user)
 
 Organizations (Workspaces, Teams)
 - [x] Higher level grouping of users
