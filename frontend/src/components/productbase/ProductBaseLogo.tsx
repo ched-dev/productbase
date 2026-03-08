@@ -10,7 +10,7 @@ export default function ProductBaseLogo() {
   const C = sharedColors;
 
   return (
-    <Link to={routes.publicLanding()} className="nav-logo" style={{ textUnderlineOffset: "4px" }}>
+    <Link to={routes.publicLanding()} className="nav-logo" style={{ textUnderlineOffset: "4px", textDecorationColor: C.accent }}>
       <Group gap={3}>
         <Box
           w={32}

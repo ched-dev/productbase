@@ -305,7 +305,7 @@ body {
 
 @media (min-width: 768px) {
   .hero-layout {
-    flex-direction: row-reverse;
+    flex-direction: row;
     align-items: flex-start;
     justify-content: space-between;
     gap: 48px;
@@ -471,7 +471,7 @@ body {
                     styles={{
                       root: {
                         background: `${C.accentSecondary}22`,
-                        borderColor: `${C.accentSecondary}55`,
+                        borderColor: C.accentSecondary,
                         color: C.accentSecondary,
                         fontFamily: fontFamily,
                         fontSize: 12,
